@@ -1,0 +1,1142 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Okean tubiga sho‘ng‘ing · Qiziqarli</title>
+  <meta name="description" content="Sirtdan Mariana botig‘i tubigacha 10 935 metrlik scroll-sayohat: chuqurlik, bosim, yorug‘lik va harorat qanday o‘zgarishini kuzating.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500;600&family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script>try{var t=localStorage.getItem("qz-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <style>
+    /* ===== Okean sahnasi: ataylab qat’iy ranglar, ikkala mavzuda bir xil ===== */
+    :root {
+      --okean-0: #45d3dc;        /* sirt: yorqin firuza */
+      --okean-30: #1aa6c6;
+      --okean-200: #0b5c98;      /* to‘q ko‘k */
+      --okean-600: #0a3b77;
+      --okean-1000: #0a2253;     /* tungi ko‘k */
+      --okean-2500: #061331;
+      --okean-4000: #030a17;     /* deyarli qora */
+      --okean-tub: #010307;      /* qora */
+      --okean-yer: #0b0d12;      /* tub cho‘kindisi */
+      --okean-yer-2: #161a22;
+      --okean-matn: #e7f4fc;
+      --okean-matn-2: #a9c6da;
+      --okean-zona: rgba(231, 244, 252, 0.56);
+      --okean-tuq: #04263b;      /* sirt yaqinidagi to‘q matn */
+      --okean-tuq-2: rgba(4, 38, 59, 0.72);
+      --okean-chiziq: rgba(231, 244, 252, 0.3);
+      --okean-chiziq-tuq: rgba(4, 38, 59, 0.42);
+      --okean-halo: rgba(2, 10, 24, 0.55);
+      --okean-shisha: rgba(3, 15, 34, 0.76);
+      --okean-shisha-2: rgba(16, 24, 38, 0.92);
+      --okean-shisha-chiziq: rgba(160, 215, 255, 0.2);
+      --okean-faol-chiziq: rgba(245, 182, 72, 0.6);
+      --okean-faol-nur: rgba(245, 182, 72, 0.4);
+      --okean-soya: 0 18px 40px -22px rgba(0, 0, 0, 0.75);
+      --okean-oyna: #0d3552;
+      --okean-oyna-nur: rgba(255, 255, 255, 0.28);
+      --okean-oyna-soya: rgba(0, 0, 0, 0.55);
+      --okean-guruch: #b98a3e;   /* illyuminator guruch halqasi */
+      --okean-guruch-2: #5a4019;
+      --okean-hud: rgba(2, 9, 22, 0.8);
+      --okean-hud-chiziq: rgba(160, 215, 255, 0.18);
+      --okean-rels: rgba(231, 244, 252, 0.16);
+      --okean-nur: #8ef3ff;      /* bioluminessensiya */
+      --okean-pufak: #ffffff;
+      --okean-shula: rgba(255, 255, 255, 0.13);
+      --okean-tog: rgba(231, 244, 252, 0.035);
+      --okean-tog-chiziq: rgba(231, 244, 252, 0.16);
+    }
+
+    /* ---------- Sirt va to‘lqinlar ---------- */
+    .dive { position: relative; margin-top: clamp(8px, 2vw, 24px); }
+    .surface { display: flex; justify-content: center; padding-bottom: 4px; }
+    .hint {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 16px;
+      border-radius: var(--r-m);
+      color: var(--siyoh-2);
+      font: 500 var(--fs-label)/1.2 var(--f-mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .hint:hover { color: var(--siyoh); }
+    .hint svg { width: 22px; height: 22px; animation: hint-bob 1.9s var(--ease-out) infinite; }
+    @keyframes hint-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+    .waves { position: relative; height: 42px; overflow: hidden; margin-bottom: -1px; }
+    .waves svg { position: absolute; left: 0; bottom: 0; width: 200%; max-width: none; height: 100%; }
+    .waves .w-back { fill: var(--okean-30); opacity: 0.55; animation: wave-drift 16s linear infinite; }
+    .waves .w-front { fill: var(--okean-0); animation: wave-drift 11s linear infinite reverse; }
+    @keyframes wave-drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ---------- Suv ustuni ---------- */
+    .water {
+      position: relative;
+      z-index: 1;
+      isolation: isolate;
+      background: linear-gradient(var(--okean-0), var(--okean-200) 13%, var(--okean-1000) 30%, var(--okean-4000) 63%, var(--okean-tub));
+    }
+    .fx { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    .rays {
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      height: 900px;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(104deg, transparent 0 14%, var(--okean-shula) 17%, transparent 21%),
+        linear-gradient(98deg, transparent 0 38%, var(--okean-shula) 40%, transparent 44%),
+        linear-gradient(108deg, transparent 0 61%, var(--okean-shula) 64%, transparent 69%),
+        linear-gradient(101deg, transparent 0 82%, var(--okean-shula) 84%, transparent 87%);
+      -webkit-mask-image: linear-gradient(#000, transparent);
+      mask-image: linear-gradient(#000, transparent);
+    }
+    .seabed { position: absolute; left: 0; bottom: -1px; width: 100%; height: 56px; z-index: 0; fill: var(--okean-yer); pointer-events: none; }
+    .water > .wrap { position: relative; z-index: 1; }
+    .water__in { position: relative; display: grid; gap: 18px; padding-block: 48px; }
+
+    /* JS joylashtirgandan keyin: har bir element o‘z chuqurligida */
+    .water__in.is-laid { display: block; padding: 0; }
+    .water__in.is-laid > .zone,
+    .water__in.is-laid > .mk { position: absolute; left: 0; top: 0; z-index: 1; }
+    .scene { position: absolute; left: 0; top: 0; z-index: 0; overflow: visible; pointer-events: none; display: none; }
+    .water__in.is-laid > .scene { display: block; }
+
+    .sc-axis { stroke: var(--okean-chiziq); stroke-width: 1; }
+    .sc-axis.is-dark { stroke: var(--okean-chiziq-tuq); }
+    .sc-tick { stroke: var(--okean-chiziq); stroke-width: 1; }
+    .sc-tick.is-major { stroke-width: 1.5; }
+    .sc-tick.is-dark { stroke: var(--okean-chiziq-tuq); }
+    .sc-label {
+      font-family: var(--f-mono);
+      font-size: 10px;
+      font-weight: 500;
+      fill: var(--okean-matn);
+      paint-order: stroke;
+      stroke: var(--okean-halo);
+      stroke-width: 3px;
+      stroke-linejoin: round;
+      font-variant-numeric: tabular-nums;
+    }
+    .sc-label.is-dark { fill: var(--okean-tuq); stroke: none; font-weight: 600; }
+    .sc-zone { stroke: var(--okean-chiziq); stroke-width: 1; stroke-dasharray: 2 6; }
+    .sc-lead { fill: none; stroke: var(--okean-chiziq); stroke-width: 1; }
+    .sc-lead.is-dark { stroke: var(--okean-chiziq-tuq); }
+    .sc-pin { fill: var(--zafaron-yorqin); stroke: var(--okean-halo); stroke-width: 2; }
+    .sc-everest { fill: var(--okean-tog); stroke: var(--okean-tog-chiziq); stroke-width: 1; stroke-linejoin: round; }
+
+    /* ---------- Zona sarlavhalari ---------- */
+    .zone { color: var(--okean-matn); min-width: 0; }
+    .zone__title {
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: clamp(1.75rem, 1.1rem + 2.4vw, 3rem);
+      line-height: 1.02;
+      letter-spacing: -0.025em;
+      color: var(--okean-zona);
+      scroll-margin-top: 42vh;
+    }
+    .zone__title:focus { outline: none; }
+    .zone__sci {
+      margin-top: 10px;
+      font: 500 var(--fs-label)/1.3 var(--f-mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--okean-matn-2);
+    }
+    .zone__note { margin-top: 6px; max-width: 36ch; font-size: 0.95rem; line-height: 1.5; color: var(--okean-matn); }
+    .zone--sirt .zone__title { color: var(--okean-tuq-2); }
+    .zone--sirt .zone__sci,
+    .zone--sirt .zone__note { color: var(--okean-tuq); }
+
+    /* ---------- Belgilar (illyuminatorli kartalar) ---------- */
+    .mk {
+      display: grid;
+      grid-template-columns: 64px minmax(0, 1fr);
+      grid-template-areas: "port depth" "port name" "port text";
+      grid-template-rows: auto auto 1fr;
+      column-gap: 16px;
+      padding: 14px 18px 16px 14px;
+      background: var(--okean-shisha);
+      border: 1px solid var(--okean-shisha-chiziq);
+      border-radius: var(--r-m);
+      color: var(--okean-matn);
+      box-shadow: var(--okean-soya);
+      min-width: 0;
+      transition: border-color 0.35s;
+    }
+    .mk__port {
+      grid-area: port;
+      align-self: start;
+      position: relative;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 32px;
+      line-height: 1;
+      background: radial-gradient(circle at 32% 28%, var(--okean-oyna-nur), transparent 52%), var(--okean-oyna);
+      box-shadow: 0 0 0 3px var(--okean-guruch), 0 0 0 5px var(--okean-guruch-2), inset 0 0 14px var(--okean-oyna-soya);
+      transition: box-shadow 0.35s;
+    }
+    .mk__port span { transform: translateY(1px); }
+    .mk__depth {
+      grid-area: depth;
+      margin-top: 3px;
+      font: 600 0.8rem/1.2 var(--f-mono);
+      letter-spacing: 0.02em;
+      color: var(--zafaron-yorqin);
+      font-variant-numeric: tabular-nums;
+    }
+    .mk__name {
+      grid-area: name;
+      margin-top: 4px;
+      font: 700 1.08rem/1.25 var(--f-body);
+      letter-spacing: -0.005em;
+      color: var(--okean-matn);
+    }
+    .mk__text { grid-area: text; margin-top: 6px; font-size: 0.94rem; line-height: 1.55; color: var(--okean-matn-2); }
+    .mk.is-active { border-color: var(--okean-faol-chiziq); }
+    .mk.is-active .mk__port {
+      box-shadow: 0 0 0 3px var(--zafaron-yorqin), 0 0 0 5px var(--okean-guruch-2), 0 0 28px 4px var(--okean-faol-nur), inset 0 0 14px var(--okean-oyna-soya);
+    }
+
+    /* ---------- Okean tubi va yakuniy karta ---------- */
+    .floor {
+      position: relative;
+      z-index: 0;
+      background: linear-gradient(var(--okean-yer), var(--okean-yer-2));
+      padding-block: 64px clamp(64px, 8vw, 112px);
+      color: var(--okean-matn);
+    }
+    .finish {
+      max-width: 680px;
+      margin-inline: auto;
+      padding: clamp(22px, 3.4vw, 36px);
+      background: var(--okean-shisha-2);
+      border: 1px solid var(--okean-shisha-chiziq);
+      border-radius: var(--r-l);
+      box-shadow: var(--okean-soya);
+      min-width: 0;
+    }
+    .finish__label { color: var(--zafaron-yorqin); }
+    .finish h2 { margin-top: 10px; font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.3rem); color: var(--okean-matn); }
+    .finish__lead { margin-top: 12px; color: var(--okean-matn-2); max-width: 54ch; }
+    .finish__stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      margin: 22px 0 0;
+      background: var(--okean-shisha-chiziq);
+      border: 1px solid var(--okean-shisha-chiziq);
+      border-radius: var(--r-m);
+      overflow: hidden;
+    }
+    .finish__stats > div { background: var(--okean-shisha-2); padding: 12px 14px; min-width: 0; }
+    .finish__stats dt {
+      font: 500 var(--fs-label)/1.3 var(--f-mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--okean-matn-2);
+    }
+    .finish__stats dd {
+      margin: 4px 0 0;
+      font: 600 1rem/1.3 var(--f-mono);
+      font-variant-numeric: tabular-nums;
+      color: var(--okean-matn);
+      overflow-wrap: anywhere;
+    }
+    .finish__stats .is-you dd { color: var(--zafaron-yorqin); }
+    .finish__btn { margin-top: 22px; --btn-bg: var(--zafaron-yorqin); --btn-fg: var(--ustida-zafaron); }
+
+    /* ---------- HUD: chuqurlik o‘lchagichi ---------- */
+    .hud {
+      --p: 0;
+      position: fixed;
+      z-index: 45;
+      right: var(--gutter-r);
+      top: 50%;
+      width: 212px;
+      padding: 18px 18px 18px 38px;
+      border-radius: 22px;
+      background: var(--okean-hud);
+      border: 1px solid var(--okean-hud-chiziq);
+      color: var(--okean-matn);
+      box-shadow: var(--okean-soya);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      visibility: hidden;
+      transform: translate(14px, -50%);
+      transition: opacity 0.35s, transform 0.5s var(--ease-out), visibility 0s linear 0.5s;
+    }
+    .hud.is-on { opacity: 1; visibility: visible; transform: translate(0, -50%); transition-delay: 0s; }
+    .hud__rail { position: absolute; left: 17px; top: 20px; bottom: 20px; width: 4px; border-radius: 4px; background: var(--okean-rels); }
+    .hud__fill {
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      background: var(--zafaron-yorqin);
+      transform-origin: top;
+      transform: scaleY(var(--p));
+    }
+    .hud__mark { position: absolute; left: -3px; width: 10px; height: 1.5px; background: var(--okean-matn-2); }
+    .hud__dot {
+      position: absolute;
+      left: 50%;
+      top: calc(var(--p) * 100%);
+      width: 12px; height: 12px;
+      margin: -6px 0 0 -6px;
+      border-radius: 50%;
+      background: var(--zafaron-yorqin);
+      box-shadow: 0 0 0 3px var(--okean-hud), 0 0 12px var(--okean-faol-nur);
+    }
+    .hud__zone { display: grid; gap: 2px; }
+    .hud__zone-name { font-weight: 700; font-size: 0.98rem; line-height: 1.2; }
+    .hud__sci, .hud dt {
+      font: 500 0.64rem/1.3 var(--f-mono);
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--okean-matn-2);
+    }
+    .hud__stats { display: grid; gap: 10px; margin: 14px 0 0; }
+    .hud__stats > div { min-width: 0; }
+    .hud dd { margin: 1px 0 0; font: 600 1rem/1.25 var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .hud__depth dd { font-size: 1.6rem; line-height: 1.15; color: var(--zafaron-yorqin); }
+    .hud__depth dd small { margin-left: 0.3em; font-size: 0.9rem; color: var(--okean-matn); }
+
+    @media (max-width: 1023.98px) {
+      .hud {
+        top: auto;
+        left: var(--gutter-l);
+        right: var(--gutter-r);
+        bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        width: auto;
+        padding: 14px 14px 10px;
+        border-radius: 18px;
+        transform: translateY(16px);
+        display: grid;
+      }
+      .hud.is-on { transform: none; }
+      .hud__rail { left: 16px; right: 16px; top: 7px; bottom: auto; width: auto; height: 3px; }
+      .hud__fill { transform-origin: left; transform: scaleX(var(--p)); }
+      .hud__mark { top: -3px; left: auto; width: 1.5px; height: 9px; }
+      .hud__dot { left: calc(var(--p) * 100%); top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; }
+      .hud__body { position: relative; margin-top: 4px; }
+      .hud__zone { min-height: 2.2rem; padding-right: 9.5rem; align-content: center; }
+      .hud__zone-name { font-size: 0.92rem; }
+      .hud__stats { margin-top: 6px; gap: 0; }
+      .hud__depth { position: absolute; right: 0; top: 0; text-align: right; }
+      .hud__depth dt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+      .hud__depth dd { font-size: 1.35rem; }
+      .hud__trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; border-top: 1px solid var(--okean-hud-chiziq); padding-top: 6px; }
+      .hud dd { font-size: 0.88rem; }
+      .hud__taxm { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    }
+    @media (min-width: 1024px) {
+      .hud__trio { display: grid; gap: 10px; }
+      .hud__taxm { display: block; letter-spacing: 0.06em; opacity: 0.85; }
+    }
+
+    @media (max-width: 1023.98px) {
+      .mk { grid-template-columns: 48px minmax(0, 1fr); grid-template-areas: "port depth" "port name" "text text"; column-gap: 12px; padding: 12px 14px 14px 12px; }
+      .mk__port { width: 48px; height: 48px; font-size: 24px; }
+      .mk__text { margin-top: 8px; font-size: 0.92rem; }
+      .mk__name { font-size: 1rem; }
+      .sc-label { font-size: 9.5px; }
+    }
+    @media (max-width: 520px) {
+      .finish__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    /* 4 ta fakt: 2 / 1 ustun, yetim karta qolmasin */
+    @media (min-width: 560px) { .didyou .fact-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  </style>
+</head>
+<body data-root="../" data-topic="okean">
+  <a class="skip-link" href="#asosiy">Asosiy qismga o‘tish</a>
+
+  <header class="topbar">
+    <div class="wrap topbar__in">
+      <a class="brand" href="../index.html">
+        <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M31 16 26.61 20.39 26.61 26.61 20.39 26.61 16 31 11.61 26.61 5.39 26.61 5.39 20.39 1 16 5.39 11.61 5.39 5.39 11.61 5.39 16 1 20.39 5.39 26.61 5.39 26.61 11.61Z"/><circle class="c" cx="16" cy="16" r="5.2"/></svg>
+        Qiziqarli
+      </a>
+      <nav class="nav" aria-label="Asosiy menyu">
+        <a href="../index.html#mavzular">Mavzular</a>
+        <a class="nav__extra" href="../index.html#fakt">Bugungi fakt</a>
+        <a href="viktorina.html">Viktorina</a>
+      </nav>
+      <button class="theme-btn" type="button" data-theme-toggle aria-label="Tungi rejimga o‘tish">
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a6.8 6.8 0 0 0 10.7 10.7z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="asosiy">
+    <section class="wrap topic-hero">
+      <a class="back-link" href="../index.html#mavzular">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        Barcha mavzular
+      </a>
+      <div class="topic-meta">
+        <span class="tag" data-cat="tabiat">Tabiat</span>
+        <span class="label">Scroll-sayohat · 8 daqiqa</span>
+      </div>
+      <h1>Okean tubiga sho‘ng‘ing</h1>
+      <p class="lead">Sirtdan Mariana botig‘i tubigacha 10&#8239;935 metr. Pastga aylantiring va chuqurlik, bosim, yorug‘lik hamda harorat qanday o‘zgarishini kuzating. Har bir belgi o‘zining haqiqiy chuqurligida turibdi.</p>
+    </section>
+
+    <section class="dive" id="dive" aria-labelledby="dive-sarlavha">
+      <h2 class="sr-only" id="dive-sarlavha">Sho‘ng‘in: sirtdan 10&#8239;935&nbsp;m chuqurlikkacha</h2>
+
+      <div class="wrap surface">
+        <a class="hint" href="#zona-0">
+          <span>Pastga aylantiring</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </a>
+      </div>
+
+      <div class="waves" aria-hidden="true">
+        <svg viewBox="0 0 2880 42" preserveAspectRatio="none">
+          <path class="w-back" d="M0 18 Q 180 4 360 18 T 720 18 T 1080 18 T 1440 18 T 1800 18 T 2160 18 T 2520 18 T 2880 18 V 42 H 0 Z"/>
+          <path class="w-front" d="M0 26 Q 240 12 480 26 T 960 26 T 1440 26 T 1920 26 T 2400 26 T 2880 26 V 42 H 0 Z"/>
+        </svg>
+      </div>
+
+      <div class="water" id="water">
+        <canvas class="fx" id="fx" aria-hidden="true"></canvas>
+        <div class="rays" id="rays" aria-hidden="true"></div>
+        <svg class="seabed" viewBox="0 0 1200 56" preserveAspectRatio="none" aria-hidden="true"><path d="M0 34 L60 30 L110 38 L170 24 L230 32 L300 20 L350 30 L420 26 L470 36 L540 22 L600 30 L660 18 L720 28 L790 24 L850 34 L910 22 L980 30 L1040 20 L1100 32 L1160 26 L1200 30 V56 H0 Z"/></svg>
+
+        <div class="wrap">
+          <div class="water__in" id="water-in">
+            <svg class="scene" id="scene" aria-hidden="true"></svg>
+
+            <div class="zone zone--sirt" data-depth="0">
+              <h2 class="zone__title" id="zona-0" tabindex="-1">Quyoshli zona</h2>
+              <p class="zone__sci">Epipelagial · 0–200&nbsp;m</p>
+              <p class="zone__note">Okeandagi fotosintezning deyarli hammasi shu yorug‘ qatlamda bo‘ladi.</p>
+            </div>
+
+            <article class="mk" data-depth="10" aria-labelledby="mk-10">
+              <div class="mk__port" aria-hidden="true"><span>🎈</span></div>
+              <p class="mk__depth">10&nbsp;m</p>
+              <h3 class="mk__name" id="mk-10">Bosim ikki baravar</h3>
+              <p class="mk__text">Sirtda bosim 1&nbsp;atm, har 10&nbsp;m da yana 1&nbsp;atm qo‘shiladi. Bu yerda u 2&nbsp;atm: havo to‘ldirilgan shar hajmi ikki baravar kichrayadi.</p>
+            </article>
+
+            <article class="mk" data-depth="40" aria-labelledby="mk-40">
+              <div class="mk__port" aria-hidden="true"><span>🐠</span></div>
+              <p class="mk__depth">40&nbsp;m</p>
+              <h3 class="mk__name" id="mk-40">Havaskor sho‘ng‘in chegarasi</h3>
+              <p class="mk__text">Havaskor (rekreatsion) sho‘ng‘in uchun tavsiya etilgan eng katta chuqurlik. Bosim bu yerda taxminan 5&nbsp;atm.</p>
+            </article>
+
+            <div class="zone" data-depth="200">
+              <h2 class="zone__title" id="zona-200">G‘ira-shira zona</h2>
+              <p class="zone__sci">Mezopelagial · 200–1&#8239;000&nbsp;m</p>
+              <p class="zone__note">Quyosh nuri fotosintez uchun yetmay qoladi.</p>
+            </div>
+
+            <article class="mk" data-depth="200" aria-labelledby="mk-200">
+              <div class="mk__port" aria-hidden="true"><span>🐬</span></div>
+              <p class="mk__depth">200&nbsp;m</p>
+              <h3 class="mk__name" id="mk-200">Afalina delfini</h3>
+              <p class="mk__text">Afalinalar odatda shu chuqurlikkacha sho‘ng‘iydi, ba’zan 300&nbsp;m gacha tushadi.</p>
+            </article>
+
+            <article class="mk" data-depth="214" aria-labelledby="mk-214">
+              <div class="mk__port" aria-hidden="true"><span>🏊</span></div>
+              <p class="mk__depth">214&nbsp;m</p>
+              <h3 class="mk__name" id="mk-214">Gerbert Nich</h3>
+              <p class="mk__text">Nafasni ushlab erkin sho‘ng‘ish rekordi (2007). Avstriyalik sho‘ng‘uvchi bu chuqurlikka bitta nafas bilan tushgan.</p>
+            </article>
+
+            <article class="mk" data-depth="332" aria-labelledby="mk-332">
+              <div class="mk__port" aria-hidden="true"><span>🤿</span></div>
+              <p class="mk__depth">332&nbsp;m</p>
+              <h3 class="mk__name" id="mk-332">Ahmad Gabr</h3>
+              <p class="mk__text">Akvalang bilan sho‘ng‘ish rekordi: 332,35&nbsp;m (2014). Misrlik sho‘ng‘uvchi Qizil dengizda tushgan.</p>
+            </article>
+
+            <article class="mk" data-depth="564" aria-labelledby="mk-564">
+              <div class="mk__port" aria-hidden="true"><span>🐧</span></div>
+              <p class="mk__depth">564&nbsp;m</p>
+              <h3 class="mk__name" id="mk-564">Imperator pingvini</h3>
+              <p class="mk__text">Imperator pingvinining qayd etilgan eng chuqur sho‘ng‘ishi. U qushlar orasida eng chuqur sho‘ng‘iydi.</p>
+            </article>
+
+            <article class="mk" data-depth="700" aria-labelledby="mk-700">
+              <div class="mk__port" aria-hidden="true"><span>🦑</span></div>
+              <p class="mk__depth">700&nbsp;m</p>
+              <h3 class="mk__name" id="mk-700">Gigant kalmar</h3>
+              <p class="mk__text">Ko‘zining diametri 27&nbsp;sm gacha yetadi. Bu hayvonot olamidagi eng katta ko‘zlardan biri.</p>
+            </article>
+
+            <div class="zone" data-depth="1000">
+              <h2 class="zone__title" id="zona-1000">Yarim tun zonasi</h2>
+              <p class="zone__sci">Batipelagial · 1&#8239;000–4&#8239;000&nbsp;m</p>
+              <p class="zone__note">Suv harorati 4&nbsp;°C atrofida, bosim esa 100&nbsp;atm dan oshadi.</p>
+            </div>
+
+            <article class="mk" data-depth="1000" aria-labelledby="mk-1000">
+              <div class="mk__port" aria-hidden="true"><span>✨</span></div>
+              <p class="mk__depth">1&#8239;000&nbsp;m</p>
+              <h3 class="mk__name" id="mk-1000">Quyosh nuri tugaydi</h3>
+              <p class="mk__text">Bu chuqurlikda quyosh nuri butunlay tugaydi. Hayvonlarning katta qismi o‘zi nur chiqaradi: bu bioluminessensiya deyiladi.</p>
+            </article>
+
+            <article class="mk" data-depth="1280" aria-labelledby="mk-1280">
+              <div class="mk__port" aria-hidden="true"><span>🐢</span></div>
+              <p class="mk__depth">1&#8239;280&nbsp;m</p>
+              <h3 class="mk__name" id="mk-1280">Charm toshbaqa</h3>
+              <p class="mk__text">Toshbaqalar orasida eng chuqur sho‘ng‘iydigani. Uning 1&#8239;280&nbsp;m ga tushgani qayd etilgan.</p>
+            </article>
+
+            <article class="mk" data-depth="1500" aria-labelledby="mk-1500">
+              <div class="mk__port" aria-hidden="true"><span>🐡</span></div>
+              <p class="mk__depth">1&#8239;500&nbsp;m</p>
+              <h3 class="mk__name" id="mk-1500">Qarmoqchi baliq</h3>
+              <p class="mk__text">Boshidagi nurli «qarmog‘i» bilan o‘ljasini aldab, og‘ziga yaqin chorlaydi.</p>
+            </article>
+
+            <article class="mk" data-depth="2000" aria-labelledby="mk-2000">
+              <div class="mk__port" aria-hidden="true"><span>🐋</span></div>
+              <p class="mk__depth">2&#8239;000&nbsp;m</p>
+              <h3 class="mk__name" id="mk-2000">Kashalot</h3>
+              <p class="mk__text">2&nbsp;km dan chuqurroqqa tushadi va nafasini 90 daqiqagacha ushlay oladi.</p>
+            </article>
+
+            <article class="mk" data-depth="2086" aria-labelledby="mk-2086">
+              <div class="mk__port" aria-hidden="true"><span>🏔️</span></div>
+              <p class="mk__depth">2&#8239;086&nbsp;m</p>
+              <h3 class="mk__name" id="mk-2086">Everest cho‘qqisi</h3>
+              <p class="mk__text">Agar 8&#8239;849&nbsp;m lik Everestni Mariana botig‘i tubiga qo‘ysak, cho‘qqisi sirtdan 2&nbsp;km pastda qolardi.</p>
+            </article>
+
+            <article class="mk" data-depth="2992" aria-labelledby="mk-2992">
+              <div class="mk__port" aria-hidden="true"><span>🐳</span></div>
+              <p class="mk__depth">2&#8239;992&nbsp;m</p>
+              <h3 class="mk__name" id="mk-2992">Kyuve tumshuqli kiti</h3>
+              <p class="mk__text">Sutemizuvchilar orasida eng chuqur sho‘ng‘ish rekordi shu kitga tegishli (2014).</p>
+            </article>
+
+            <article class="mk" data-depth="3700" aria-labelledby="mk-3700">
+              <div class="mk__port" aria-hidden="true"><span>🌊</span></div>
+              <p class="mk__depth">3&#8239;700&nbsp;m</p>
+              <h3 class="mk__name" id="mk-3700">O‘rtacha chuqurlik</h3>
+              <p class="mk__text">Okeanning o‘rtacha chuqurligi taxminan 3&#8239;700&nbsp;m. Siz Challenger tubigacha bo‘lgan yo‘lning uchdan biridan o‘tdingiz.</p>
+            </article>
+
+            <article class="mk" data-depth="3800" aria-labelledby="mk-3800">
+              <div class="mk__port" aria-hidden="true"><span>🚢</span></div>
+              <p class="mk__depth">3&#8239;800&nbsp;m</p>
+              <h3 class="mk__name" id="mk-3800">«Titanik»</h3>
+              <p class="mk__text">1912-yilda cho‘kkan «Titanik» kemasining qoldiqlari shu chuqurlikda yotibdi. Ular 1985-yilda topilgan.</p>
+            </article>
+
+            <div class="zone" data-depth="4000">
+              <h2 class="zone__title" id="zona-4000">Tubsizlik zonasi</h2>
+              <p class="zone__sci">Abissopelagial · 4&#8239;000–6&#8239;000&nbsp;m</p>
+              <p class="zone__note">Hayvonlar asosan yuqoridan sekin cho‘kib tushadigan organik zarralar, «dengiz qori» bilan oziqlanadi.</p>
+            </div>
+
+            <article class="mk" data-depth="4000" aria-labelledby="mk-4000">
+              <div class="mk__port" aria-hidden="true"><span>🐙</span></div>
+              <p class="mk__depth">4&#8239;000&nbsp;m</p>
+              <h3 class="mk__name" id="mk-4000">Dumbo ahtapot</h3>
+              <p class="mk__text">Quloqqa o‘xshash suzgichlari bor. 7&#8239;000&nbsp;m chuqurlikkacha uchraydi.</p>
+            </article>
+
+            <div class="zone" data-depth="6000">
+              <h2 class="zone__title" id="zona-6000">Botiqlar zonasi</h2>
+              <p class="zone__sci">Hadal zona · 6&#8239;000–10&#8239;935&nbsp;m</p>
+              <p class="zone__note">Bunday chuqurlik faqat tor va uzun okean botiqlarida uchraydi.</p>
+            </div>
+
+            <article class="mk" data-depth="8336" aria-labelledby="mk-8336">
+              <div class="mk__port" aria-hidden="true"><span>🐟</span></div>
+              <p class="mk__depth">8&#8239;336&nbsp;m</p>
+              <h3 class="mk__name" id="mk-8336">Salyangoz baliq</h3>
+              <p class="mk__text"><i>Pseudoliparis</i> turidagi bu baliq eng chuqurda suratga olingan baliq bo‘ldi: 2022-yilda, Yaponiya yaqinidagi Izu-Ogasavara botig‘ida.</p>
+            </article>
+
+            <article class="mk" data-depth="10935" aria-labelledby="mk-10935">
+              <div class="mk__port" aria-hidden="true"><span>⚓</span></div>
+              <p class="mk__depth">10&#8239;935&nbsp;m</p>
+              <h3 class="mk__name" id="mk-10935">Challenger tubi, Mariana botig‘i</h3>
+              <p class="mk__text">Yerdagi eng chuqur nuqta. 1960-yilda Jak Pikar va Don Uolsh «Triyest» batiskafida, 2012-yilda Jeyms Kemeron yakka o‘zi tushgan. Bosim 1&#8239;000&nbsp;atm dan oshadi: har kvadrat santimetrga taxminan 1,1&nbsp;tonna.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <div class="floor" id="floor">
+        <div class="wrap">
+          <div class="finish" id="finish">
+            <p class="label finish__label">10&#8239;935&nbsp;m · Challenger tubi</p>
+            <h2>Siz okean tubiga yetdingiz</h2>
+            <p class="finish__lead">Sirtdan 10&#8239;935&nbsp;m pastga tushdingiz. Quyosh nuri 1&#8239;000&nbsp;m da qolib ketdi, bosim esa sirtdagidan 1&#8239;000 martadan ko‘proq oshdi.</p>
+            <dl class="finish__stats">
+              <div><dt>Chuqurlik</dt><dd>10&#8239;935&nbsp;m</dd></div>
+              <div><dt>Bosim</dt><dd id="fin-pressure">1&#8239;088&nbsp;atm</dd></div>
+              <div><dt>Harorat, taxminiy</dt><dd>≈&nbsp;1&nbsp;°C</dd></div>
+              <div class="is-you"><dt>Sizning sho‘ng‘iningiz</dt><dd id="fin-time">—</dd></div>
+              <div><dt>«Triyest», 1960</dt><dd>4 soat 47 daqiqa</dd></div>
+              <div><dt>Kemeron, 2012</dt><dd>2 soat 36 daqiqa</dd></div>
+            </dl>
+            <button class="btn finish__btn" id="to-surface" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+              Sirtga qaytish
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="hud" id="hud" aria-label="Sho‘ng‘in ko‘rsatkichlari">
+        <div class="hud__rail" id="hud-rail" aria-hidden="true">
+          <div class="hud__fill"></div>
+          <div class="hud__dot"></div>
+        </div>
+        <div class="hud__body">
+          <p class="hud__zone"><span class="hud__zone-name" id="hud-zone">Quyoshli zona</span><span class="hud__sci" id="hud-sci">Epipelagial</span></p>
+          <dl class="hud__stats">
+            <div class="hud__depth"><dt>Chuqurlik</dt><dd><span id="hud-depth">0</span><small>m</small></dd></div>
+            <div class="hud__trio">
+              <div><dt>Bosim</dt><dd><span id="hud-pressure">1,0</span>&nbsp;atm</dd></div>
+              <div><dt>Yorug‘lik</dt><dd><span id="hud-light">100</span>&nbsp;%</dd></div>
+              <div><dt>Harorat <span class="hud__taxm">taxminiy</span></dt><dd>≈&nbsp;<span id="hud-temp">20</span>&nbsp;°C</dd></div>
+            </div>
+          </dl>
+        </div>
+      </aside>
+    </section>
+
+    <section class="wrap didyou">
+      <h2>Bilasizmi?</h2>
+      <ul class="fact-list">
+        <li><p><strong>Sayyoramiz asosan suv.</strong> Okean Yer yuzining taxminan 71 foizini qoplaydi.</p></li>
+        <li><p><strong>Har ikkinchi nafas okeandan.</strong> Atmosferadagi kislorodning kamida yarmini okeandagi fitoplankton ishlab chiqaradi.</p></li>
+        <li><p><strong>Eng uzun tog‘ tizmasi suv ostida.</strong> O‘rta okean tizmasining uzunligi 65&#8239;000&nbsp;km dan oshadi.</p></li>
+        <li><p><strong>Suvda tovush tezroq.</strong> Dengiz suvida tovush sekundiga taxminan 1&#8239;500&nbsp;m yo‘l bosadi, havodagidan 4 barobardan ham tez.</p></li>
+      </ul>
+    </section>
+
+    <section class="wrap next-topic" aria-label="Keyingi mavzu">
+      <div data-next-topic></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__in">
+      <div class="footer__about">
+        <a class="brand" href="../index.html">
+          <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M31 16 26.61 20.39 26.61 26.61 20.39 26.61 16 31 11.61 26.61 5.39 26.61 5.39 20.39 1 16 5.39 11.61 5.39 5.39 11.61 5.39 16 1 20.39 5.39 26.61 5.39 26.61 11.61Z"/><circle class="c" cx="16" cy="16" r="5.2"/></svg>
+          Qiziqarli
+        </a>
+        <p>Koinot, tabiat, tarix va inson haqidagi bilimlar — o‘ynab o‘rganish uchun.</p>
+        <p>© <span data-year>2026</span> Qiziqarli</p>
+      </div>
+      <ul class="footer__links" data-footer-links></ul>
+    </div>
+  </footer>
+
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/common.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      var fmt = QZ.fmt;
+      var reduced = QZ.reducedMotion;
+
+      /* ---------- Chuqurlik ↔ piksel: yagona bo‘lakli-chiziqli shkala ---------- */
+      var MAX = 10935;
+      /* [boshi, oxiri, px/m] */
+      var SEG = [[0, 200, 6], [200, 1000, 2], [1000, 4000, 1], [4000, MAX, 0.5]];
+      var CUM = [0];
+      SEG.forEach(function (s, i) { CUM.push(CUM[i] + (s[1] - s[0]) * s[2]); });
+      var H = CUM[CUM.length - 1];
+
+      function toPx(d) {
+        if (d <= 0) return 0;
+        if (d >= MAX) return H;
+        for (var i = 0; i < SEG.length; i++) {
+          if (d <= SEG[i][1]) return CUM[i] + (d - SEG[i][0]) * SEG[i][2];
+        }
+        return H;
+      }
+      function toDepth(px) {
+        if (px <= 0) return 0;
+        if (px >= H) return MAX;
+        for (var i = 0; i < SEG.length; i++) {
+          if (px <= CUM[i + 1]) return SEG[i][0] + (px - CUM[i]) / SEG[i][2];
+        }
+        return MAX;
+      }
+
+      /* ---------- Fizika (taxminiy modellar) ---------- */
+      var ZONES = [
+        { d: 0, name: "Quyoshli zona", sci: "Epipelagial" },
+        { d: 200, name: "G‘ira-shira zona", sci: "Mezopelagial" },
+        { d: 1000, name: "Yarim tun zonasi", sci: "Batipelagial" },
+        { d: 4000, name: "Tubsizlik zonasi", sci: "Abissopelagial" },
+        { d: 6000, name: "Botiqlar zonasi", sci: "Hadal zona" }
+      ];
+      function zoneAt(d) {
+        var z = ZONES[0];
+        for (var i = 0; i < ZONES.length; i++) if (d >= ZONES[i].d) z = ZONES[i];
+        return z;
+      }
+      function pressure(d) { return 1 + d / 10.06; }
+      var KLIGHT = Math.log(100) / 200; /* 200 m da 1 % */
+      function light(d) { return d >= 1000 ? 0 : 100 * Math.exp(-KLIGHT * d); }
+      var TEMP = [[0, 20], [200, 15], [1000, 4], [4000, 2], [MAX, 1]];
+      function temp(d) {
+        for (var i = 1; i < TEMP.length; i++) {
+          if (d <= TEMP[i][0]) {
+            var a = TEMP[i - 1], b = TEMP[i];
+            return a[1] + (b[1] - a[1]) * (d - a[0]) / (b[0] - a[0]);
+          }
+        }
+        return TEMP[TEMP.length - 1][1];
+      }
+      function fmtPressure(d) { return fmt(pressure(d), d < 100 ? 1 : 0); }
+      function fmtLight(d) {
+        var v = light(d);
+        if (v <= 0) return "0";
+        if (v >= 10) return fmt(v, 0);
+        if (v >= 1) return fmt(v, 1);
+        if (v >= 0.01) return fmt(v, 2);
+        return "< 0,01";
+      }
+      function fmtTemp(d) { var t = temp(d); return fmt(t, t >= 10 ? 0 : 1); }
+
+      /* ---------- Elementlar ---------- */
+      var water = document.getElementById("water");
+      var inner = document.getElementById("water-in");
+      var scene = document.getElementById("scene");
+      var rays = document.getElementById("rays");
+      var floor = document.getElementById("floor");
+      var hud = document.getElementById("hud");
+      var rail = document.getElementById("hud-rail");
+      var out = {
+        depth: document.getElementById("hud-depth"),
+        pressure: document.getElementById("hud-pressure"),
+        light: document.getElementById("hud-light"),
+        temp: document.getElementById("hud-temp"),
+        zone: document.getElementById("hud-zone"),
+        sci: document.getElementById("hud-sci")
+      };
+      var finTime = document.getElementById("fin-time");
+      var items = [].slice.call(inner.querySelectorAll(".zone, .mk"));
+      var mqWide = window.matchMedia("(min-width: 1024px)");
+      var HUD_W = 212;
+
+      document.getElementById("fin-pressure").textContent = fmt(pressure(MAX), 0) + " atm";
+
+      /* Gradient to‘xtash nuqtalari ham shu shkaladan hisoblanadi */
+      var STOPS = [[0, "--okean-0"], [30, "--okean-30"], [200, "--okean-200"], [600, "--okean-600"],
+        [1000, "--okean-1000"], [2500, "--okean-2500"], [4000, "--okean-4000"], [MAX, "--okean-tub"]];
+      water.style.backgroundImage = "linear-gradient(to bottom, " + STOPS.map(function (s) {
+        return "var(" + s[1] + ") " + toPx(s[0]).toFixed(1) + "px";
+      }).join(", ") + ")";
+      rays.style.height = toPx(150) + "px";
+
+      /* HUD relsidagi zona chegaralari */
+      ZONES.slice(1).forEach(function (z) {
+        var m = document.createElement("span");
+        m.className = "hud__mark";
+        m.style.setProperty(mqWide.matches ? "top" : "left", (z.d / MAX * 100) + "%");
+        m.setAttribute("data-f", String(z.d / MAX));
+        rail.appendChild(m);
+      });
+      function placeRailMarks() {
+        var wide = mqWide.matches;
+        [].forEach.call(rail.querySelectorAll(".hud__mark"), function (m) {
+          var f = (+m.getAttribute("data-f") * 100) + "%";
+          m.style.top = wide ? f : "";
+          m.style.left = wide ? "" : f;
+        });
+      }
+
+      /* ---------- Joylashtirish: har bir belgi o‘z chuqurligida ---------- */
+      var placed = [];    /* {el, d, yd, top, cy} */
+      var extraBottom = 0;
+
+      function layout() {
+        inner.classList.add("is-laid");
+        inner.style.height = H + "px";
+        var W = inner.clientWidth;
+        var wide = mqWide.matches;
+        var rulerW = wide ? 64 : 50;
+        var reserve = 0;
+        if (wide) {
+          var vw = document.documentElement.clientWidth;
+          var r = inner.getBoundingClientRect();
+          reserve = Math.max(0, r.right - (vw - 16 - HUD_W) + 24);
+        }
+        var x0 = rulerW + (wide ? 30 : 12);
+        var avail = Math.max(220, W - x0 - reserve);
+        var two = avail >= 2 * 330 + 48;
+        var colW = two ? Math.min(400, Math.floor((avail - 48) / 2)) : Math.min(560, avail);
+        var cols = two ? [x0, x0 + avail - colW] : [x0];
+        var GAP = wide ? 22 : 16;
+
+        /* 1) kengliklarni yozamiz, 2) balandliklarni o‘qiymiz */
+        items.forEach(function (el) {
+          el.style.width = (el.classList.contains("zone") ? (two ? colW : avail) : colW) + "px";
+        });
+        var info = items.map(function (el) {
+          var isZone = el.classList.contains("zone");
+          var o = { el: el, zone: isZone, d: +el.getAttribute("data-depth"), h: el.offsetHeight };
+          o.yd = toPx(o.d);
+          if (!isZone) {
+            var port = el.querySelector(".mk__port");
+            o.cy = port.offsetTop + port.offsetHeight / 2;
+            o.cx = port.offsetLeft + port.offsetWidth / 2;
+          }
+          return o;
+        });
+
+        /* Ikki ustunli rejimda zona sarlavhalari o‘ng ustunda turadi: kartalar ular bilan to‘qnashmaydi,
+           ko‘rsatkich chiziqlari esa ularni kesib o‘tmaydi */
+        var ZC = cols.length - 1;
+        var obst = [];
+        if (two) info.forEach(function (o) { if (o.zone) obst.push({ o: o, top: o.yd + 12, bottom: o.yd + 12 + o.h }); });
+        function fit(c, top, h) {
+          if (!two || c !== ZC) return top;
+          for (var k = 0; k < obst.length; k++) {
+            var b = obst[k];
+            if (top < b.bottom + GAP && top + h + GAP > b.top) top = b.bottom + GAP;
+          }
+          return top;
+        }
+
+        var bottom = cols.map(function () { return -Infinity; });
+        var lastCol = 0;
+        placed = [];
+        var maxBottom = 0;
+        info.forEach(function (o) {
+          var top, c;
+          if (o.zone) {
+            c = ZC;
+            top = Math.max(o.yd + 12, bottom[c] + GAP);
+            obst.forEach(function (b) { if (b.o === o) { b.top = top; b.bottom = top + o.h; } });
+          } else {
+            var desired = o.yd - o.cy;
+            var best = null;
+            for (var k = 0; k < cols.length; k++) {
+              var t = fit(k, Math.max(desired, bottom[k] + GAP), o.h);
+              var disp = t - desired;
+              if (!best || disp < best.disp - 0.5 || (Math.abs(disp - best.disp) <= 0.5 && k !== lastCol)) {
+                best = { c: k, t: t, disp: disp };
+              }
+            }
+            c = best.c; top = best.t; lastCol = c;
+            placed.push({ el: o.el, d: o.d, yd: o.yd, top: top, cy: top + o.cy, x: cols[c], cx: cols[c] + o.cx, xv: cols[c] - (wide ? 14 : 7) });
+          }
+          bottom[c] = top + o.h;
+          maxBottom = Math.max(maxBottom, top + o.h);
+          o.el.style.transform = "translate(" + Math.round(cols[c]) + "px," + Math.round(top) + "px)";
+        });
+        extraBottom = Math.max(0, maxBottom - H);
+        floor.style.paddingTop = Math.round(Math.max(64, extraBottom + 56)) + "px";
+
+        drawScene(W, rulerW, x0, avail);
+        sizeCanvas();
+        update();
+      }
+
+      function drawScene(W, rulerW, x0, avail) {
+        var s = [];
+        function n(v) { return Math.round(v * 10) / 10; }
+
+        /* Everest silueti: cho‘qqisi 2 086 m da, etagi tubda (8 849 m). Yon bag‘irlari kadrdan chiqib ketadi */
+        var ir = inner.getBoundingClientRect();
+        var minX = -ir.left, maxX = document.documentElement.clientWidth - ir.left;
+        var sx = x0 + avail * 0.58, span = Math.max(avail, 520);
+        var left = [[2086, 0], [2180, -0.035], [2330, -0.06], [2420, -0.1], [2600, -0.13], [2760, -0.2], [2950, -0.24], [3150, -0.33], [3400, -0.4], [3700, -0.52], [4100, -0.66], [4600, -0.9], [MAX, -0.9]];
+        var right = [[MAX, 0.9], [4800, 0.9], [4300, 0.66], [3900, 0.55], [3500, 0.43], [3200, 0.37], [2900, 0.26], [2650, 0.2], [2450, 0.12], [2300, 0.09], [2160, 0.03]];
+        var pts = left.concat(right).map(function (p) {
+          return n(Math.max(minX, Math.min(maxX, sx + p[1] * span))) + "," + n(toPx(p[0]));
+        });
+        s.push('<polygon class="sc-everest" points="' + pts.join(" ") + '"/>');
+
+        /* Zona chegaralari */
+        ZONES.slice(1).forEach(function (z) {
+          var y = n(toPx(z.d));
+          s.push('<line class="sc-zone" x1="' + rulerW + '" x2="' + n(W) + '" y1="' + y + '" y2="' + y + '"/>');
+        });
+
+        /* Chuqurlik o‘qi va shkala */
+        var y100 = n(toPx(100));
+        s.push('<line class="sc-axis is-dark" x1="' + rulerW + '" x2="' + rulerW + '" y1="0" y2="' + y100 + '"/>');
+        s.push('<line class="sc-axis" x1="' + rulerW + '" x2="' + rulerW + '" y1="' + y100 + '" y2="' + n(H) + '"/>');
+        function tick(d, major) {
+          var y = n(toPx(d)), dark = d < 100 ? " is-dark" : "";
+          s.push('<line class="sc-tick' + (major ? " is-major" : "") + dark + '" x1="' + (rulerW - (major ? 10 : 5)) + '" x2="' + rulerW + '" y1="' + y + '" y2="' + y + '"/>');
+          if (major) {
+            var label = d === 0 ? "0 m" : fmt(d);
+            s.push('<text class="sc-label' + dark + '" x="' + (rulerW - 14) + '" y="' + (d === 0 ? y + 9 : y) + '" dy="0.35em" text-anchor="end">' + label + "</text>");
+          }
+        }
+        var d;
+        for (d = 0; d <= 200; d += 5) tick(d, d % 10 === 0);
+        for (d = 250; d <= 1000; d += 50) tick(d, d % 100 === 0);
+        for (d = 1100; d < MAX; d += 100) tick(d, d % 500 === 0);
+        tick(MAX, true);
+
+        /* Ko‘rsatkich chiziqlari: shkaladagi aniq chuqurlikdan illyuminatorgacha */
+        placed.forEach(function (p) {
+          var dark = p.d < 100 ? " is-dark" : "";
+          var x1 = rulerW + 4;
+          var path = Math.abs(p.cy - p.yd) < 1.5
+            ? "M" + x1 + " " + n(p.yd) + "H" + n(p.cx)
+            : "M" + x1 + " " + n(p.yd) + "H" + n(p.xv) + "V" + n(p.cy) + "H" + n(p.cx);
+          s.push('<path class="sc-lead' + dark + '" d="' + path + '"/>');
+          s.push('<circle class="sc-pin" cx="' + rulerW + '" cy="' + n(p.yd) + '" r="3.5"/>');
+        });
+
+        scene.setAttribute("width", W);
+        scene.setAttribute("height", Math.ceil(H));
+        scene.setAttribute("viewBox", "0 0 " + W + " " + Math.ceil(H));
+        scene.innerHTML = s.join("");
+      }
+
+      /* ---------- Scroll: HUD, faol belgi, vaqt ---------- */
+      var last = {};
+      function put(key, el, v) { if (last[key] !== v) { last[key] = v; el.textContent = v; } }
+      var activeEl = null;
+      var prevDepth = null, diveStart = 0, diveDone = false;
+
+      function fmtDuration(ms) {
+        var s = Math.max(1, Math.round(ms / 1000));
+        var m = Math.floor(s / 60);
+        s = s % 60;
+        return m ? m + " daqiqa " + s + " soniya" : s + " soniya";
+      }
+
+      function update() {
+        ticking = false;
+        var vh = window.innerHeight;
+        var ref = vh * 0.5;
+        var wr = water.getBoundingClientRect();
+        var fr = floor.getBoundingClientRect();
+        var d = toDepth(ref - wr.top);
+
+        var on = wr.top < ref && fr.bottom > ref;
+        if (last.on !== on) { last.on = on; hud.classList.toggle("is-on", on); }
+
+        var dr = Math.round(d);
+        put("d", out.depth, fmt(dr));
+        put("p", out.pressure, fmtPressure(dr));
+        put("l", out.light, fmtLight(d < 999.5 ? Math.min(d, 999) : dr));
+        put("t", out.temp, fmtTemp(dr));
+        var z = zoneAt(dr);
+        put("z", out.zone, z.name);
+        put("s", out.sci, z.sci);
+        var pr = (d / MAX).toFixed(4);
+        if (last.pr !== pr) { last.pr = pr; hud.style.setProperty("--p", pr); }
+
+        /* Faol belgi: illyuminatori ekran markaziga eng yaqin */
+        var best = null, bestDist = vh * 0.32;
+        for (var i = 0; i < placed.length; i++) {
+          var dist = Math.abs(wr.top + placed[i].cy - ref);
+          if (dist < bestDist) { bestDist = dist; best = placed[i].el; }
+        }
+        if (best !== activeEl) {
+          if (activeEl) activeEl.classList.remove("is-active");
+          if (best) best.classList.add("is-active");
+          activeEl = best;
+        }
+
+        /* Sho‘ng‘in vaqti: sirtdan (0 m) tubgacha */
+        var now = performance.now();
+        if (prevDepth === 0 && d > 0 && !diveStart) { diveStart = now; diveDone = false; }
+        if (diveStart && !diveDone && d >= MAX - 0.5) {
+          diveDone = true;
+          finTime.textContent = fmtDuration(now - diveStart);
+        }
+        prevDepth = d;
+      }
+
+      var ticking = false;
+      function onScroll() {
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+      }
+      window.addEventListener("scroll", onScroll, { passive: true });
+
+      var lastW = 0, resizeTimer = 0;
+      window.addEventListener("resize", function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+          var w = document.documentElement.clientWidth;
+          if (w !== lastW) { lastW = w; placeRailMarks(); layout(); }
+          else { sizeCanvas(); onScroll(); }
+        }, 120);
+      }, { passive: true });
+
+      /* ---------- Sirtga qaytish ---------- */
+      document.getElementById("to-surface").addEventListener("click", function () {
+        diveStart = 0; diveDone = false;
+        var target = window.scrollY + document.getElementById("dive").getBoundingClientRect().top - 80;
+        var html = document.documentElement;
+        if (reduced) {
+          var prev = html.style.scrollBehavior;
+          html.style.scrollBehavior = "auto";
+          window.scrollTo(0, target);
+          html.style.scrollBehavior = prev;
+        } else {
+          window.scrollTo({ top: target, behavior: "smooth" });
+        }
+        var h = document.getElementById("zona-0");
+        try { h.focus({ preventScroll: true }); } catch (e) { /* eski brauzer */ }
+      });
+
+      /* ---------- Atmosfera: pufakchalar va bioluminessensiya ---------- */
+      var canvas = document.getElementById("fx");
+      var ctx = !reduced && canvas.getContext ? canvas.getContext("2d") : null;
+      var cw = 0, ch = 0, dpr = 1;
+      function sizeCanvas() {
+        if (!ctx) return;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        cw = document.documentElement.clientWidth;
+        ch = window.innerHeight;
+        canvas.width = Math.round(cw * dpr);
+        canvas.height = Math.round(ch * dpr);
+      }
+
+      if (!ctx) {
+        canvas.hidden = true;
+      } else {
+        var rgb = (function (hex) {
+          var m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+          var v = m ? parseInt(m[1], 16) : 0x8ef3ff;
+          return [(v >> 16) & 255, (v >> 8) & 255, v & 255].join(",");
+        })(QZ.cssVar("--okean-nur"));
+        var white = (function (hex) {
+          var m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+          var v = m ? parseInt(m[1], 16) : 0xffffff;
+          return [(v >> 16) & 255, (v >> 8) & 255, v & 255].join(",");
+        })(QZ.cssVar("--okean-pufak"));
+
+        var glow = document.createElement("canvas");
+        glow.width = glow.height = 32;
+        var g = glow.getContext("2d");
+        var grad = g.createRadialGradient(16, 16, 0, 16, 16, 16);
+        grad.addColorStop(0, "rgba(" + rgb + ",1)");
+        grad.addColorStop(0.18, "rgba(" + rgb + ",0.75)");
+        grad.addColorStop(0.45, "rgba(" + rgb + ",0.16)");
+        grad.addColorStop(1, "rgba(" + rgb + ",0)");
+        g.fillStyle = grad;
+        g.fillRect(0, 0, 32, 32);
+
+        var bub = document.createElement("canvas");
+        bub.width = bub.height = 24;
+        var b = bub.getContext("2d");
+        b.strokeStyle = "rgba(" + white + ",0.85)";
+        b.lineWidth = 1.6;
+        b.beginPath(); b.arc(12, 12, 10, 0, Math.PI * 2); b.stroke();
+        b.fillStyle = "rgba(" + white + ",0.18)";
+        b.fill();
+        b.fillStyle = "rgba(" + white + ",0.9)";
+        b.beginPath(); b.arc(8.5, 8, 2.4, 0, Math.PI * 2); b.fill();
+
+        var BUB_FLOOR = toPx(110);
+        var bubbles = [];
+        for (var i = 0; i < 22; i++) {
+          bubbles.push({ x: Math.random(), y: Math.random() * BUB_FLOOR, r: 2 + Math.random() * 4, v: 16 + Math.random() * 30, ph: Math.random() * 6.3, w: 0.5 + Math.random() * 0.9 });
+        }
+        var specks = [];
+        for (var j = 0; j < 130; j++) {
+          var dd = j < 95 ? 650 + Math.random() * 3350 : 4000 + Math.random() * (MAX - 4100);
+          specks.push({ x: Math.random(), y: toPx(dd), r: 0.7 + Math.random() * 1.5, ph: Math.random() * 6.3, sp: 0.35 + Math.random() * 1.1, dx: (Math.random() - 0.5) * 18, a: 0.35 + Math.random() * 0.5 });
+        }
+
+        var running = false, raf = 0, lastT = 0;
+        var frame = function (now) {
+          raf = 0;
+          if (!running) return;
+          var dt = Math.min(0.05, lastT ? (now - lastT) / 1000 : 0);
+          lastT = now;
+          var t = now / 1000;
+          var top = water.getBoundingClientRect().top;
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          ctx.clearRect(0, 0, cw, ch);
+          var y0 = Math.max(0, top), y1 = Math.min(ch, top + H);
+          if (y1 > y0) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(0, y0, cw, y1 - y0);
+            ctx.clip();
+            var k, p, sy, sx, a, sz;
+            for (k = 0; k < bubbles.length; k++) {
+              p = bubbles[k];
+              p.y -= p.v * dt;
+              if (p.y < 6) { p.y = BUB_FLOOR * (0.55 + Math.random() * 0.45); p.x = Math.random(); }
+              sy = top + p.y;
+              if (sy < -12 || sy > ch + 12) continue;
+              sx = p.x * cw + Math.sin(t * p.w * 2 + p.ph) * 5;
+              a = Math.min(1, (BUB_FLOOR - p.y) / 160) * Math.min(1, p.y / 50) * 0.7;
+              if (a <= 0) continue;
+              ctx.globalAlpha = a;
+              ctx.drawImage(bub, sx - p.r, sy - p.r, p.r * 2, p.r * 2);
+            }
+            for (k = 0; k < specks.length; k++) {
+              p = specks[k];
+              sy = top + p.y + Math.sin(t * 0.3 + p.ph) * 5;
+              if (sy < -12 || sy > ch + 12) continue;
+              sx = p.x * cw + Math.sin(t * 0.18 + p.ph) * p.dx;
+              a = p.a * (0.18 + 0.82 * Math.pow(0.5 + 0.5 * Math.sin(t * p.sp + p.ph), 4));
+              sz = p.r * 9;
+              ctx.globalAlpha = a;
+              ctx.drawImage(glow, sx - sz / 2, sy - sz / 2, sz, sz);
+            }
+            ctx.restore();
+            ctx.globalAlpha = 1;
+          }
+          raf = requestAnimationFrame(frame);
+        };
+        var setRunning = function (v) {
+          v = v && !document.hidden;
+          if (v === running) return;
+          running = v;
+          if (running) { lastT = 0; if (!raf) raf = requestAnimationFrame(frame); }
+          else { if (raf) cancelAnimationFrame(raf); raf = 0; ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height); }
+        };
+        var inView = false;
+        if ("IntersectionObserver" in window) {
+          new IntersectionObserver(function (entries) {
+            inView = entries[0].isIntersecting;
+            setRunning(inView);
+          }).observe(water);
+        } else {
+          inView = true;
+          setRunning(true);
+        }
+        document.addEventListener("visibilitychange", function () { setRunning(inView); });
+      }
+
+      /* ---------- Ishga tushirish ---------- */
+      lastW = document.documentElement.clientWidth;
+      placeRailMarks();
+      layout();
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+      window.addEventListener("load", layout);
+    })();
+  </script>
+</body>
+</html>

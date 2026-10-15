@@ -1,0 +1,933 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Vaqt chizig‘i · Qiziqarli</title>
+  <meta name="description" content="5 000 yildan ortiq tarix bitta sahifada: dunyo va Markaziy Osiyo voqealari yonma-yon, yil hisoblagichi esa scroll bilan birga yuradi.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500;600&family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script>try{var t=localStorage.getItem("qz-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <style>
+    /* ---------- Asboblar qatori ---------- */
+    .tl-tools {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 20px;
+      margin-bottom: clamp(24px, 3.5vw, 40px);
+    }
+    .seg__n { margin-left: 6px; font: 500 0.72rem/1 var(--f-mono); opacity: 0.7; }
+    .tl-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0; padding: 0; list-style: none; color: var(--siyoh-2); font-size: var(--fs-small); }
+    .tl-legend li { display: inline-flex; align-items: center; gap: 8px; }
+    .tl-legend .shape { position: relative; flex: none; }
+    .tl-count { margin-left: auto; }
+    @media (max-width: 479.98px) {
+      .seg__n { display: none; }
+      .clock .clock__approx { display: none; }
+    }
+
+    /* ---------- Shakllar: olmos (Dunyo) va 8 qirrali yulduz (Markaziy Osiyo) ---------- */
+    .shape--dunyo { width: 11px; height: 11px; border: 2.5px solid var(--lojuvard); background: var(--lojuvard); border-radius: 2px; transform: rotate(45deg); }
+    .shape--mo {
+      width: 16px; height: 16px;
+      background: var(--zafaron-yorqin);
+      clip-path: polygon(50% 0, 64% 18%, 85% 15%, 82% 36%, 100% 50%, 82% 64%, 85% 85%, 64% 82%, 50% 100%, 36% 82%, 15% 85%, 18% 64%, 0 50%, 18% 36%, 15% 15%, 36% 18%);
+    }
+
+    /* ---------- Asosiy panjara ---------- */
+    .tl-grid {
+      display: grid;
+      grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+      gap: clamp(32px, 5vw, 80px);
+      align-items: start;
+    }
+
+    /* ---------- Yil hisoblagichi ---------- */
+    .clock {
+      position: sticky;
+      top: max(calc(64px + env(safe-area-inset-top, 0px) + 24px), calc(50vh - 150px));
+      align-self: start;
+      min-width: 0;
+    }
+    .clock__pre-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      min-height: 1.4em;
+      margin-top: 14px;
+      font: 600 0.92rem/1.4 var(--f-mono);
+    }
+    .clock__pre { color: var(--zafaron); }
+    .clock__approx { font: 500 var(--fs-label)/1.4 var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--siyoh-2); }
+    .clock__num {
+      display: block;
+      font: 600 clamp(3.4rem, 1.6rem + 3.6vw, 5.4rem)/0.95 var(--f-mono);
+      letter-spacing: -0.05em;
+      font-variant-numeric: tabular-nums;
+      color: var(--siyoh);
+    }
+    .clock__era {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid var(--chiziq-kuchli);
+      font: 700 1.3rem/1.15 var(--f-display);
+      letter-spacing: -0.02em;
+    }
+    .clock__range { display: block; margin-top: 8px; }
+    .clock__bar { position: relative; height: 6px; margin-top: 22px; border-radius: 6px; background: var(--sirt-2); overflow: hidden; }
+    .clock__fill {
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--firuza), var(--zafaron-yorqin));
+      transform-origin: left;
+      transform: scaleX(var(--p, 0));
+    }
+    .clock__pos { margin-top: 10px; }
+    .clock [hidden] { display: none; }
+
+    /* ---------- Vaqt chizig‘i ---------- */
+    .tl-wrap { --x: 15px; --pad: 50px; --gap-k: 1; position: relative; padding-left: var(--pad); min-width: 0; }
+    .tl-line,
+    .tl-fill {
+      position: absolute;
+      left: calc(var(--x) - 1.5px);
+      top: var(--line-top, 0px);
+      width: 3px;
+      height: var(--line-h, 100%);
+      border-radius: 3px;
+    }
+    .tl-line { background: repeating-linear-gradient(to bottom, var(--chiziq-kuchli) 0 10px, transparent 10px 17px); }
+    .tl-fill {
+      background: linear-gradient(to bottom, var(--firuza), var(--zafaron-yorqin));
+      transform-origin: top;
+      transform: scaleY(var(--p, 0));
+    }
+    .tl { list-style: none; margin: 0; padding: 0; }
+    .ev { position: relative; }
+
+    .ev__gap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: calc(var(--gap-h, 40px) * var(--gap-k));
+      min-height: 30px;
+      font: 500 var(--fs-label)/1.2 var(--f-mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--siyoh-2);
+    }
+    .ev__gap[hidden] { display: none; }
+    .ev__gap::before {
+      content: "";
+      position: absolute;
+      left: calc(var(--x) - var(--pad) - 5px);
+      top: 50%;
+      width: 10px;
+      height: 2px;
+      margin-top: -1px;
+      border-radius: 2px;
+      background: var(--chiziq-kuchli);
+    }
+    .ev__gap::after {
+      content: "";
+      order: -1;
+      width: 18px;
+      height: 1px;
+      margin-right: 10px;
+      background: var(--chiziq-kuchli);
+    }
+
+    .ev__card {
+      position: relative;
+      padding: 16px 20px 18px;
+      background: var(--sirt);
+      border: 1px solid var(--chiziq);
+      border-radius: var(--r-m);
+      min-width: 0;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.45s var(--ease-out);
+    }
+    .ev[data-region="mo"] .ev__card {
+      background: color-mix(in srgb, var(--zafaron-yorqin) 6%, var(--sirt));
+      border-color: color-mix(in srgb, var(--zafaron-yorqin) 34%, transparent);
+      box-shadow: inset 3px 0 0 var(--zafaron-yorqin);
+    }
+    .ev.is-active .ev__card { border-color: var(--chiziq-kuchli); box-shadow: var(--soya); transform: translateX(6px); }
+    .ev[data-region="mo"].is-active .ev__card {
+      border-color: color-mix(in srgb, var(--zafaron-yorqin) 60%, transparent);
+      box-shadow: inset 3px 0 0 var(--zafaron-yorqin), var(--soya);
+    }
+
+    .ev__node { position: absolute; transition: transform 0.35s var(--ease-spring), background 0.3s, filter 0.3s; }
+    .ev[data-region="dunyo"] .ev__node {
+      left: calc(var(--x) - var(--pad) - 7px);
+      top: 21px;
+      width: 14px;
+      height: 14px;
+      border: 2.5px solid var(--lojuvard);
+      border-radius: 2px;
+      background: var(--sir);
+      transform: rotate(45deg);
+    }
+    .ev[data-region="dunyo"].is-passed .ev__node { background: var(--lojuvard); }
+    .ev[data-region="dunyo"].is-active .ev__node {
+      transform: rotate(45deg) scale(1.3);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--lojuvard) 22%, transparent);
+    }
+    .ev[data-region="mo"] .ev__node {
+      left: calc(var(--x) - var(--pad) - 11px);
+      top: 17px;
+      width: 22px;
+      height: 22px;
+      background: var(--zafaron-yorqin);
+      clip-path: polygon(50% 0, 64% 18%, 85% 15%, 82% 36%, 100% 50%, 82% 64%, 85% 85%, 64% 82%, 50% 100%, 36% 82%, 15% 85%, 18% 64%, 0 50%, 18% 36%, 15% 15%, 36% 18%);
+    }
+    .ev[data-region="mo"] .ev__node::after {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      background: var(--sir);
+      clip-path: inherit;
+      transition: transform 0.3s var(--ease-out);
+    }
+    .ev[data-region="mo"].is-passed .ev__node::after { transform: scale(0); }
+    .ev[data-region="mo"].is-active .ev__node { transform: scale(1.35) rotate(22.5deg); }
+
+    .ev__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; }
+    .ev__when { font: 600 0.92rem/1.3 var(--f-mono); color: var(--lojuvard); font-variant-numeric: tabular-nums; }
+    .ev[data-region="mo"] .ev__when { color: var(--zafaron); }
+    .ev__approx { margin-left: 8px; font: 500 var(--fs-label)/1 var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--siyoh-2); }
+    .ev h3 { margin-top: 10px; font: 700 1.14rem/1.3 var(--f-body); letter-spacing: -0.005em; }
+    .ev__text { margin-top: 6px; color: var(--siyoh-2); }
+    .ev details { margin-top: 10px; }
+    .ev summary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 2px;
+      cursor: pointer;
+      list-style: none;
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: var(--lojuvard);
+    }
+    .ev summary::-webkit-details-marker { display: none; }
+    .ev summary::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      margin-top: -3px;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      transition: transform 0.25s var(--ease-out), margin 0.25s;
+    }
+    .ev details[open] summary::before { transform: rotate(-135deg); margin-top: 3px; }
+    .ev details p { margin-top: 6px; padding-left: 14px; border-left: 2px solid var(--chiziq-kuchli); color: var(--siyoh-2); font-size: 0.96rem; }
+
+    /* "Bugun" yakuni */
+    .tl-end .ev__gap { height: 56px; }
+    .tl-now { position: relative; display: flex; align-items: baseline; gap: 10px; padding-block: 6px 4px; }
+    .tl-now__node {
+      position: absolute;
+      left: calc(var(--x) - var(--pad) - 9px);
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      margin-top: -9px;
+      border-radius: 50%;
+      background: var(--sir);
+      border: 3px solid var(--firuza);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--firuza) 18%, transparent);
+    }
+    .tl-now__year { font-weight: 600; color: var(--siyoh); }
+
+    /* ---------- Kichik ekran: yil yopishqoq qator bo‘lib turadi ---------- */
+    @media (max-width: 899.98px) {
+      .tl-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+      .clock {
+        top: calc(64px + env(safe-area-inset-top, 0px));
+        z-index: 40;
+        margin-inline: calc(-1 * var(--gutter-l)) calc(-1 * var(--gutter-r));
+        margin-bottom: 18px;
+        padding: 8px var(--gutter-r) 10px var(--gutter-l);
+        background: color-mix(in srgb, var(--sir) 88%, transparent);
+        -webkit-backdrop-filter: saturate(1.4) blur(14px);
+        backdrop-filter: saturate(1.4) blur(14px);
+        border-bottom: 1px solid var(--chiziq);
+      }
+      .clock__in { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 0 14px; }
+      .clock__label, .clock__range, .clock__pos { display: none; }
+      .clock__year { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+      .clock__pre-row { display: contents; }
+      .clock__pre { order: -1; font-size: 0.8rem; }
+      .clock__approx { order: 2; }
+      .clock__num { display: inline; font-size: 1.7rem; line-height: 1.2; letter-spacing: -0.03em; }
+      .clock__era { margin: 0; padding: 0; border: 0; text-align: right; font-size: 0.92rem; min-width: 0; }
+      .clock__bar { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; margin: 0; border-radius: 0; background: transparent; }
+      .tl-wrap { --x: 11px; --pad: 36px; --gap-k: 0.8; }
+      .ev__head { gap: 6px 10px; }
+      .ev__card { padding: 14px 16px 16px; }
+      .ev.is-active .ev__card { transform: translateX(3px); }
+    }
+
+    /* 4 ta fakt: 2 / 1 ustun, yetim karta qolmasin */
+    @media (min-width: 560px) { .didyou .fact-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  </style>
+</head>
+<body data-root="../" data-topic="tarix">
+  <a class="skip-link" href="#asosiy">Asosiy qismga o‘tish</a>
+
+  <header class="topbar">
+    <div class="wrap topbar__in">
+      <a class="brand" href="../index.html">
+        <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M31 16 26.61 20.39 26.61 26.61 20.39 26.61 16 31 11.61 26.61 5.39 26.61 5.39 20.39 1 16 5.39 11.61 5.39 5.39 11.61 5.39 16 1 20.39 5.39 26.61 5.39 26.61 11.61Z"/><circle class="c" cx="16" cy="16" r="5.2"/></svg>
+        Qiziqarli
+      </a>
+      <nav class="nav" aria-label="Asosiy menyu">
+        <a href="../index.html#mavzular">Mavzular</a>
+        <a class="nav__extra" href="../index.html#fakt">Bugungi fakt</a>
+        <a href="viktorina.html">Viktorina</a>
+      </nav>
+      <button class="theme-btn" type="button" data-theme-toggle aria-label="Tungi rejimga o‘tish">
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a6.8 6.8 0 0 0 10.7 10.7z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="asosiy">
+    <section class="wrap topic-hero">
+      <a class="back-link" href="../index.html#mavzular">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        Barcha mavzular
+      </a>
+      <div class="topic-meta">
+        <span class="tag" data-cat="tarix">Tarix</span>
+        <span class="label">Vaqt chizig‘i · 7 daqiqa</span>
+      </div>
+      <h1>Vaqt chizig‘i</h1>
+      <p class="lead">5&#8239;000 yildan ortiq tarix: dunyo va Markaziy Osiyo voqealari yonma-yon. Pastga aylantiring, yil hisoblagichi siz bilan birga yuradi.</p>
+    </section>
+
+    <section class="wrap" aria-labelledby="tl-sarlavha">
+      <h2 class="sr-only" id="tl-sarlavha">Voqealar</h2>
+
+      <div class="tl-tools">
+        <div class="seg" role="group" aria-label="Hudud bo‘yicha saralash">
+          <button type="button" id="filtr-hammasi" data-filter="all" aria-pressed="true">Hammasi<span class="seg__n" data-count="all"></span></button>
+          <button type="button" id="filtr-mo" data-filter="mo" aria-pressed="false">Markaziy Osiyo<span class="seg__n" data-count="mo"></span></button>
+          <button type="button" id="filtr-dunyo" data-filter="dunyo" aria-pressed="false">Dunyo<span class="seg__n" data-count="dunyo"></span></button>
+        </div>
+        <ul class="tl-legend" aria-label="Belgilar">
+          <li><span class="shape shape--mo" aria-hidden="true"></span>Markaziy Osiyo</li>
+          <li><span class="shape shape--dunyo" aria-hidden="true"></span>Dunyo</li>
+        </ul>
+        <p class="label tl-count" aria-live="polite"><span id="tl-count">24</span> ta voqea</p>
+      </div>
+
+      <div class="tl-grid">
+        <aside class="clock" id="clock" aria-label="Joriy yil">
+          <div class="clock__in">
+            <p class="label clock__label">Yil</p>
+            <p class="clock__year">
+              <span class="clock__pre-row">
+                <span class="clock__pre" id="clock-pre">mil. av.</span>
+                <span class="clock__approx" id="clock-approx">taxminan</span>
+              </span>
+              <span class="clock__num" id="clock-num">3200</span>
+            </p>
+            <p class="clock__era"><span id="clock-era">Qadimgi dunyo</span><span class="label clock__range" id="clock-range">476-yilgacha</span></p>
+            <div class="clock__bar" aria-hidden="true"><span class="clock__fill" id="clock-fill"></span></div>
+            <p class="label clock__pos">Voqea <span id="clock-idx">1</span> / <span id="clock-total">24</span></p>
+          </div>
+        </aside>
+
+        <div class="tl-wrap" id="tl-wrap">
+          <span class="tl-line" aria-hidden="true"></span>
+          <span class="tl-fill" id="tl-fill" aria-hidden="true"></span>
+
+          <ol class="tl" id="tl">
+            <li class="ev" id="ev-yozuv" data-yil="-3200" data-approx data-region="dunyo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">mil. av. 3200<span class="ev__approx">taxminan</span></p>
+                  <span class="tag" data-cat="koinot">Dunyo</span>
+                </div>
+                <h3>Yozuv ixtiro qilindi</h3>
+                <p class="ev__text">Shumerda (Mesopotamiya) mixxat yozuvi paydo bo‘ldi. Belgilar ho‘l loy taxtachalarga qamish qalam bilan bosib yozilgan.</p>
+                <details><summary>Batafsil</summary><p>Dastlabki mixxat yozuvlarining ko‘pchiligi don, chorva va mehnat haqidagi xo‘jalik hisob-kitoblaridir.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-piramida" data-yil="-2560" data-approx data-region="dunyo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">mil. av. 2560<span class="ev__approx">taxminan</span></p>
+                  <span class="tag" data-cat="koinot">Dunyo</span>
+                </div>
+                <h3>Giza Buyuk piramidasi</h3>
+                <p class="ev__text">Fir’avn Xeops uchun qurilgan piramida 146&nbsp;m baland bo‘lgan. U 3&#8239;800 yil davomida insoniyat qurgan eng baland inshoot bo‘lib qolgan.</p>
+                <details><summary>Batafsil</summary><p>Piramida taxminan 2,3 million tosh blokdan iborat. Tashqi silliq qoplamasi tushib ketgani uchun bugungi balandligi taxminan 139&nbsp;m.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-iskandar" data-yil="-329" data-region="mo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">mil. av. 329</p>
+                  <span class="tag" data-cat="tarix">Markaziy Osiyo</span>
+                </div>
+                <h3>Iskandar Marokandada</h3>
+                <p class="ev__text">Iskandar Zulqarnayn Marokandaga (Samarqand) keldi. Samarqand 2&#8239;750 yildan ortiq tarixga ega shahar.</p>
+                <details><summary>Batafsil</summary><p>Qadimgi Marokanda xarobalari bugungi Samarqand shimolidagi Afrosiyob tepaligida joylashgan.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-ipak-yoli" data-yil="-130" data-approx data-region="mo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">mil. av. 130<span class="ev__approx">taxminan</span></p>
+                  <span class="tag" data-cat="tarix">Markaziy Osiyo</span>
+                </div>
+                <h3>Buyuk Ipak yo‘li</h3>
+                <p class="ev__text">Xan elchisi Chjan Szyan safaridan so‘ng Xitoy va G‘arb o‘rtasidagi savdo jonlandi. Yo‘l Samarqand, Buxoro va Marv orqali o‘tgan.</p>
+                <details><summary>Batafsil</summary><p>«Ipak yo‘li» nomini 1877-yilda nemis geografi Ferdinand fon Rixtgofen taklif qilgan.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-xorazmiy" data-yil="820" data-approx data-region="mo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">820<span class="ev__approx">taxminan</span></p>
+                  <span class="tag" data-cat="tarix">Markaziy Osiyo</span>
+                </div>
+                <h3>Al-Xorazmiy va algebra</h3>
+                <p class="ev__text">Muhammad al-Xorazmiy Bag‘doddagi «Bayt ul-hikma»da «Al-jabr val-muqobala» kitobini yozdi. «Algebra» so‘zi shu kitob nomidan, «algoritm» esa olimning nomidan kelib chiqqan.</p>
+                <details><summary>Batafsil</summary><p>Uning hisob haqidagi boshqa kitobi orqali hind raqamlari va o‘nlik sanoq tizimi Yevropaga tarqalgan.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-ibn-sino" data-yil="1025" data-region="mo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">1025</p>
+                  <span class="tag" data-cat="tarix">Markaziy Osiyo</span>
+                </div>
+                <h3>Ibn Sinoning «Tib qonunlari»</h3>
+                <p class="ev__text">980-yilda Buxoro yaqinidagi Afshonada tug‘ilgan Ibn Sino «Tib qonunlari»ni yakunladi. Asar Yevropada taxminan 500 yil davomida tibbiyot darsligi bo‘lgan.</p>
+                <details><summary>Batafsil</summary><p>Ibn Sino 450 ga yaqin asar yozgan, ulardan 240 ga yaqini bizgacha yetib kelgan.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-beruniy" data-yil="1037" data-approx data-region="mo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">1037<span class="ev__approx">taxminan</span></p>
+                  <span class="tag" data-cat="tarix">Markaziy Osiyo</span>
+                </div>
+                <h3>Beruniy Yerni o‘lchadi</h3>
+                <p class="ev__text">Abu Rayhon Beruniy «Qonuni Mas’udiy» asarini yozdi. U Yer radiusini taxminan 6&#8239;340&nbsp;km deb hisoblagan; bugungi qiymat 6&#8239;371&nbsp;km.</p>
+                <details><summary>Batafsil</summary><p>Beruniy radiusni tog‘ cho‘qqisidan ufqqa qaraganda hosil bo‘ladigan og‘ish burchagini o‘lchab topgan.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-mogullar" data-yil="1220" data-region="mo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">1220</p>
+                  <span class="tag" data-cat="tarix">Markaziy Osiyo</span>
+                </div>
+                <h3>Mo‘g‘ullar bosqini</h3>
+                <p class="ev__text">Chingizxon qo‘shini Buxoro va Samarqandni egalladi. Bosqin Movarounnahr shaharlariga katta vayronalik keltirdi.</p>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-temur" data-yil="1370" data-region="mo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">1370</p>
+                  <span class="tag" data-cat="tarix">Markaziy Osiyo</span>
+                </div>
+                <h3>Amir Temur davri</h3>
+                <p class="ev__text">Amir Temur hokimiyatga keldi, Samarqand uning poytaxti bo‘ldi.</p>
+                <details><summary>Batafsil</summary><p>Samarqanddagi Bibixonim jome masjidi 1399–1404-yillarda Temur buyrug‘i bilan qurilgan.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-madrasa" data-yil="1420" data-region="mo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">1420</p>
+                  <span class="tag" data-cat="tarix">Markaziy Osiyo</span>
+                </div>
+                <h3>Ulug‘bek madrasasi</h3>
+                <p class="ev__text">Registondagi Ulug‘bek madrasasi qurib bitkazildi. Qurilish 1417-yilda boshlangan edi.</p>
+                <details><summary>Batafsil</summary><p>Registondagi qolgan ikki madrasa ancha keyin qurilgan: Sherdor 1619–1636-yillarda, Tillakori 1646–1660-yillarda.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-rasadxona" data-yil="1428" data-approx data-region="mo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">1428<span class="ev__approx">taxminan</span></p>
+                  <span class="tag" data-cat="tarix">Markaziy Osiyo</span>
+                </div>
+                <h3>Ulug‘bek rasadxonasi</h3>
+                <p class="ev__text">Rasadxonadagi ulkan sekstantning radiusi 40&nbsp;m ga yaqin bo‘lgan. «Ziji jadidi Ko‘ragoniy» katalogida 1&#8239;018 yulduz bor, yulduz yili esa 365 kun 6 soat 10 daqiqa 8 soniya deb o‘lchangan.</p>
+                <details><summary>Batafsil</summary><p>Rasadxona qoldiqlarini 1908-yilda arxeolog Vasiliy Vyatkin topgan.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-gutenberg" data-yil="1440" data-approx data-region="dunyo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">1440<span class="ev__approx">taxminan</span></p>
+                  <span class="tag" data-cat="koinot">Dunyo</span>
+                </div>
+                <h3>Bosma dastgoh</h3>
+                <p class="ev__text">Iogann Gutenberg harakatlanuvchi harfli bosma dastgohni yaratdi. Kitoblarni qo‘lda ko‘chirish o‘rniga tez va ko‘p nusxada bosish mumkin bo‘ldi.</p>
+                <details><summary>Batafsil</summary><p>Taxminan 1455-yilda bosilgan Gutenberg Injili Yevropada shu usulda chop etilgan birinchi yirik kitob.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-kolumb" data-yil="1492" data-region="dunyo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">1492</p>
+                  <span class="tag" data-cat="koinot">Dunyo</span>
+                </div>
+                <h3>Kolumb Amerikada</h3>
+                <p class="ev__text">Xristofor Kolumb Amerika qirg‘oqlariga yetib keldi.</p>
+                <details><summary>Batafsil</summary><p>Kolumb Osiyoga yetdim deb o‘ylagan, shuning uchun mahalliy aholini «indeyslar» deb atagan.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-bobur" data-yil="1526" data-region="mo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">1526</p>
+                  <span class="tag" data-cat="tarix">Markaziy Osiyo</span>
+                </div>
+                <h3>Bobur va Panipat jangi</h3>
+                <p class="ev__text">Andijonda tug‘ilgan Zahiriddin Muhammad Bobur Panipat jangida g‘alaba qozonib, Boburiylar saltanatiga asos soldi. U «Boburnoma» muallifi.</p>
+                <details><summary>Batafsil</summary><p>«Boburnoma» eski o‘zbek (chig‘atoy) tilida yozilgan va ko‘plab tillarga tarjima qilingan.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-nyuton" data-yil="1687" data-region="dunyo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">1687</p>
+                  <span class="tag" data-cat="koinot">Dunyo</span>
+                </div>
+                <h3>Nyutonning «Principia»si</h3>
+                <p class="ev__text">Isaak Nyuton «Natural falsafaning matematik asoslari» (Principia) asarini nashr etdi.</p>
+                <details><summary>Batafsil</summary><p>Kitobda harakatning uchta qonuni va butun olam tortishish qonuni bayon qilingan.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-uatt" data-yil="1769" data-region="dunyo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">1769</p>
+                  <span class="tag" data-cat="koinot">Dunyo</span>
+                </div>
+                <h3>Bug‘ mashinasi</h3>
+                <p class="ev__text">Jeyms Uatt takomillashtirilgan bug‘ mashinasiga patent oldi va sanoat inqilobi tezlashdi.</p>
+                <details><summary>Batafsil</summary><p>Quvvat birligi «vatt» uning sharafiga nomlangan.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-raytlar" data-yil="1903" data-region="dunyo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">1903</p>
+                  <span class="tag" data-cat="koinot">Dunyo</span>
+                </div>
+                <h3>Birinchi parvoz</h3>
+                <p class="ev__text">Aka-uka Raytlar birinchi boshqariladigan motorli parvozni amalga oshirdi: 12 soniya, 37&nbsp;m.</p>
+                <details><summary>Batafsil</summary><p>O‘sha kuni, 17-dekabrda, to‘rtinchi parvoz 59 soniya davom etgan.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-sputnik" data-yil="1957" data-region="dunyo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">1957</p>
+                  <span class="tag" data-cat="koinot">Dunyo</span>
+                </div>
+                <h3>«Sputnik-1»</h3>
+                <p class="ev__text">Birinchi sun’iy yo‘ldosh «Sputnik-1» orbitaga chiqarildi (4-oktabr).</p>
+                <details><summary>Batafsil</summary><p>Diametri 58&nbsp;sm bo‘lgan bu metall shar Yerni taxminan 96 daqiqada bir marta aylanib chiqqan.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-gagarin" data-yil="1961" data-region="dunyo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">1961</p>
+                  <span class="tag" data-cat="koinot">Dunyo</span>
+                </div>
+                <h3>Gagarin koinotda</h3>
+                <p class="ev__text">Yuriy Gagarin koinotga uchgan birinchi inson bo‘ldi (12-aprel). Parvoz 108 daqiqa davom etdi.</p>
+                <details><summary>Batafsil</summary><p>Uning kemasi «Vostok-1» deb atalgan.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-apollon" data-yil="1969" data-region="dunyo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">1969</p>
+                  <span class="tag" data-cat="koinot">Dunyo</span>
+                </div>
+                <h3>Oyga qo‘nish</h3>
+                <p class="ev__text">«Apollon-11»: Nil Armstrong va Bazz Oldrin Oyga qo‘ndi (20-iyul).</p>
+                <details><summary>Batafsil</summary><p>Ular Oy sirtida taxminan 2,5 soat yurishdi, Maykl Kollinz esa orbitada kutib turdi.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-www" data-yil="1991" data-region="dunyo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">1991</p>
+                  <span class="tag" data-cat="koinot">Dunyo</span>
+                </div>
+                <h3>Veb hamma uchun ochildi</h3>
+                <p class="ev__text">Butunjahon o‘rgimchak to‘ri (WWW) hamma uchun ochildi (6-avgust).</p>
+                <details><summary>Batafsil</summary><p>Uni CERN laboratoriyasida ishlagan Tim Berners-Li yaratgan.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-mustaqillik" data-yil="1991" data-region="mo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">1991</p>
+                  <span class="tag" data-cat="tarix">Markaziy Osiyo</span>
+                </div>
+                <h3>O‘zbekiston mustaqilligi</h3>
+                <p class="ev__text">O‘zbekiston mustaqilligi e’lon qilindi (31-avgust). 1-sentabr Mustaqillik kuni sifatida nishonlanadi.</p>
+                <details><summary>Batafsil</summary><p>O‘zbekiston Respublikasi Konstitutsiyasi 1992-yil 8-dekabrda qabul qilingan.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-yunesko" data-yil="2001" data-region="mo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">2001</p>
+                  <span class="tag" data-cat="tarix">Markaziy Osiyo</span>
+                </div>
+                <h3>Samarqand YUNESKO ro‘yxatida</h3>
+                <p class="ev__text">Samarqand «Madaniyatlar chorrahasi» sifatida YUNESKO Butunjahon merosi ro‘yxatiga kiritildi.</p>
+                <details><summary>Batafsil</summary><p>Xivadagi Ichan qal’a (1990) va Buxoroning tarixiy markazi (1993) bu ro‘yxatga undan oldinroq kiritilgan.</p></details>
+              </article>
+            </li>
+
+            <li class="ev" id="ev-uebb" data-yil="2021" data-region="dunyo">
+              <p class="ev__gap" hidden><span></span></p>
+              <article class="ev__card">
+                <span class="ev__node" aria-hidden="true"></span>
+                <div class="ev__head">
+                  <p class="ev__when">2021</p>
+                  <span class="tag" data-cat="koinot">Dunyo</span>
+                </div>
+                <h3>«Jeyms Uebb» teleskopi</h3>
+                <p class="ev__text">«Jeyms Uebb» kosmik teleskopi uchirildi (25-dekabr).</p>
+                <details><summary>Batafsil</summary><p>Uning oltin qoplamali asosiy ko‘zgusi diametri 6,5&nbsp;m. Teleskop Yerdan taxminan 1,5 million km uzoqlikda ishlaydi.</p></details>
+              </article>
+            </li>
+          </ol>
+
+          <div class="tl-end">
+            <p class="ev__gap"><span id="tl-end-gap"></span></p>
+            <p class="tl-now"><span class="tl-now__node" id="tl-now-node" aria-hidden="true"></span><span class="label">Bugun</span><span class="num tl-now__year" id="tl-now-year">2026</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap didyou">
+      <h2>Bilasizmi?</h2>
+      <ul class="fact-list">
+        <li><p><strong>Raytlardan Oygacha 66 yil.</strong> 1903-yildagi 12 soniyalik birinchi parvozdan Oyga qo‘nishgacha bor-yo‘g‘i 66 yil o‘tgan.</p></li>
+        <li><p><strong>Gutenbergdan 400 yil oldin.</strong> Xitoylik usta Bi Shen taxminan 1040-yillarda pishirilgan loydan harakatlanuvchi harflar yasagan.</p></li>
+        <li><p><strong>Mamontlar piramidani «ko‘rgan».</strong> Vrangel orolidagi so‘nggi mamontlar taxminan 4&#8239;000 yil oldin, ya’ni Giza piramidasi qurilganidan keyin ham yashagan.</p></li>
+        <li><p><strong>Mixxat yozuvi 3&#8239;000 yildan ortiq yashagan.</strong> Bu yozuvdagi ma’lum eng so‘nggi matn taxminan milodiy 75-yilga oid astronomik taxtacha.</p></li>
+      </ul>
+    </section>
+
+    <section class="wrap next-topic" aria-label="Keyingi mavzu">
+      <div data-next-topic></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__in">
+      <div class="footer__about">
+        <a class="brand" href="../index.html">
+          <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M31 16 26.61 20.39 26.61 26.61 20.39 26.61 16 31 11.61 26.61 5.39 26.61 5.39 20.39 1 16 5.39 11.61 5.39 5.39 11.61 5.39 16 1 20.39 5.39 26.61 5.39 26.61 11.61Z"/><circle class="c" cx="16" cy="16" r="5.2"/></svg>
+          Qiziqarli
+        </a>
+        <p>Koinot, tabiat, tarix va inson haqidagi bilimlar — o‘ynab o‘rganish uchun.</p>
+        <p>© <span data-year>2026</span> Qiziqarli</p>
+      </div>
+      <ul class="footer__links" data-footer-links></ul>
+    </div>
+  </footer>
+
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/common.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      var fmt = QZ.fmt;
+      var reduced = QZ.reducedMotion;
+
+      var ERAS = [
+        { until: 476, name: "Qadimgi dunyo", range: "476-yilgacha" },
+        { until: 1492, name: "O‘rta asrlar", range: "476–1492" },
+        { until: 1914, name: "Yangi davr", range: "1492–1914" },
+        { until: Infinity, name: "Eng yangi davr", range: "1914-yildan" }
+      ];
+      function eraOf(y) {
+        for (var i = 0; i < ERAS.length; i++) if (y < ERAS[i].until) return ERAS[i];
+        return ERAS[ERAS.length - 1];
+      }
+
+      /* 0-yil yo‘q: mil. av. 1 dan keyin darhol milodiy 1 keladi.
+         Hisoblash uchun astronomik raqamlashdan foydalanamiz (mil. av. 1 = 0). */
+      function toAstro(y) { return y < 0 ? y + 1 : y; }
+      function fromAstro(a) { return a <= 0 ? a - 1 : a; }
+      function yearsBetween(a, b) { return b - a - (a < 0 && b > 0 ? 1 : 0); }
+
+      /* ---------- Elementlar ---------- */
+      var wrap = document.getElementById("tl-wrap");
+      var fill = document.getElementById("tl-fill");
+      var nowNode = document.getElementById("tl-now-node");
+      var endGap = document.getElementById("tl-end-gap");
+      var ui = {
+        pre: document.getElementById("clock-pre"),
+        approx: document.getElementById("clock-approx"),
+        num: document.getElementById("clock-num"),
+        era: document.getElementById("clock-era"),
+        range: document.getElementById("clock-range"),
+        fill: document.getElementById("clock-fill"),
+        idx: document.getElementById("clock-idx"),
+        total: document.getElementById("clock-total"),
+        count: document.getElementById("tl-count")
+      };
+      var buttons = [].slice.call(document.querySelectorAll("[data-filter]"));
+      var NOW_YEAR = new Date().getFullYear();
+      document.getElementById("tl-now-year").textContent = String(NOW_YEAR);
+
+      var events = [].slice.call(document.querySelectorAll(".ev")).map(function (el) {
+        return {
+          el: el,
+          year: +el.getAttribute("data-yil"),
+          approx: el.hasAttribute("data-approx"),
+          region: el.getAttribute("data-region"),
+          gap: el.querySelector(".ev__gap"),
+          node: el.querySelector(".ev__node"),
+          y: 0,
+          passed: false
+        };
+      });
+      [].forEach.call(document.querySelectorAll("[data-count]"), function (s) {
+        var f = s.getAttribute("data-count");
+        s.textContent = String(events.filter(function (e) { return f === "all" || e.region === f; }).length);
+      });
+
+      var visible = events.slice();
+      var lineTop = 0, lineH = 1;
+      var activeIdx = -1;
+
+      function gapText(n, approx) {
+        if (n === 0) return "O‘sha yili";
+        /* taxminiy sanalar orasidagi katta oraliqni yaxlitlaymiz: 3 999 emas, ≈ 4 000 */
+        if (approx && n >= 1000) n = Math.round(n / 10) * 10;
+        return (approx ? "≈ " : "") + fmt(n) + " yil o‘tdi";
+      }
+      function gapHeight(n) { return Math.round(30 + 17 * Math.log(n + 1) / Math.LN10); }
+
+      /* ---------- Saralash ---------- */
+      function applyFilter(f) {
+        visible = [];
+        events.forEach(function (e) {
+          var show = f === "all" || e.region === f;
+          e.el.hidden = !show;
+          if (show) visible.push(e);
+        });
+        visible.forEach(function (e, i) {
+          if (i === 0) { e.gap.hidden = true; return; }
+          var prev = visible[i - 1];
+          var n = yearsBetween(prev.year, e.year);
+          e.gap.hidden = false;
+          e.gap.firstElementChild.textContent = gapText(n, prev.approx || e.approx);
+          e.gap.style.setProperty("--gap-h", gapHeight(n) + "px");
+        });
+        var lastV = visible[visible.length - 1];
+        endGap.textContent = gapText(yearsBetween(lastV.year, NOW_YEAR), lastV.approx);
+        buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-filter") === f)); });
+        ui.count.textContent = String(visible.length);
+        ui.total.textContent = String(visible.length);
+        events.forEach(function (e) { e.el.classList.remove("is-active"); });
+        activeIdx = -1;
+        measure();
+        update();
+      }
+
+      buttons.forEach(function (b) {
+        b.addEventListener("click", function () { applyFilter(b.getAttribute("data-filter")); });
+      });
+
+      /* ---------- O‘lchash: tugunlarning chiziq bo‘yidagi o‘rni ---------- */
+      function centerY(el, base) {
+        var r = el.getBoundingClientRect();
+        return r.top + r.height / 2 - base;
+      }
+      function measure() {
+        var base = wrap.getBoundingClientRect().top;
+        visible.forEach(function (e) { e.y = centerY(e.node, base); });
+        lineTop = visible.length ? visible[0].y : 0;
+        lineH = Math.max(1, centerY(nowNode, base) - lineTop);
+        wrap.style.setProperty("--line-top", lineTop.toFixed(1) + "px");
+        wrap.style.setProperty("--line-h", lineH.toFixed(1) + "px");
+      }
+
+      /* ---------- Yil hisoblagichi ---------- */
+      var shown = null;   /* astronomik yil (kasr bo‘lishi mumkin) */
+      var anim = 0;
+      var lastRender = {};
+      function render(a) {
+        var y = fromAstro(Math.round(a));
+        var bce = y < 0;
+        var num = String(Math.abs(y));
+        if (lastRender.num !== num) { lastRender.num = num; ui.num.textContent = num; }
+        if (lastRender.bce !== bce) { lastRender.bce = bce; ui.pre.hidden = !bce; }
+        var era = eraOf(y);
+        if (lastRender.era !== era) { lastRender.era = era; ui.era.textContent = era.name; ui.range.textContent = era.range; }
+      }
+      function countTo(year) {
+        var to = toAstro(year);
+        if (anim) { cancelAnimationFrame(anim); anim = 0; }
+        if (shown === null || reduced) { shown = to; render(to); return; }
+        var from = shown, dist = Math.abs(to - from);
+        if (dist < 0.5) { shown = to; render(to); return; }
+        var dur = Math.min(1100, 380 + 190 * Math.log(dist + 1) / Math.LN10);
+        var t0 = performance.now();
+        function step(now) {
+          var t = Math.min(1, (now - t0) / dur);
+          var k = 1 - Math.pow(1 - t, 3);
+          shown = from + (to - from) * k;
+          render(shown);
+          if (t < 1) anim = requestAnimationFrame(step);
+          else { anim = 0; shown = to; render(to); }
+        }
+        anim = requestAnimationFrame(step);
+      }
+
+      function setActive(i) {
+        if (activeIdx >= 0 && visible[activeIdx]) visible[activeIdx].el.classList.remove("is-active");
+        activeIdx = i;
+        var e = visible[i];
+        if (!e) return;
+        e.el.classList.add("is-active");
+        ui.idx.textContent = String(i + 1);
+        ui.approx.hidden = !e.approx;
+        countTo(e.year);
+      }
+
+      /* ---------- Scroll ---------- */
+      var ticking = false;
+      var lastP = "";
+      function update() {
+        ticking = false;
+        if (!visible.length) return;
+        var ref = window.innerHeight * 0.5;
+        var rel = ref - wrap.getBoundingClientRect().top;
+        var p = Math.max(0, Math.min(1, (rel - lineTop) / lineH));
+        var ps = p.toFixed(4);
+        if (ps !== lastP) {
+          lastP = ps;
+          fill.style.setProperty("--p", ps);
+          ui.fill.style.setProperty("--p", ps);
+        }
+        var idx = 0;
+        for (var i = 0; i < visible.length; i++) {
+          var e = visible[i];
+          var passed = e.y <= rel + 1;
+          if (passed) idx = i;
+          if (passed !== e.passed) { e.passed = passed; e.el.classList.toggle("is-passed", passed); }
+        }
+        if (idx !== activeIdx) setActive(idx);
+      }
+      function onScroll() {
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+      }
+      window.addEventListener("scroll", onScroll, { passive: true });
+
+      var resizeTimer = 0;
+      window.addEventListener("resize", function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () { measure(); update(); }, 100);
+      }, { passive: true });
+      /* "Batafsil" ochilganda balandlik o‘zgaradi */
+      wrap.addEventListener("toggle", function () { measure(); update(); }, true);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measure(); update(); });
+      window.addEventListener("load", function () { measure(); update(); });
+
+      applyFilter("all");
+    })();
+  </script>
+</body>
+</html>

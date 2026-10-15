@@ -1,0 +1,920 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Hayotingiz raqamlarda · Qiziqarli</title>
+  <meta name="description" content="Tug‘ilgan sanangizni kiriting: yuragingiz necha marta urgani, Quyosh atrofida qancha yo‘l bosganingiz va hayotingiz haftalarda qanday ko‘rinishini jonli hisoblang.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500;600&family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script>try{var t=localStorage.getItem("qz-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <style>
+    /* ---------- Sana kiritish va asosiy natija ---------- */
+    .kirish {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    }
+    .kirish__forma {
+      padding: clamp(20px, 3vw, 32px);
+      display: grid;
+      gap: 18px;
+      align-content: start;
+      min-width: 0;
+    }
+    .kirish__forma label { font-weight: 600; font-size: 1rem; }
+    #tugilgan-sana { width: 100%; max-width: 280px; font-size: 1.08rem; }
+    #tugilgan-sana[aria-invalid="true"] { border-color: var(--anor); }
+    .izoh { font-size: var(--fs-small); color: var(--siyoh-2); }
+    .xato {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      font-size: var(--fs-small);
+      font-weight: 500;
+      color: var(--anor);
+    }
+    .xato[hidden] { display: none; }
+    .xato svg { flex: none; width: 18px; height: 18px; margin-top: 2px; }
+    .xato span { min-width: 0; }
+    .maxfiy {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: var(--fs-small);
+      color: var(--siyoh-2);
+      padding-top: 16px;
+      border-top: 1px dashed var(--chiziq-kuchli);
+    }
+    .maxfiy svg { flex: none; width: 18px; height: 18px; margin-top: 2px; color: var(--yashm); }
+    .maxfiy span { min-width: 0; }
+
+    .xulosa {
+      position: relative;
+      min-width: 0;
+      padding: clamp(20px, 3vw, 32px);
+      background: color-mix(in srgb, var(--lojuvard) 7%, var(--sirt));
+      border-left: 1px solid var(--chiziq);
+      display: grid;
+      align-content: start;
+      gap: 6px;
+      transition: opacity 0.3s;
+    }
+    .xulosa__top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+    .misol {
+      font: 600 var(--fs-label)/1 var(--f-mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--zafaron);
+      border: 1px dashed var(--zafaron);
+      border-radius: 999px;
+      padding: 4px 8px;
+    }
+    .misol[hidden] { display: none; }
+    .xulosa__son {
+      font: 600 clamp(2.5rem, 1.5rem + 4vw, 4.4rem)/1.05 var(--f-mono);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.03em;
+      color: var(--lojuvard);
+      margin-top: 6px;
+      overflow-wrap: anywhere;
+    }
+    .xulosa__son small { font: 600 0.32em/1 var(--f-body); letter-spacing: 0; color: var(--siyoh-2); margin-left: 0.3em; }
+    .xulosa__yosh { font-size: 1.15rem; font-weight: 600; }
+    .xulosa__amal { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .is-eskirgan { opacity: 0.5; }
+
+    /* ---------- Jonli kartalar ---------- */
+    .bolim { padding-top: clamp(40px, 5vw, 72px); }
+    .bolim .section-head { margin-bottom: 22px; }
+    .kartalar {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 262px), 1fr));
+      gap: 14px;
+      transition: opacity 0.3s;
+    }
+    .karta {
+      --c: var(--lojuvard);
+      position: relative;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 10px;
+      min-width: 0;
+      padding: 18px 18px 16px;
+      background: var(--sirt);
+      border: 1px solid var(--chiziq);
+      border-radius: var(--r-m);
+    }
+    .karta__top { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .karta__ikon {
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      color: var(--c);
+      background: color-mix(in srgb, var(--c) 13%, transparent);
+    }
+    .karta__ikon svg { width: 24px; height: 24px; overflow: visible; }
+    .karta h3 { font-family: var(--f-body); font-size: 1rem; font-weight: 600; letter-spacing: 0; line-height: 1.25; min-width: 0; }
+    .karta__son {
+      font: 600 clamp(1.25rem, 1.05rem + 0.6vw, 1.5rem)/1.15 var(--f-mono);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.03em;
+      overflow-wrap: anywhere;
+    }
+    .karta__son small { font: 500 0.95rem/1 var(--f-body); letter-spacing: 0; color: var(--siyoh-2); margin-left: 0.25em; }
+    .karta__qosh {
+      font: 500 0.8rem/1.3 var(--f-mono);
+      font-variant-numeric: tabular-nums;
+      color: var(--siyoh-2);
+      margin-top: -4px;
+      overflow-wrap: anywhere;
+    }
+    .karta__izoh {
+      align-self: end;
+      font-size: 0.84rem;
+      line-height: 1.45;
+      color: var(--siyoh-2);
+      padding-top: 10px;
+      border-top: 1px dashed var(--chiziq-kuchli);
+    }
+    .eslatma {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: var(--fs-small);
+      color: var(--siyoh-2);
+      max-width: 80ch;
+    }
+    .eslatma svg { flex: none; width: 18px; height: 18px; margin-top: 2px; }
+    .eslatma span { min-width: 0; }
+
+    /* Ikon animatsiyalari (jonli, lekin sokin) */
+    .i-yurak { transform-box: fill-box; transform-origin: center; animation: urish 0.75s ease-in-out infinite; }
+    @keyframes urish { 0%, 100% { transform: scale(1); } 18% { transform: scale(1.18); } 36% { transform: scale(0.98); } 50% { transform: scale(1.08); } }
+    .i-nafas { transform-box: fill-box; transform-origin: center; animation: nafas 3.75s ease-in-out infinite; }
+    @keyframes nafas { 0%, 100% { transform: scale(0.6); } 45% { transform: scale(1.25); } }
+    .i-mil { transform-origin: 12px 13px; animation: aylan 60s steps(60) infinite; }
+    .i-orbita { transform-origin: 12px 12px; animation: aylan 8s linear infinite; }
+    @keyframes aylan { to { transform: rotate(360deg); } }
+    .i-meridian { transform-box: fill-box; transform-origin: center; animation: meridian 4s linear infinite; }
+    @keyframes meridian { 0% { transform: scaleX(1); } 50% { transform: scaleX(-1); } 100% { transform: scaleX(1); } }
+    .i-qovoq { transform-box: fill-box; transform-origin: center; animation: pirpir 4s ease-in-out infinite; }
+    @keyframes pirpir { 0%, 92%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.08); } }
+    .i-z { animation: zz 3s ease-in-out infinite; }
+    .i-z2 { animation-delay: -1.5s; }
+    @keyframes zz { 0%, 100% { opacity: 0.35; transform: translateY(1px); } 50% { opacity: 1; transform: translateY(-1px); } }
+    @media (prefers-reduced-motion: reduce) {
+      .i-yurak, .i-nafas, .i-mil, .i-orbita, .i-meridian, .i-qovoq, .i-z { animation: none !important; }
+    }
+
+    /* ---------- Muhim sanalar ---------- */
+    .sanalar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      transition: opacity 0.3s;
+    }
+    .sana-karta {
+      --c: var(--lojuvard);
+      min-width: 0;
+      padding: 20px;
+      background: var(--sirt);
+      border: 1px solid var(--chiziq);
+      border-top: 3px solid var(--c);
+      border-radius: var(--r-m);
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+    .sana-karta__son {
+      font: 600 1.55rem/1.15 var(--f-body);
+      overflow-wrap: anywhere;
+    }
+    .sana-karta__son .num { font-weight: 600; letter-spacing: -0.03em; }
+    .sana-karta__matn { color: var(--siyoh-2); font-size: 0.95rem; }
+    .sana-karta--keng { grid-column: 1 / -1; }
+    .sana-karta--keng .aholi { max-width: 760px; }
+    .aholi { display: grid; gap: 10px; margin-top: 4px; }
+    .aholi__qator { display: grid; grid-template-columns: minmax(0, 7.5em) minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: 0.9rem; }
+    .aholi__qator span:first-child { color: var(--siyoh-2); }
+    .aholi__chiziq { height: 12px; border-radius: 999px; background: var(--sirt-2); overflow: hidden; }
+    .aholi__chiziq i { display: block; height: 100%; width: var(--w, 50%); border-radius: inherit; background: var(--c); transition: width 0.6s var(--ease-out); }
+    .aholi__qator--bugun .aholi__chiziq i { background: var(--zafaron-yorqin); }
+    .aholi__qator b { font: 600 0.92rem/1 var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+    /* ---------- Haftalar jadvali ---------- */
+    .haftalar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 620px);
+      gap: clamp(24px, 4vw, 56px);
+      align-items: start;
+    }
+    .haftalar__matn { display: grid; gap: 18px; min-width: 0; position: sticky; top: 92px; }
+    .haftalar__matn > p { color: var(--siyoh-2); max-width: 52ch; }
+    .belgilar { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: var(--fs-small); }
+    .belgilar li { display: inline-flex; align-items: center; gap: 8px; }
+    .belgilar i { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+    .b-yashalgan { background: var(--lojuvard); }
+    .b-hozir { background: var(--zafaron-yorqin); }
+    .b-oldinda { background: var(--sirt-2); box-shadow: inset 0 0 0 1px var(--chiziq-kuchli); }
+    .haftalar .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .jadval {
+      margin: 0;
+      padding: clamp(14px, 2.4vw, 24px);
+      min-width: 0;
+      background: var(--sirt);
+      border: 1px solid var(--chiziq);
+      border-radius: var(--r-l);
+    }
+    .jadval__quti { width: 100%; min-width: 0; }
+    #hafta-canvas { display: block; margin-inline: auto; }
+    .jadval .izoh { margin-top: 14px; text-align: center; }
+    .jadval figcaption { margin-top: 14px; font-size: var(--fs-small); color: var(--siyoh-2); text-align: center; }
+
+    .fakt-manba { margin-top: 8px; }
+
+    @media (max-width: 860px) {
+      .haftalar { grid-template-columns: minmax(0, 1fr); }
+      .haftalar__matn { position: static; }
+    }
+    @media (max-width: 760px) {
+      .kirish { grid-template-columns: minmax(0, 1fr); }
+      .xulosa { border-left: 0; border-top: 1px solid var(--chiziq); }
+    }
+    @media (max-width: 760px) {
+      .sanalar { grid-template-columns: minmax(0, 1fr); }
+    }
+  </style>
+</head>
+<body data-root="../" data-topic="hayot">
+  <a class="skip-link" href="#asosiy">Asosiy qismga o‘tish</a>
+
+  <header class="topbar">
+    <div class="wrap topbar__in">
+      <a class="brand" href="../index.html">
+        <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M31 16 26.61 20.39 26.61 26.61 20.39 26.61 16 31 11.61 26.61 5.39 26.61 5.39 20.39 1 16 5.39 11.61 5.39 5.39 11.61 5.39 16 1 20.39 5.39 26.61 5.39 26.61 11.61Z"/><circle class="c" cx="16" cy="16" r="5.2"/></svg>
+        Qiziqarli
+      </a>
+      <nav class="nav" aria-label="Asosiy menyu">
+        <a href="../index.html#mavzular">Mavzular</a>
+        <a class="nav__extra" href="../index.html#fakt">Bugungi fakt</a>
+        <a href="viktorina.html">Viktorina</a>
+      </nav>
+      <button class="theme-btn" type="button" data-theme-toggle aria-label="Tungi rejimga o‘tish">
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a6.8 6.8 0 0 0 10.7 10.7z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="asosiy">
+    <section class="wrap topic-hero">
+      <a class="back-link" href="../index.html#mavzular">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        Barcha mavzular
+      </a>
+      <div class="topic-meta">
+        <span class="tag" data-cat="inson">Inson</span>
+        <span class="label">Kalkulyator · 3 daqiqa</span>
+      </div>
+      <h1>Hayotingiz raqamlarda</h1>
+      <p class="lead">Tug‘ilgan sanangizni kiriting: raqamlar shu soniyadan boshlab ko‘z oldingizda o‘sib boradi. Sana hech qayerga yuborilmaydi, hisob faqat brauzeringizda bajariladi.</p>
+    </section>
+
+    <section class="wrap" aria-label="Tug‘ilgan sana va asosiy natija">
+      <div class="stage kirish">
+        <div class="kirish__forma">
+          <div class="field">
+            <label for="tugilgan-sana">Tug‘ilgan sanangiz</label>
+            <input type="date" id="tugilgan-sana" name="tugilgan-sana" value="2000-01-01" min="1900-01-01" required aria-describedby="sana-izoh sana-xato">
+          </div>
+          <p class="izoh" id="sana-izoh">Misol: 1-yanvar, 2000-yil. O‘z sanangizni kiriting.</p>
+          <p class="xato" id="sana-xato" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 7v6M12 16.5v.5"/></svg>
+            <span id="sana-xato-matn"></span>
+          </p>
+          <p class="maxfiy">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
+            <span>Sana faqat shu qurilmada eslab qolinadi va hech qayerga yuborilmaydi.</span>
+          </p>
+        </div>
+
+        <div class="xulosa" id="xulosa">
+          <div class="xulosa__top">
+            <span class="label">Yashagan kunlaringiz</span>
+            <span class="misol" id="misol-belgi">Misol</span>
+          </div>
+          <p class="xulosa__son"><span id="v-kunlar">0</span><small>kun</small></p>
+          <p class="xulosa__yosh" id="v-yosh">0 yil, 0 oy, 0 kun</p>
+          <p class="sr-only" id="xulosa-ovoz" aria-live="polite"></p>
+          <div class="xulosa__amal">
+            <button class="btn btn--small" type="button" id="nusxa">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="8.5" width="12" height="12" rx="2.5"/><path d="M15.5 8.5V6a2.5 2.5 0 0 0-2.5-2.5H6A2.5 2.5 0 0 0 3.5 6v7A2.5 2.5 0 0 0 6 15.5h2.5"/></svg>
+              Natijani nusxalash
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap bolim" aria-labelledby="jonli-sarlavha">
+      <div class="section-head">
+        <h2 id="jonli-sarlavha">Shu soniyagacha</h2>
+        <p>Raqamlar soniyasiga o‘n marta yangilanadi. Sahifani ochiq qoldirsangiz, ular o‘sishda davom etadi.</p>
+      </div>
+      <div class="kartalar" id="kartalar">
+        <article class="karta" style="--c: var(--lojuvard)">
+          <div class="karta__top">
+            <span class="karta__ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M10 2.5h4M12 2.5V5"/><path class="i-mil" d="M12 13V8.2"/></svg></span>
+            <h3>Soniyalar</h3>
+          </div>
+          <p class="karta__son"><span class="num" id="v-soniya">0</span><small>soniya</small></p>
+          <p class="karta__izoh">Tug‘ilgan kuningizning yarim tunidan hisoblanadi, chunki tug‘ilgan soatingiz noma’lum.</p>
+        </article>
+        <article class="karta" style="--c: var(--anor)">
+          <div class="karta__top">
+            <span class="karta__ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-yurak" fill="currentColor" d="M12 20.5s-7.5-4.6-7.5-10.4A4.3 4.3 0 0 1 12 7.4a4.3 4.3 0 0 1 7.5 2.7c0 5.8-7.5 10.4-7.5 10.4z"/></svg></span>
+            <h3>Yurak urishi</h3>
+          </div>
+          <p class="karta__son"><span class="num" id="v-yurak">0</span><small>marta</small></p>
+          <p class="karta__izoh">Daqiqasiga o‘rtacha 80 marta deb olindi.</p>
+        </article>
+        <article class="karta" style="--c: var(--firuza)">
+          <div class="karta__top">
+            <span class="karta__ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke-dasharray="2.5 3.2" opacity="0.6"/><circle class="i-nafas" cx="12" cy="12" r="5" fill="currentColor" stroke="none"/></svg></span>
+            <h3>Nafas</h3>
+          </div>
+          <p class="karta__son"><span class="num" id="v-nafas">0</span><small>marta</small></p>
+          <p class="karta__izoh">Daqiqasiga o‘rtacha 16 marta deb olindi.</p>
+        </article>
+        <article class="karta" style="--c: var(--zafaron)">
+          <div class="karta__top">
+            <span class="karta__ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="3.4" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="9" stroke-dasharray="2 2.6" opacity="0.65"/><g class="i-orbita"><circle cx="21" cy="12" r="2.3" fill="currentColor" stroke="none"/></g></svg></span>
+            <h3>Quyosh atrofida bosib o‘tilgan yo‘l</h3>
+          </div>
+          <p class="karta__son"><span class="num" id="v-yol">0</span><small>km</small></p>
+          <p class="karta__qosh" id="v-yol-aniq">0 km</p>
+          <p class="karta__izoh">Yer orbita bo‘ylab soniyasiga 29,78 km yo‘l bosadi, siz ham u bilan birga.</p>
+        </article>
+        <article class="karta" style="--c: var(--lojuvard)">
+          <div class="karta__top">
+            <span class="karta__ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><ellipse class="i-meridian" cx="12" cy="12" rx="3.6" ry="8.5"/><path d="M3.5 12h17"/></svg></span>
+            <h3>Yer o‘z o‘qi atrofida aylandi</h3>
+          </div>
+          <p class="karta__son"><span class="num" id="v-aylanish">0</span><small>marta</small></p>
+          <p class="karta__izoh">Quyoshga nisbatan Yer sutkasiga bir marta aylanadi: aylanishlar soni yashagan kunlaringizga teng.</p>
+        </article>
+        <article class="karta" style="--c: var(--siyoh-2)">
+          <div class="karta__top">
+            <span class="karta__ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="currentColor" fill-opacity="0.2"/><circle cx="9" cy="9.5" r="1.8"/><circle cx="14.5" cy="14.5" r="2.4"/><circle cx="15" cy="7.8" r="1"/></svg></span>
+            <h3>To‘lin oylar</h3>
+          </div>
+          <p class="karta__son"><span class="num" id="v-oy">0</span><small>marta</small></p>
+          <p class="karta__izoh">To‘lin oy har 29,53 kunda bir marta takrorlanadi.</p>
+        </article>
+        <article class="karta" style="--c: var(--yashm)">
+          <div class="karta__top">
+            <span class="karta__ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 4.5a7.5 7.5 0 1 0 6 11.9A6.2 6.2 0 0 1 13.5 4.5z"/><path class="i-z" d="M16 3.5h3.5L16 7h3.5"/><path class="i-z i-z2" d="M20 9h2.5L20 11.5h2.5"/></svg></span>
+            <h3>Uyquda o‘tgan vaqt</h3>
+          </div>
+          <p class="karta__son"><span class="num" id="v-uyqu">0</span><small>yil</small></p>
+          <p class="karta__izoh">Odam sutkaning taxminan uchdan bir qismini uxlab o‘tkazadi.</p>
+        </article>
+        <article class="karta" style="--c: var(--firuza)">
+          <div class="karta__top">
+            <span class="karta__ikon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><g class="i-qovoq"><path d="M2.5 12s3.6-6.2 9.5-6.2 9.5 6.2 9.5 6.2-3.6 6.2-9.5 6.2S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8" fill="currentColor"/></g></svg></span>
+            <h3>Ko‘z pirpiratish</h3>
+          </div>
+          <p class="karta__son"><span class="num" id="v-pirpirash">0</span><small>marta</small></p>
+          <p class="karta__izoh">Uyg‘oq o‘tadigan kunlik ≈16 soat davomida daqiqasiga ≈15 marta.</p>
+        </article>
+      </div>
+      <p class="eslatma">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 11v6M12 7.5v.5"/></svg>
+        <span>Barcha qiymatlar o‘rtacha ko‘rsatkichlarga asoslangan taxminiy hisob. Bolalikda yurak va nafas tezroq bo‘ladi, shuning uchun sizdagi haqiqiy son bundan biroz ko‘proq bo‘lishi mumkin.</span>
+      </p>
+    </section>
+
+    <section class="wrap bolim" aria-labelledby="sanalar-sarlavha">
+      <div class="section-head">
+        <h2 id="sanalar-sarlavha">Muhim sanalar</h2>
+        <p>Kalendarda belgilab qo‘ysa arziydigan kunlar.</p>
+      </div>
+      <div class="sanalar" id="sanalar">
+        <article class="sana-karta" style="--c: var(--anor)">
+          <span class="label">Keyingi tug‘ilgan kun</span>
+          <p class="sana-karta__son" id="m-tk-son">—</p>
+          <p class="sana-karta__matn" id="m-tk-matn">—</p>
+        </article>
+        <article class="sana-karta" style="--c: var(--firuza)">
+          <span class="label">10 000-kuningiz</span>
+          <p class="sana-karta__son" id="m-10k-son">—</p>
+          <p class="sana-karta__matn" id="m-10k-matn">—</p>
+        </article>
+        <article class="sana-karta" style="--c: var(--zafaron-yorqin)">
+          <span class="label">1 milliard soniya</span>
+          <p class="sana-karta__son" id="m-mlrd-son">—</p>
+          <p class="sana-karta__matn" id="m-mlrd-matn">—</p>
+        </article>
+        <article class="sana-karta sana-karta--keng" style="--c: var(--lojuvard)">
+          <span class="label">Dunyo aholisi</span>
+          <div class="aholi">
+            <div class="aholi__qator">
+              <span>Siz tug‘ilganda</span>
+              <span class="aholi__chiziq"><i id="a-tugilgan-chiziq"></i></span>
+              <b id="a-tugilgan">—</b>
+            </div>
+            <div class="aholi__qator aholi__qator--bugun">
+              <span>Bugun</span>
+              <span class="aholi__chiziq"><i id="a-bugun-chiziq" style="--w: 100%"></i></span>
+              <b id="a-bugun">—</b>
+            </div>
+          </div>
+          <p class="sana-karta__matn" id="a-matn">—</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap bolim" aria-labelledby="hafta-sarlavha">
+      <div class="haftalar">
+        <div class="haftalar__matn">
+          <h2 id="hafta-sarlavha">Hayotingiz haftalarda</h2>
+          <p>Wait But Why muallifi Tim Urban g‘oyasi: 90 yillik umrni bitta varaqqa joylash. Har qator bir yil, har katak bir hafta. Ko‘k kataklar ortda qoldi, qolganlari hali oldinda.</p>
+          <ul class="belgilar">
+            <li><i class="b-yashalgan"></i>Yashalgan haftalar</li>
+            <li><i class="b-hozir"></i>Shu hafta</li>
+            <li><i class="b-oldinda"></i>Oldinda</li>
+          </ul>
+          <dl class="stats">
+            <div><dt>Yashalgan</dt><dd id="h-hozir">—</dd></div>
+            <div><dt>Oldinda</dt><dd id="h-qolgan">—</dd></div>
+            <div><dt>To‘lgan qism</dt><dd id="h-ulush">—</dd></div>
+          </dl>
+        </div>
+        <figure class="jadval">
+          <div class="jadval__quti" id="hafta-quti">
+            <canvas id="hafta-canvas" role="img" aria-label="Hayot jadvali"></canvas>
+          </div>
+          <p class="izoh" id="h-izoh" hidden>Siz 90 yoshdan oshgansiz, shuning uchun jadval to‘liq bo‘yalgan. Har bir yangi hafta undan tashqarida.</p>
+          <figcaption>90 yil = 4 680 hafta. Har bir katak bir hafta.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="wrap didyou">
+      <h2>Bilasizmi?</h2>
+      <ul class="fact-list">
+        <li>
+          <p><strong>Yurak tinim bilmaydi.</strong> O‘rtacha umr davomida inson yuragi 2,5 milliard martadan ko‘proq uradi.</p>
+          <p class="label fakt-manba">Manba: American Heart Association</p>
+        </li>
+        <li>
+          <p><strong>Siz hozir ham sayohatdasiz.</strong> Yer Quyosh atrofida soatiga 107 000 km dan ortiq tezlikda uchadi: 29,78 km/s × 3 600 s.</p>
+          <p class="label fakt-manba">Manba: NASA</p>
+        </li>
+        <li>
+          <p><strong>Ba’zi yillarda 13 ta to‘lin oy bo‘ladi.</strong> To‘lin oylar orasi 29,53 kun, yil esa 365 kun. Shuning uchun har ikki-uch yilda bir yilga 13 ta to‘lin oy sig‘adi.</p>
+          <p class="label fakt-manba">Manba: NASA</p>
+        </li>
+        <li>
+          <p><strong>Har soniyada 4 ta chaqaloq.</strong> Dunyoda yiliga 130 milliondan ortiq bola tug‘iladi, bu har soniyaga o‘rtacha 4 tadan to‘g‘ri keladi.</p>
+          <p class="label fakt-manba">Manba: BMT, World Population Prospects</p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="wrap next-topic" aria-label="Keyingi mavzu">
+      <div data-next-topic></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__in">
+      <div class="footer__about">
+        <a class="brand" href="../index.html">
+          <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M31 16 26.61 20.39 26.61 26.61 20.39 26.61 16 31 11.61 26.61 5.39 26.61 5.39 20.39 1 16 5.39 11.61 5.39 5.39 11.61 5.39 16 1 20.39 5.39 26.61 5.39 26.61 11.61Z"/><circle class="c" cx="16" cy="16" r="5.2"/></svg>
+          Qiziqarli
+        </a>
+        <p>Koinot, tabiat, tarix va inson haqidagi bilimlar — o‘ynab o‘rganish uchun.</p>
+        <p>© <span data-year>2026</span> Qiziqarli</p>
+      </div>
+      <ul class="footer__links" data-footer-links></ul>
+    </div>
+  </footer>
+
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/common.js"></script>
+  <script>
+    /* Hayot kalkulyatori: sana tekshiruvi, jonli hisoblagichlar, muhim sanalar va haftalar jadvali */
+    (function () {
+      "use strict";
+
+      var fmt = QZ.fmt;
+      var fmtBig = QZ.fmtBig;
+      var reduce = QZ.reducedMotion;
+      var KEY = "qz-hayot-tugilgan";
+      var EXAMPLE = "2000-01-01";
+      var DAY = 86400000;
+      var OYLAR = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentabr", "oktabr", "noyabr", "dekabr"];
+
+      /* O‘rtacha ko‘rsatkichlar */
+      var HEART_PER_MIN = 80;
+      var BREATH_PER_MIN = 16;
+      var ORBIT_KM_S = 29.78;
+      var SYNODIC_DAYS = 29.53;
+      var BLINK_PER_MIN = 15;
+      var AWAKE_SHARE = 16 / 24;
+      var YEAR_DAYS = 365.2425;
+
+      /* Dunyo aholisi, mlrd (BMT baholari) */
+      var POP = [[1900, 1.65], [1927, 2.0], [1950, 2.5], [1960, 3.02], [1970, 3.7], [1980, 4.44], [1990, 5.33], [2000, 6.17], [2010, 6.99], [2020, 7.84], [2025, 8.23]];
+      var POP_GROWTH = 0.07; /* 2025-yildan keyin yiliga taxminan */
+
+      function $(id) { return document.getElementById(id); }
+      var input = $("tugilgan-sana");
+      var errBox = $("sana-xato");
+      var errText = $("sana-xato-matn");
+      var hint = $("sana-izoh");
+      var badge = $("misol-belgi");
+      var live = $("xulosa-ovoz");
+
+      /* ---------- Sana yordamchilari ---------- */
+      function today() { var n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); }
+      function dayNum(d) { return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / DAY); }
+      function pad(n) { return (n < 10 ? "0" : "") + n; }
+      function iso(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+      function sana(d) { return d.getDate() + "-" + OYLAR[d.getMonth()] + ", " + d.getFullYear() + "-yil"; }
+      /* Oy qo‘shish: 31-yanvar + 1 oy = 28/29-fevral (oy oxiriga qisiladi) */
+      function addMonths(b, months) {
+        var y = b.getFullYear(), m = b.getMonth() + months;
+        var last = new Date(y, m + 1, 0).getDate();
+        return new Date(y, m, Math.min(b.getDate(), last));
+      }
+      function parts(b, t) {
+        var total = (t.getFullYear() - b.getFullYear()) * 12 + (t.getMonth() - b.getMonth());
+        if (addMonths(b, total) > t) total--;
+        var anchor = addMonths(b, total);
+        return { y: Math.floor(total / 12), m: total % 12, d: dayNum(t) - dayNum(anchor) };
+      }
+      function parse(v) {
+        var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || "");
+        if (!m) return null;
+        var d = new Date(+m[1], +m[2] - 1, +m[3]);
+        if (d.getFullYear() !== +m[1] || d.getMonth() !== +m[2] - 1 || d.getDate() !== +m[3]) return null;
+        return d;
+      }
+      function validate(v) {
+        if (!v) return { err: "Tug‘ilgan sanangizni kiriting: kun, oy va yilni to‘liq tanlang." };
+        var d = parse(v);
+        if (!d) return { err: "Sanani to‘liq kiriting: kun, oy va yil (masalan, 1-yanvar, 2000-yil)." };
+        if (d > today()) return { err: "Sana kelajakda bo‘lishi mumkin emas. Bugungi yoki undan oldingi sanani tanlang." };
+        if (d < new Date(1900, 0, 1)) return { err: "1900-yildan keyingi sanani kiriting." };
+        return { date: d };
+      }
+      function population(yearFrac) {
+        var last = POP[POP.length - 1];
+        if (yearFrac >= last[0]) return last[1] + (yearFrac - last[0]) * POP_GROWTH;
+        if (yearFrac <= POP[0][0]) return POP[0][1];
+        for (var i = 1; i < POP.length; i++) {
+          if (yearFrac <= POP[i][0]) {
+            var a = POP[i - 1], b = POP[i];
+            return a[1] + (b[1] - a[1]) * (yearFrac - a[0]) / (b[0] - a[0]);
+          }
+        }
+        return last[1];
+      }
+      function yearFrac(d) {
+        return d.getFullYear() + (dayNum(d) - dayNum(new Date(d.getFullYear(), 0, 1))) / 365.25;
+      }
+
+      /* ---------- Holat ---------- */
+      var birth = null;      /* tug‘ilgan kunning mahalliy yarim tuni */
+      var isExample = true;
+      var info = null;       /* sana o‘zgarganda hisoblanadigan qiymatlar */
+
+      function store(v) { try { localStorage.setItem(KEY, v); } catch (e) { /* saqlash ixtiyoriy */ } }
+      function load() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+
+      /* ---------- Sana o‘zgarganda ---------- */
+      function relative(n, futureWord, pastWord) {
+        if (n === 0) return "Bugun!";
+        return '<span class="num">' + fmt(Math.abs(n)) + "</span> kun " + (n > 0 ? futureWord : pastWord);
+      }
+
+      function compute(announce) {
+        var t = today();
+        var p = parts(birth, t);
+        var days = dayNum(t) - dayNum(birth);
+        var nb = addMonths(birth, (p.y + 1) * 12);
+        var isBirthday = p.m === 0 && p.d === 0 && p.y > 0;
+        if (isBirthday) nb = t;
+        var toBirthday = dayNum(nb) - dayNum(t);
+        var nextAge = isBirthday ? p.y : p.y + 1;
+
+        var d10k = new Date(birth.getFullYear(), birth.getMonth(), birth.getDate() + 10000);
+        var to10k = dayNum(d10k) - dayNum(t);
+        var dBillion = new Date(birth.getTime() + 1e9 * 1000);
+        var toBillion = dayNum(dBillion) - dayNum(t);
+
+        var popBirth = population(yearFrac(birth));
+        var popNow = population(yearFrac(t));
+
+        /* Haftalar: har yil tug‘ilgan kundan boshlanadi */
+        var lastBd = addMonths(birth, p.y * 12);
+        var week = Math.min(51, Math.floor((dayNum(t) - dayNum(lastBd)) / 7));
+
+        info = { p: p, days: days, age: p.y, week: week, popBirth: popBirth, popNow: popNow };
+
+        $("v-kunlar").textContent = fmt(days);
+        $("v-yosh").textContent = p.y + " yil, " + p.m + " oy, " + p.d + " kun";
+
+        $("m-tk-son").innerHTML = isBirthday ? "Bugun!" : relative(toBirthday, "qoldi", "");
+        $("m-tk-matn").textContent = isBirthday
+          ? "Tug‘ilgan kuningiz bilan! Bugun " + nextAge + " yoshga to‘ldingiz."
+          : sana(nb) + " kuni " + nextAge + " yoshga to‘lasiz.";
+
+        $("m-10k-son").innerHTML = relative(to10k, "qoldi", "oldin");
+        $("m-10k-matn").textContent = to10k > 0
+          ? sana(d10k) + " kuni hayotingizning " + fmt(10000) + "-kuni keladi."
+          : to10k === 0 ? "Bugun hayotingizning " + fmt(10000) + "-kuni." : sana(d10k) + " kuni " + fmt(10000) + " kunga to‘lgansiz.";
+
+        $("m-mlrd-son").innerHTML = relative(toBillion, "qoldi", "oldin");
+        $("m-mlrd-matn").textContent = toBillion > 0
+          ? sana(dBillion) + " kuni 1 milliard soniyaga to‘lasiz."
+          : toBillion === 0 ? "Bugun 1 milliard soniyaga to‘lasiz." : sana(dBillion) + " kuni 1 milliard soniyaga to‘lgansiz.";
+
+        $("a-tugilgan").textContent = fmt(popBirth, 2) + " mlrd";
+        $("a-bugun").textContent = fmt(popNow, 2) + " mlrd";
+        $("a-tugilgan-chiziq").style.setProperty("--w", (popBirth / popNow * 100).toFixed(1) + "%");
+        var grew = popNow - popBirth;
+        $("a-matn").textContent = grew >= 0.01
+          ? "Siz tug‘ilganingizdan beri Yer aholisi " + fmt(grew, 2) + " mlrd kishiga ko‘paydi."
+          : "Siz tug‘ilganingizdan beri aholi deyarli o‘zgarmadi: hali ko‘p vaqt o‘tmadi.";
+
+        var lived = Math.min(4680, p.y * 52 + week);
+        if (p.y >= 90) {
+          $("h-hozir").textContent = fmt(4680);
+          $("h-ulush").textContent = "100%";
+          $("h-qolgan").textContent = "0";
+        } else {
+          $("h-hozir").textContent = fmt(lived);
+          $("h-ulush").textContent = fmt(lived / 4680 * 100, 1) + "%";
+          $("h-qolgan").textContent = fmt(4680 - lived - 1);
+        }
+        $("h-izoh").hidden = p.y < 90;
+        canvas.setAttribute("aria-label", p.y >= 90
+          ? "Hayot jadvali: 4 680 haftaning barchasi yashalgan."
+          : "Hayot jadvali: 4 680 haftadan " + fmt(lived) + " tasi yashalgan, hozir " + fmt(lived + 1) + "-hafta.");
+
+        tick();
+        drawGrid();
+
+        if (announce) {
+          live.textContent = "Siz " + fmt(days) + " kun yashadingiz: " + p.y + " yil, " + p.m + " oy, " + p.d + " kun. " +
+            (isBirthday ? "Bugun tug‘ilgan kuningiz!" : "Keyingi tug‘ilgan kuningizgacha " + fmt(toBirthday) + " kun qoldi.");
+        }
+      }
+
+      /* ---------- Jonli hisoblagichlar ---------- */
+      var out = {
+        soniya: $("v-soniya"), yurak: $("v-yurak"), nafas: $("v-nafas"), yol: $("v-yol"),
+        yolAniq: $("v-yol-aniq"), aylanish: $("v-aylanish"), oy: $("v-oy"), uyqu: $("v-uyqu"), pirpirash: $("v-pirpirash")
+      };
+      function tick() {
+        if (!birth) return;
+        var s = Math.max(0, (Date.now() - birth.getTime()) / 1000);
+        var min = s / 60;
+        var km = s * ORBIT_KM_S;
+        out.soniya.textContent = fmt(Math.floor(s));
+        out.yurak.textContent = fmt(Math.floor(min * HEART_PER_MIN));
+        out.nafas.textContent = fmt(Math.floor(min * BREATH_PER_MIN));
+        out.yol.textContent = fmtBig(km).replace(/ km$/, "");
+        out.yolAniq.textContent = fmt(Math.floor(km)) + " km";
+        out.aylanish.textContent = fmt(info ? info.days : Math.floor(s / 86400));
+        out.oy.textContent = fmt(Math.floor((info ? info.days : s / 86400) / SYNODIC_DAYS));
+        out.uyqu.textContent = fmt(s / 86400 / YEAR_DAYS / 3, 1);
+        out.pirpirash.textContent = fmt(Math.floor(min * AWAKE_SHARE * BLINK_PER_MIN));
+      }
+      var timer = 0;
+      function startTicking() {
+        clearInterval(timer);
+        if (!document.hidden) timer = setInterval(tick, reduce ? 1000 : 100);
+      }
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) clearInterval(timer);
+        else { tick(); startTicking(); }
+      });
+
+      /* ---------- Kiritish ---------- */
+      var errTimer = 0;
+      function showError(msg) {
+        errText.textContent = msg;
+        errBox.hidden = false;
+        input.setAttribute("aria-invalid", "true");
+        $("xulosa").classList.add("is-eskirgan");
+        $("kartalar").classList.add("is-eskirgan");
+        $("sanalar").classList.add("is-eskirgan");
+      }
+      function clearError() {
+        clearTimeout(errTimer);
+        errBox.hidden = true;
+        errText.textContent = "";
+        input.removeAttribute("aria-invalid");
+        $("xulosa").classList.remove("is-eskirgan");
+        $("kartalar").classList.remove("is-eskirgan");
+        $("sanalar").classList.remove("is-eskirgan");
+      }
+      function setBirth(d, example, announce) {
+        birth = d;
+        isExample = example;
+        badge.hidden = !example;
+        hint.textContent = example
+          ? "Misol: 1-yanvar, 2000-yil. O‘z sanangizni kiriting."
+          : "Tanlangan sana: " + sana(d) + ".";
+        compute(announce);
+      }
+      function onInput(e) {
+        var r = validate(input.value);
+        clearTimeout(errTimer);
+        if (r.date) {
+          clearError();
+          store(input.value);
+          setBirth(r.date, false, true);
+        } else if (e && e.type === "change") {
+          showError(r.err);
+        } else {
+          /* yil yozilayotgan paytda xato chiqib ketmasin: biroz kutamiz */
+          errTimer = setTimeout(function () { showError(r.err); }, 900);
+        }
+      }
+      input.addEventListener("input", onInput);
+      input.addEventListener("change", onInput);
+      input.addEventListener("blur", function () {
+        var r = validate(input.value);
+        if (!r.date) { clearTimeout(errTimer); showError(r.err); }
+      });
+
+      /* ---------- Nusxa ---------- */
+      $("nusxa").addEventListener("click", function () {
+        if (!birth || !info) return;
+        var s = (Date.now() - birth.getTime()) / 1000;
+        var p = info.p;
+        var text = "Men " + fmt(info.days) + " kun yashadim (" + p.y + " yil, " + p.m + " oy, " + p.d + " kun). " +
+          "Shu vaqt ichida yuragim taxminan " + fmtBig(s / 60 * HEART_PER_MIN) + " marta urdi, " +
+          "Yer bilan birga Quyosh atrofida " + fmtBig(s * ORBIT_KM_S) + " km yo‘l bosdim va " +
+          fmt(Math.floor(info.days / SYNODIC_DAYS)) + " marta to‘lin oy chiqdi. " +
+          "O‘zingiznikini hisoblang: Qiziqarli, «Hayotingiz raqamlarda».";
+        QZ.copy(text);
+      });
+
+      /* ---------- Haftalar jadvali (canvas) ---------- */
+      var canvas = $("hafta-canvas");
+      var box = $("hafta-quti");
+      var ctx = canvas.getContext("2d");
+      var geo = null;
+      var colors = {};
+
+      function readColors() {
+        colors = {
+          lived: QZ.cssVar("--lojuvard"),
+          now: QZ.cssVar("--zafaron-yorqin"),
+          future: QZ.cssVar("--sirt-2"),
+          text: QZ.cssVar("--siyoh-2"),
+          font: QZ.cssVar("--f-mono")
+        };
+      }
+
+      function layout() {
+        var W = box.clientWidth;
+        if (!W) return false;
+        var labelW = W < 420 ? 22 : 30;
+        var pitch = Math.min(11, (W - labelW) / 52);
+        var gap = pitch >= 8 ? 2 : 1;
+        var dec = pitch >= 8 ? 6 : 3;
+        var head = pitch >= 8 ? 20 : 15;
+        var w = Math.floor(labelW + pitch * 52);
+        var h = Math.ceil(head + pitch * 90 + dec * 8);
+        var dpr = Math.min(window.devicePixelRatio || 1, 3);
+        canvas.style.width = w + "px";
+        canvas.style.height = h + "px";
+        canvas.width = Math.round(w * dpr);
+        canvas.height = Math.round(h * dpr);
+        geo = { labelW: labelW, pitch: pitch, gap: gap, dec: dec, head: head, dpr: dpr, w: w, h: h, fs: pitch >= 8 ? 10 : 8 };
+        return true;
+      }
+      function cell(r, c) {
+        return {
+          x: geo.labelW + c * geo.pitch,
+          y: geo.head + r * geo.pitch + Math.floor(r / 10) * geo.dec,
+          s: geo.pitch - geo.gap
+        };
+      }
+      function rect(x, y, s) {
+        var d = geo.dpr;
+        ctx.fillRect(Math.round(x * d), Math.round(y * d), Math.max(1, Math.round(s * d)), Math.max(1, Math.round(s * d)));
+      }
+      function drawGrid() {
+        if (!info || !layout()) return;
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        var age = info.age, week = info.week;
+        for (var r = 0; r < 90; r++) {
+          for (var c = 0; c < 52; c++) {
+            var k = cell(r, c);
+            var lived = r < age || (r === age && c < week);
+            ctx.fillStyle = lived ? colors.lived : colors.future;
+            if (r === age && c === week) ctx.fillStyle = colors.now;
+            rect(k.x, k.y, k.s);
+          }
+        }
+        /* yozuvlar */
+        var d = geo.dpr;
+        ctx.fillStyle = colors.text;
+        ctx.font = "500 " + Math.round(geo.fs * d) + "px " + colors.font;
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "right";
+        for (var y = 0; y < 90; y += 10) {
+          var a = cell(y, 0);
+          ctx.fillText(String(y), Math.round((geo.labelW - 6) * d), Math.round((a.y + a.s / 2) * d));
+        }
+        ctx.textAlign = "center";
+        [1, 10, 20, 30, 40, 52].forEach(function (wk) {
+          var b = cell(0, wk - 1);
+          ctx.textAlign = wk === 52 ? "right" : "center";
+          var x = wk === 52 ? b.x + b.s : b.x + b.s / 2;
+          ctx.fillText(String(wk), Math.round(x * d), Math.round((geo.head / 2 - 1) * d));
+        });
+        ctx.textAlign = "left";
+      }
+
+      /* Hozirgi hafta katagi sekin “nafas oladi” */
+      var pulseRaf = 0, visible = true;
+      function pulse(now) {
+        pulseRaf = 0;
+        if (!info || !geo || info.age >= 90) return;
+        var k = cell(info.age, info.week);
+        var a = 0.35 + 0.65 * (0.5 + 0.5 * Math.cos(now / 1600 * Math.PI * 2));
+        var d = geo.dpr;
+        ctx.clearRect(Math.round((k.x - 0.5) * d), Math.round((k.y - 0.5) * d), Math.round((k.s + 1) * d), Math.round((k.s + 1) * d));
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = colors.future;
+        rect(k.x, k.y, k.s);
+        ctx.globalAlpha = a;
+        ctx.fillStyle = colors.now;
+        rect(k.x, k.y, k.s);
+        ctx.globalAlpha = 1;
+        if (visible && !document.hidden) pulseRaf = requestAnimationFrame(pulse);
+      }
+      function startPulse() {
+        if (reduce || pulseRaf) return;
+        pulseRaf = requestAnimationFrame(pulse);
+      }
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (entries) {
+          visible = entries[0].isIntersecting;
+          if (visible) startPulse();
+        }).observe(canvas);
+      }
+      document.addEventListener("visibilitychange", function () { if (!document.hidden) startPulse(); });
+
+      function redraw() { readColors(); drawGrid(); startPulse(); }
+      if ("ResizeObserver" in window) {
+        var lastW = 0;
+        new ResizeObserver(function () {
+          if (box.clientWidth !== lastW) { lastW = box.clientWidth; drawGrid(); }
+        }).observe(box);
+      } else {
+        window.addEventListener("resize", drawGrid);
+      }
+      document.addEventListener("qz:theme", function () { requestAnimationFrame(redraw); });
+      if (window.matchMedia) {
+        var mq = window.matchMedia("(prefers-color-scheme: dark)");
+        var onScheme = function () { requestAnimationFrame(redraw); };
+        if (mq.addEventListener) mq.addEventListener("change", onScheme); else if (mq.addListener) mq.addListener(onScheme);
+      }
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(redraw);
+
+      /* ---------- Boshlash ---------- */
+      readColors();
+      input.max = iso(today());
+      var saved = load();
+      var savedOk = saved && validate(saved).date;
+      if (savedOk) {
+        input.value = saved;
+        setBirth(savedOk, false, false);
+      } else {
+        input.value = EXAMPLE;
+        setBirth(parse(EXAMPLE), true, false);
+      }
+      startTicking();
+      startPulse();
+    })();
+  </script>
+</body>
+</html>

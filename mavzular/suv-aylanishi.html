@@ -1,0 +1,1046 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Suvning aylanishi · Qiziqarli</title>
+  <meta name="description" content="Bitta tomchini bug‘lanish, kondensatsiya, yog‘ingarchilik va to‘planish bosqichlari bo‘ylab jonli sxemada kuzating.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500;600&family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script>try{var t=localStorage.getItem("qz-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <style>
+    /* ---------- Sahna ranglari (kunduzgi) ---------- */
+    :root {
+      --osmon-1: #6fbde8;
+      --osmon-2: #d6f1fb;
+      --quyosh: var(--zafaron-yorqin);
+      --quyosh-2: #ffd978;
+      --dengiz-1: #2a9fd6;
+      --dengiz-2: #13589a;
+      --tolqin: #c4ecff;
+      --yer-1: #5cb562;
+      --yer-2: #3f9a55;
+      --tuproq-1: #a86a3d;
+      --tuproq-2: #8a5330;
+      --suv-osti: #4f86b8;
+      --suv-osti-2: #b8e4ff;
+      --tosh: #6b5a52;
+      --tosh-2: #5a4a43;
+      --tog-1: #7486c4;
+      --tog-2: #56689f;
+      --tog-3: #a9b8e3;
+      --qor: #ffffff;
+      --qor-2: #dbe4f6;
+      --bulut-1: #ffffff;
+      --bulut-soya: #d6e0f2;
+      --bulut-2: #8390b4;
+      --bulut-3: #6b779c;
+      --daryo: #2f9fe0;
+      --daryo-oq: #d2f0ff;
+      --bug: #ffffff;
+      --yomgir: #2a7bd0;
+      --qor-uchqun: #ffffff;
+      --barg-1: #2f8f4e;
+      --barg-2: #52b26a;
+      --tana: #7a4b2b;
+      --tomchi: #1fb4ec;
+      --tomchi-chet: #ffffff;
+      --harorat: #1d3285;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --osmon-1: #0e1848;
+        --osmon-2: #2b3f8c;
+        --quyosh-2: #ffd98a;
+        --dengiz-1: #1c6ea3;
+        --dengiz-2: #0a305c;
+        --tolqin: #86ccf2;
+        --yer-1: #2f7d4f;
+        --yer-2: #25643f;
+        --tuproq-1: #6e4a33;
+        --tuproq-2: #5a3b28;
+        --suv-osti: #2f5f8f;
+        --suv-osti-2: #9ad6ff;
+        --tosh: #3c3340;
+        --tosh-2: #322a36;
+        --tog-1: #4b5796;
+        --tog-2: #38427c;
+        --tog-3: #2d3b7a;
+        --qor: #e8eeff;
+        --qor-2: #b8c4ec;
+        --bulut-1: #dde4fb;
+        --bulut-soya: #b6c2e8;
+        --bulut-2: #7581ad;
+        --bulut-3: #5d6895;
+        --daryo: #3aa9e8;
+        --daryo-oq: #c6ecff;
+        --bug: #e2eaff;
+        --yomgir: #85c8ff;
+        --qor-uchqun: #f2f5ff;
+        --barg-1: #2a7a48;
+        --barg-2: #3d9c5e;
+        --tana: #5b3a24;
+        --tomchi: #52d4ff;
+        --tomchi-chet: #0a1130;
+        --harorat: #e9edfb;
+      }
+    }
+    :root[data-theme="dark"] {
+      --osmon-1: #0e1848;
+      --osmon-2: #2b3f8c;
+      --quyosh-2: #ffd98a;
+      --dengiz-1: #1c6ea3;
+      --dengiz-2: #0a305c;
+      --tolqin: #86ccf2;
+      --yer-1: #2f7d4f;
+      --yer-2: #25643f;
+      --tuproq-1: #6e4a33;
+      --tuproq-2: #5a3b28;
+      --suv-osti: #2f5f8f;
+      --suv-osti-2: #9ad6ff;
+      --tosh: #3c3340;
+      --tosh-2: #322a36;
+      --tog-1: #4b5796;
+      --tog-2: #38427c;
+      --tog-3: #2d3b7a;
+      --qor: #e8eeff;
+      --qor-2: #b8c4ec;
+      --bulut-1: #dde4fb;
+      --bulut-soya: #b6c2e8;
+      --bulut-2: #7581ad;
+      --bulut-3: #5d6895;
+      --daryo: #3aa9e8;
+      --daryo-oq: #c6ecff;
+      --bug: #e2eaff;
+      --yomgir: #85c8ff;
+      --qor-uchqun: #f2f5ff;
+      --barg-1: #2a7a48;
+      --barg-2: #3d9c5e;
+      --tana: #5b3a24;
+      --tomchi: #52d4ff;
+      --tomchi-chet: #0a1130;
+      --harorat: #e9edfb;
+    }
+
+    /* ---------- Bosqich tugmalari ---------- */
+    .qadamlar {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .qadam {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: var(--r-s);
+      border: 1.5px solid var(--chiziq);
+      background: var(--sirt);
+      color: var(--siyoh-2);
+      font: 600 0.92rem/1.2 var(--f-body);
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
+    }
+    .qadam:hover { color: var(--siyoh); border-color: var(--chiziq-kuchli); }
+    .qadam__n {
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--sirt-2);
+      color: var(--siyoh);
+      font: 600 0.78rem/1 var(--f-mono);
+      transition: background 0.2s, color 0.2s;
+    }
+    .qadam__nom { min-width: 0; overflow-wrap: anywhere; }
+    .qadam[aria-pressed="true"] {
+      color: var(--siyoh);
+      border-color: var(--firuza);
+      background: color-mix(in srgb, var(--firuza) 9%, var(--sirt));
+    }
+    .qadam[aria-pressed="true"] .qadam__n { background: var(--firuza); color: var(--ustida); }
+    .qadam__vaqt {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 3px;
+      width: 100%;
+      background: var(--firuza);
+      transform-origin: 0 50%;
+      transform: scaleX(var(--t, 0));
+    }
+
+    /* ---------- Sahna ---------- */
+    .sahna { position: relative; background: var(--osmon-2); container-type: inline-size; }
+    .sahna__svg { display: block; width: 100%; height: auto; }
+
+    .st-osmon-1 { stop-color: var(--osmon-1); }
+    .st-osmon-2 { stop-color: var(--osmon-2); }
+    .st-dengiz-1 { stop-color: var(--dengiz-1); }
+    .st-dengiz-2 { stop-color: var(--dengiz-2); }
+    .st-nur { stop-color: var(--quyosh); }
+
+    .osmon { fill: url(#g-osmon); }
+    .quyosh-halo { fill: url(#g-nur); }
+    .quyosh-disk { fill: var(--quyosh); }
+    .quyosh-ich { fill: var(--quyosh-2); }
+    .nur { fill: var(--quyosh); }
+    .issiqlik path { fill: none; stroke: var(--quyosh); stroke-width: 3.5; stroke-linecap: round; stroke-dasharray: 1 13; }
+    .tog-uzoq { fill: var(--tog-3); }
+    .tog-yuz { fill: var(--tog-1); }
+    .tog-soya { fill: var(--tog-2); }
+    .qor-yuz { fill: var(--qor); }
+    .qor-soya { fill: var(--qor-2); }
+    .dengiz { fill: url(#g-dengiz); }
+    .tolqin { fill: var(--dengiz-1); }
+    .tolqin-chiziq { fill: none; stroke: var(--tolqin); stroke-width: 3; stroke-linecap: round; opacity: 0.7; }
+    .yer-ust { fill: var(--yer-1); }
+    .yer-tepa { fill: var(--yer-2); }
+    .tuproq { fill: var(--tuproq-1); }
+    .tuproq-tosh { fill: var(--tuproq-2); }
+    .suv-qatlam { fill: var(--suv-osti); }
+    .tosh { fill: var(--tosh); }
+    .tosh-2 { fill: var(--tosh-2); }
+    .gw-nuqta { fill: var(--suv-osti-2); opacity: 0.55; }
+    .gw-oqim { fill: none; stroke: var(--suv-osti-2); stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 8 16; }
+    .singish-tomchi { fill: var(--daryo-oq); }
+    .daryo-yuz { fill: none; stroke: var(--daryo); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; }
+    .daryo-oqim { fill: none; stroke: var(--daryo-oq); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 10 22; }
+    .tana { fill: var(--tana); }
+    .barg-1 { fill: var(--barg-1); }
+    .barg-2 { fill: var(--barg-2); }
+    .bug-iz { fill: none; stroke: var(--bug); stroke-width: 3; stroke-linecap: round; }
+    .transp-iz { fill: none; stroke: var(--bug); stroke-width: 2.4; stroke-linecap: round; }
+    .harorat-chiziq { stroke: var(--harorat); stroke-width: 2; stroke-dasharray: 4 6; opacity: 0.55; }
+    .harorat-belgi { stroke: var(--harorat); stroke-width: 2.5; stroke-linecap: round; opacity: 0.75; }
+    .harorat-uch { fill: var(--harorat); opacity: 0.75; }
+    .bulut-tana { fill: var(--bulut-1); transition: fill 2s ease; }
+    .bulut-soya { fill: var(--bulut-soya); transition: fill 2s ease; }
+    .bulut.is-qora .bulut-tana { fill: var(--bulut-2); }
+    .bulut.is-qora .bulut-soya { fill: var(--bulut-3); }
+    .yomgir-tomchi { stroke: var(--yomgir); stroke-width: 3; stroke-linecap: round; }
+    .qor-uchqun { fill: var(--qor-uchqun); }
+    .tomchi-halqa { fill: none; stroke: var(--zafaron-yorqin); stroke-width: 3; }
+    .tomchi-shakl { fill: var(--tomchi); stroke: var(--tomchi-chet); stroke-width: 2; }
+
+    /* Bulut harakati */
+    .bulut {
+      transition: transform 2.6s var(--ease-out), opacity 1.2s ease;
+    }
+    #qor-qopqoq {
+      transform-origin: 790px 170px;
+      transition: transform 2.4s var(--ease-out), opacity 0.6s;
+    }
+    #qor-qopqoq.is-katta { transform: scale(1.14); }
+
+    /* Ajratib ko‘rsatish: faol bosqich elementlari to‘liq, qolganlari xira */
+    .akt { transition: opacity 0.6s ease; }
+    .akt:not(.is-on) { opacity: 0.38; }
+    .fx { transition: opacity 0.6s ease; }
+    .fx:not(.is-on) { opacity: 0; }
+    .fx:not(.is-on) .anim,
+    .akt:not(.is-on) .anim,
+    .sahna.is-tinch .anim { animation-play-state: paused; }
+
+    /* Animatsiyalar */
+    @keyframes aylan { to { transform: rotate(360deg); } }
+    @keyframes kotaril {
+      0% { transform: translateY(0); opacity: 0; }
+      20% { opacity: 0.9; }
+      75% { opacity: 0.6; }
+      100% { transform: translateY(var(--d, -160px)); opacity: 0; }
+    }
+    @keyframes tush {
+      0% { transform: translate(0, 0); opacity: 0; }
+      12% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { transform: translate(var(--sx, 0px), var(--d, 200px)); opacity: 0; }
+    }
+    @keyframes oqim { to { stroke-dashoffset: var(--o, -32); } }
+    @keyframes tolqin { to { transform: translateX(40px); } }
+    @keyframes halqa {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.35); opacity: 0.35; }
+    }
+    .nurlar.anim { animation: aylan 60s linear infinite; }
+    .bug-iz.anim, .transp-iz.anim { animation: kotaril var(--dur, 5s) linear infinite; animation-delay: var(--del, 0s); }
+    .yomgir-tomchi.anim,
+    .qor-uchqun.anim,
+    .singish-tomchi.anim { animation: tush var(--dur, 1s) linear infinite; animation-delay: var(--del, 0s); }
+    .issiqlik path.anim { --o: -28; animation: oqim 1.1s linear infinite; }
+    .daryo-oqim.anim { --o: -64; animation: oqim 1.6s linear infinite; }
+    .gw-oqim.anim { --o: -48; animation: oqim 3s linear infinite; }
+    .tolqin.anim { animation: tolqin 3.2s linear infinite; }
+    .tomchi-halqa { transform-box: fill-box; transform-origin: center; animation: halqa 1.6s ease-in-out infinite; }
+    .tomchi { display: none; }
+    .tomchi.is-on { display: inline; }
+    .tomchi .t-molekula { display: none; }
+    .tomchi.is-bug .t-molekula { display: inline; }
+    .tomchi.is-bug .t-tomchi { display: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .sahna .anim,
+      .tomchi-halqa { animation: none !important; }
+    }
+
+    /* Sahnadagi yorliqlar (HTML, kichik ekranda ham o‘qiladi) */
+    .yorliqlar { position: absolute; inset: 0; pointer-events: none; }
+    .yorliq {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      font: 600 0.62rem/1.15 var(--f-mono);
+      font-size: clamp(0.55rem, 1.2cqi, 0.8rem);
+      letter-spacing: 0.02em;
+      color: var(--siyoh);
+      background: color-mix(in srgb, var(--sirt) 90%, transparent);
+      border: 1px solid var(--chiziq-kuchli);
+      padding: 0.3em 0.6em;
+      border-radius: 999px;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px -4px rgba(17, 25, 54, 0.35);
+      transition: opacity 0.4s ease, visibility 0.4s;
+    }
+    .yorliq--chap { transform: translate(0, -50%); }
+    .yorliq:not(.is-on) { opacity: 0; visibility: hidden; }
+    @container (max-width: 560px) {
+      .yorliq--keng { display: none; }
+    }
+
+    /* ---------- Tavsif paneli ---------- */
+    .tavsif {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+      gap: 20px 32px;
+      padding: clamp(18px, 2.4vw, 28px);
+      border-top: 1px solid var(--chiziq);
+    }
+    .tavsif__matn { min-width: 0; }
+    .tavsif__matn h3 {
+      font-size: clamp(1.35rem, 1.05rem + 1vw, 1.8rem);
+      margin: 8px 0 12px;
+    }
+    .tavsif__matn p:last-child { max-width: 62ch; }
+    .fakt {
+      min-width: 0;
+      align-self: start;
+      padding: 18px 20px;
+      border-radius: var(--r-m);
+      background: color-mix(in srgb, var(--firuza) 9%, var(--sirt));
+      border: 1px solid color-mix(in srgb, var(--firuza) 28%, transparent);
+    }
+    .fakt__son {
+      font: 600 clamp(1.7rem, 1.3rem + 1.4vw, 2.35rem)/1.1 var(--f-mono);
+      font-variant-numeric: tabular-nums;
+      color: var(--firuza);
+      margin: 6px 0 8px;
+      overflow-wrap: anywhere;
+    }
+    .fakt__matn { font-size: 0.96rem; }
+    .fakt__manba { margin-top: 10px; font-size: 0.8rem; color: var(--siyoh-2); }
+
+    /* ---------- Boshqaruv ---------- */
+    .boshqaruv { justify-content: space-between; }
+    .boshqaruv__guruh { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
+    .btn[aria-pressed="true"] {
+      --btn-bg: color-mix(in srgb, var(--zafaron-yorqin) 22%, var(--sirt));
+      border-color: var(--zafaron-yorqin);
+    }
+    #ijro .i-pause,
+    #ijro.is-playing .i-play { display: none; }
+    #ijro.is-playing .i-pause { display: block; }
+    .kuzatish-izoh {
+      padding: 0 18px 16px;
+      margin-top: -4px;
+      font-size: 0.9rem;
+      color: var(--siyoh-2);
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .kuzatish-izoh[hidden] { display: none; }
+    .kuzatish-izoh svg { flex: none; width: 22px; height: 22px; margin-top: 1px; }
+    .kuzatish-izoh .h { fill: none; stroke: var(--zafaron-yorqin); stroke-width: 2.5; }
+    .kuzatish-izoh .d { fill: var(--tomchi); }
+    .kuzatish-izoh span { min-width: 0; }
+
+    .fakt-manba { margin-top: 8px; font-size: 0.8rem; }
+
+    @media (max-width: 760px) {
+      .qadamlar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .tavsif { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (max-width: 420px) {
+      .stage__bar { padding: 12px; }
+      .qadam { padding: 8px 9px; gap: 8px; font-size: 0.86rem; }
+      .qadam__n { width: 24px; height: 24px; }
+      .boshqaruv .btn--small { padding: 6px 12px; }
+    }
+  </style>
+</head>
+<body data-root="../" data-topic="suv-aylanishi">
+  <a class="skip-link" href="#asosiy">Asosiy qismga o‘tish</a>
+
+  <header class="topbar">
+    <div class="wrap topbar__in">
+      <a class="brand" href="../index.html">
+        <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M31 16 26.61 20.39 26.61 26.61 20.39 26.61 16 31 11.61 26.61 5.39 26.61 5.39 20.39 1 16 5.39 11.61 5.39 5.39 11.61 5.39 16 1 20.39 5.39 26.61 5.39 26.61 11.61Z"/><circle class="c" cx="16" cy="16" r="5.2"/></svg>
+        Qiziqarli
+      </a>
+      <nav class="nav" aria-label="Asosiy menyu">
+        <a href="../index.html#mavzular">Mavzular</a>
+        <a class="nav__extra" href="../index.html#fakt">Bugungi fakt</a>
+        <a href="viktorina.html">Viktorina</a>
+      </nav>
+      <button class="theme-btn" type="button" data-theme-toggle aria-label="Tungi rejimga o‘tish">
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a6.8 6.8 0 0 0 10.7 10.7z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="asosiy">
+    <section class="wrap topic-hero">
+      <a class="back-link" href="../index.html#mavzular">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        Barcha mavzular
+      </a>
+      <div class="topic-meta">
+        <span class="tag" data-cat="tabiat">Tabiat</span>
+        <span class="label">Jarayon · 4 daqiqa</span>
+      </div>
+      <h1>Suvning aylanishi</h1>
+      <p class="lead">Bugun ichgan suvingiz milliardlab yildan beri aylanib yuribdi: u okeanda chayqalgan, bulut bo‘lib suzgan, tog‘ cho‘qqisida qor bo‘lib yotgan. Bitta tomchini to‘rt bosqich bo‘ylab kuzatib boring.</p>
+    </section>
+
+    <section class="wrap" aria-labelledby="jarayon-sarlavha">
+      <h2 id="jarayon-sarlavha" class="sr-only">Suvning aylanishi bosqichlari</h2>
+      <div class="stage">
+        <div class="stage__bar stage__bar--top">
+          <ol class="qadamlar" aria-label="Bosqichni tanlang">
+            <li><button class="qadam" type="button" id="qadam-1" data-qadam="0" aria-pressed="true"><span class="qadam__n">1</span><span class="qadam__nom">Bug‘lanish</span><span class="qadam__vaqt" aria-hidden="true"></span></button></li>
+            <li><button class="qadam" type="button" id="qadam-2" data-qadam="1" aria-pressed="false"><span class="qadam__n">2</span><span class="qadam__nom">Kondensatsiya</span><span class="qadam__vaqt" aria-hidden="true"></span></button></li>
+            <li><button class="qadam" type="button" id="qadam-3" data-qadam="2" aria-pressed="false"><span class="qadam__n">3</span><span class="qadam__nom">Yog‘ingarchilik</span><span class="qadam__vaqt" aria-hidden="true"></span></button></li>
+            <li><button class="qadam" type="button" id="qadam-4" data-qadam="3" aria-pressed="false"><span class="qadam__n">4</span><span class="qadam__nom">To‘planish</span><span class="qadam__vaqt" aria-hidden="true"></span></button></li>
+          </ol>
+        </div>
+
+        <div class="sahna" id="sahna">
+          <svg class="sahna__svg" id="sahna-svg" viewBox="0 0 960 540" role="img" aria-labelledby="sahna-nom sahna-tavsif">
+            <title id="sahna-nom">Suvning aylanishi sxemasi</title>
+            <desc id="sahna-tavsif">Chapda quyosh va dengiz, o‘ngda qorli tog‘. Dengizdan bug‘ ko‘tariladi, bulut tog‘ tomon suzadi, tog‘ga yomg‘ir va qor yog‘adi, daryo suvni yana dengizga olib boradi, bir qismi esa yer ostiga singadi.</desc>
+            <defs>
+              <linearGradient id="g-osmon" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" class="st-osmon-1"/>
+                <stop offset="1" class="st-osmon-2"/>
+              </linearGradient>
+              <linearGradient id="g-dengiz" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" class="st-dengiz-1"/>
+                <stop offset="1" class="st-dengiz-2"/>
+              </linearGradient>
+              <radialGradient id="g-nur">
+                <stop offset="0.45" class="st-nur" stop-opacity="0.45"/>
+                <stop offset="1" class="st-nur" stop-opacity="0"/>
+              </radialGradient>
+              <clipPath id="clip-yer">
+                <path d="M300 540 L356 432 Q372 392 412 387 C470 381 540 374 610 378 C690 383 780 392 960 380 L960 540 Z"/>
+              </clipPath>
+              <clipPath id="clip-dengiz">
+                <rect x="0" y="370" width="414" height="40"/>
+              </clipPath>
+            </defs>
+
+            <rect class="osmon" width="960" height="540"/>
+
+            <!-- Quyosh -->
+            <g id="quyosh" class="akt" data-s="1">
+              <circle class="quyosh-halo" cx="130" cy="110" r="118"/>
+              <g transform="translate(130 110)"><g class="nurlar anim" id="nurlar"></g></g>
+              <circle class="quyosh-disk" cx="130" cy="110" r="44"/>
+              <circle class="quyosh-ich" cx="122" cy="102" r="26"/>
+            </g>
+            <g id="issiqlik" class="issiqlik fx" data-s="1">
+              <path class="anim" d="M104 172 C 88 236, 122 296, 100 372"/>
+              <path class="anim" d="M144 176 C 146 244, 178 302, 172 372"/>
+              <path class="anim" d="M182 160 C 212 222, 234 300, 262 372"/>
+            </g>
+
+            <!-- Tog‘lar -->
+            <polygon class="tog-uzoq" points="452,392 548,300 590,324 660,258 724,334 736,392"/>
+            <polygon class="tog-uzoq" points="842,392 900,250 930,268 960,236 960,392"/>
+            <polygon class="tog-yuz" points="585,394 700,262 735,240 790,170 840,215 870,230 960,300 960,394"/>
+            <polygon class="tog-soya" points="790,170 800,240 832,302 876,394 960,394 960,300 870,230 840,215"/>
+            <g id="qor-qopqoq" class="akt" data-s="3">
+              <polygon class="qor-yuz" points="790,170 832,209 820,216 808,207 798,222 786,210 774,224 763,214 752,222"/>
+              <polygon class="qor-soya" points="790,170 832,209 820,216 808,207 798,222 796,200"/>
+            </g>
+
+            <!-- Dengiz -->
+            <rect class="dengiz" x="0" y="386" width="414" height="154"/>
+            <g clip-path="url(#clip-dengiz)">
+              <path class="tolqin anim" id="tolqin" d=""/>
+            </g>
+            <g id="tolqin-chiziqlar"></g>
+
+            <!-- Quruqlik va kesim -->
+            <path class="yer-ust" d="M300 540 L356 432 Q372 392 412 387 C470 381 540 374 610 378 C690 383 780 392 960 380 L960 540 Z"/>
+            <g clip-path="url(#clip-yer)">
+              <path class="tuproq" transform="translate(0 16)" d="M300 540 L356 432 Q372 392 412 387 C470 381 540 374 610 378 C690 383 780 392 960 380 L960 540 Z"/>
+              <g id="tuproq-toshlar"></g>
+              <rect class="suv-qatlam" x="0" y="448" width="960" height="46"/>
+              <rect class="tosh" x="0" y="494" width="960" height="46"/>
+              <g id="tosh-bolak"></g>
+              <g id="yer-osti" class="akt" data-s="4">
+                <g id="gw-nuqtalar"></g>
+                <path class="gw-oqim anim" d="M960 459 L300 459"/>
+                <path class="gw-oqim anim" d="M940 471 L300 471" style="animation-delay:-1s"/>
+                <path class="gw-oqim anim" d="M960 483 L300 483" style="animation-delay:-2s"/>
+              </g>
+              <g id="singish" class="fx" data-s="4"></g>
+            </g>
+            <path class="yer-tepa" d="M452 392 C 470 372, 520 368, 548 386 Z"/>
+
+            <!-- Daryo -->
+            <g id="daryo" class="akt" data-s="4">
+              <path class="daryo-yuz" id="daryo-yol" d="M750 222 C735 270 712 300 690 326 C668 352 640 370 600 378 C548 386 500 386 410 389"/>
+              <path class="daryo-oqim anim" d="M750 222 C735 270 712 300 690 326 C668 352 640 370 600 378 C548 386 500 386 410 389"/>
+            </g>
+
+            <!-- O‘simliklar -->
+            <g id="daraxtlar" class="akt" data-s="1"></g>
+            <g id="transp" class="fx" data-s="1"></g>
+
+            <!-- Bug‘ -->
+            <g id="bug" class="fx" data-s="1 2"></g>
+
+            <!-- Balandlik va harorat -->
+            <g id="harorat" class="fx" data-s="2">
+              <line class="harorat-chiziq" x1="36" y1="386" x2="36" y2="118"/>
+              <line class="harorat-belgi" x1="28" y1="386" x2="44" y2="386"/>
+              <line class="harorat-belgi" x1="28" y1="266" x2="44" y2="266"/>
+              <line class="harorat-belgi" x1="28" y1="146" x2="44" y2="146"/>
+              <polygon class="harorat-uch" points="36,104 29,118 43,118"/>
+            </g>
+
+            <!-- Bulut -->
+            <g id="bulut" class="bulut" style="transform: translate(300px, 150px) scale(0.55)">
+              <circle class="bulut-soya" cx="70" cy="14" r="22"/>
+              <circle class="bulut-tana" cx="-56" cy="2" r="30"/>
+              <circle class="bulut-tana" cx="-14" cy="-18" r="40"/>
+              <circle class="bulut-tana" cx="34" cy="-8" r="34"/>
+              <circle class="bulut-tana" cx="70" cy="10" r="22"/>
+              <rect class="bulut-soya" x="-86" y="6" width="172" height="28" rx="14"/>
+              <rect class="bulut-tana" x="-86" y="0" width="172" height="28" rx="14"/>
+            </g>
+
+            <!-- Yog‘in -->
+            <g id="yomgir" class="fx" data-s="3"></g>
+            <g id="qor" class="fx" data-s="3"></g>
+
+            <!-- Kuzatiladigan tomchi -->
+            <g id="tomchi" class="tomchi" transform="translate(250 400)">
+              <circle class="tomchi-halqa" r="17"/>
+              <g class="t-tomchi"><path class="tomchi-shakl" d="M0 -13 C5 -6 9 -1 9 4 A9 9 0 0 1 -9 4 C-9 -1 -5 -6 0 -13 Z"/></g>
+              <g class="t-molekula">
+                <circle class="tomchi-shakl" cx="-7" cy="6" r="4.5"/>
+                <circle class="tomchi-shakl" cx="7" cy="6" r="4.5"/>
+                <circle class="tomchi-shakl" cx="0" cy="0" r="7.5"/>
+              </g>
+            </g>
+          </svg>
+
+          <div class="yorliqlar" aria-hidden="true">
+            <span class="yorliq yorliq--chap yorliq--keng" data-s="1" style="left:2.5%;top:43%">Quyosh isitadi</span>
+            <span class="yorliq" data-s="1" style="left:27%;top:58%">Bug‘lanish</span>
+            <span class="yorliq" data-s="1" style="left:53%;top:50%">Transpiratsiya</span>
+            <span class="yorliq yorliq--chap" data-s="2" style="left:63.5%;top:20%">Bulut</span>
+            <span class="yorliq yorliq--chap yorliq--keng" data-s="2" style="left:5.6%;top:67%">Dengiz sathi</span>
+            <span class="yorliq yorliq--chap" data-s="2" style="left:5.6%;top:49.3%">1 000 m · −6,5 °C</span>
+            <span class="yorliq yorliq--chap" data-s="2" style="left:5.6%;top:27%">2 000 m · −13 °C</span>
+            <span class="yorliq" data-s="3" style="left:60%;top:36%">Yomg‘ir</span>
+            <span class="yorliq" data-s="3" style="left:93%;top:30%">Qor</span>
+            <span class="yorliq yorliq--keng" data-s="4" style="left:56%;top:79%">Tuproqqa singish</span>
+            <span class="yorliq" data-s="4" style="left:76%;top:87%">Yer osti suvi</span>
+            <span class="yorliq" data-s="4" style="left:66%;top:61%">Daryo</span>
+            <span class="yorliq" data-s="4" style="left:17%;top:86%">Dengiz</span>
+          </div>
+        </div>
+
+        <div class="tavsif" id="tavsif">
+          <div class="tavsif__matn" aria-live="polite" aria-atomic="true">
+            <p class="label" id="tavsif-raqam">1-bosqich · jami 4 ta</p>
+            <h3 id="tavsif-sarlavha">Bug‘lanish</h3>
+            <p id="tavsif-matn">Quyosh dengiz yuzasini isitadi. Isigan suv ko‘zga ko‘rinmaydigan bug‘ga aylanadi va iliq havo bilan birga yuqoriga ko‘tariladi. Daraxt va o‘simliklar ham barglari orqali suv bug‘latadi: buni transpiratsiya deyiladi.</p>
+          </div>
+          <div class="fakt">
+            <p class="label">Raqamlarda</p>
+            <p class="fakt__son" id="fakt-son">90%</p>
+            <p class="fakt__matn" id="fakt-matn">Atmosferadagi namlikning taxminan 90% okean, dengiz, ko‘l va daryolardan bug‘lanadi, 10% ga yaqini esa o‘simliklardan (transpiratsiya).</p>
+            <p class="fakt__manba" id="fakt-manba">Manba: USGS</p>
+          </div>
+        </div>
+
+        <div class="stage__bar boshqaruv">
+          <div class="boshqaruv__guruh">
+            <button class="btn btn--ghost btn--small" type="button" id="oldingi">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+              Oldingi
+            </button>
+            <button class="btn btn--small" type="button" id="keyingi">
+              Keyingi
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+          <div class="boshqaruv__guruh">
+            <button class="btn btn--ghost btn--small" type="button" id="ijro">
+              <svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.4-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
+              <svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4.2" height="14" rx="1.2"/><rect x="13.8" y="5" width="4.2" height="14" rx="1.2"/></svg>
+              <span id="ijro-matn">Avtomatik ijro</span>
+            </button>
+            <button class="btn btn--ghost btn--small" type="button" id="kuzatish" aria-pressed="false" aria-describedby="kuzatish-izoh">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 6.5c2.2 2.9 3.4 4.8 3.4 6.6a3.4 3.4 0 0 1-6.8 0c0-1.8 1.2-3.7 3.4-6.6z" fill="currentColor" stroke="none"/></svg>
+              Tomchini kuzatish
+            </button>
+          </div>
+        </div>
+        <p class="kuzatish-izoh" id="kuzatish-izoh" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="h" cx="12" cy="12" r="9.5"/><path class="d" d="M12 5.5c2.4 3 3.8 5.1 3.8 7a3.8 3.8 0 0 1-7.6 0c0-1.9 1.4-4 3.8-7z"/></svg>
+          <span>Sariq halqadagi tomchini kuzating. Bug‘ holatida u suv molekulasi (H₂O) ko‘rinishida chiziladi, keyin bulut tomchisi, yomg‘ir va daryo suviga aylanib, yana dengizga qaytadi.</span>
+        </p>
+      </div>
+    </section>
+
+    <section class="wrap didyou">
+      <h2>Bilasizmi?</h2>
+      <ul class="fact-list">
+        <li>
+          <p><strong>Bug‘ havoda uzoq qolmaydi.</strong> Suv bug‘i atmosferada o‘rtacha 9 kun atrofida yuradi, so‘ng yomg‘ir yoki qor bo‘lib yerga qaytadi.</p>
+          <p class="label fakt-manba">Manba: NASA, USGS</p>
+        </li>
+        <li>
+          <p><strong>Chuchuk suv juda oz.</strong> Yerdagi suvning atigi 3% ga yaqini chuchuk, uning ham taxminan uchdan ikki qismi muzlik va qorlarda muzlab yotibdi.</p>
+          <p class="label fakt-manba">Manba: USGS</p>
+        </li>
+        <li>
+          <p><strong>Yer osti suvi shoshilmaydi.</strong> Tuproqdan o‘tib, chuqur qatlamlarga tushgan suv u yerda minglab yil saqlanib qolishi mumkin.</p>
+          <p class="label fakt-manba">Manba: USGS</p>
+        </li>
+        <li>
+          <p><strong>Haqiqiy bug‘ ko‘rinmaydi.</strong> Suv bug‘i shaffof gaz. Choynak ustidagi oq «bug‘» aslida havoda sovib qolgan mayda tomchilar, ya’ni kichkina bulut.</p>
+          <p class="label fakt-manba">Manba: USGS</p>
+        </li>
+        <li>
+          <p><strong>Amudaryo okeanga yetmaydi.</strong> Amudaryo va Sirdaryo Orol dengiziga quyiladi. Daryo oqib chiqmaydigan bu havzadan suv asosan bug‘lanib ketadi, tuz esa qolaveradi.</p>
+          <p class="label fakt-manba">Manba: Britannica</p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="wrap next-topic" aria-label="Keyingi mavzu">
+      <div data-next-topic></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__in">
+      <div class="footer__about">
+        <a class="brand" href="../index.html">
+          <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M31 16 26.61 20.39 26.61 26.61 20.39 26.61 16 31 11.61 26.61 5.39 26.61 5.39 20.39 1 16 5.39 11.61 5.39 5.39 11.61 5.39 16 1 20.39 5.39 26.61 5.39 26.61 11.61Z"/><circle class="c" cx="16" cy="16" r="5.2"/></svg>
+          Qiziqarli
+        </a>
+        <p>Koinot, tabiat, tarix va inson haqidagi bilimlar — o‘ynab o‘rganish uchun.</p>
+        <p>© <span data-year>2026</span> Qiziqarli</p>
+      </div>
+      <ul class="footer__links" data-footer-links></ul>
+    </div>
+  </footer>
+
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/common.js"></script>
+  <script>
+    /* Suvning aylanishi: bosqichlar, sahna effektlari va kuzatiladigan tomchi */
+    (function () {
+      "use strict";
+
+      var NS = "http://www.w3.org/2000/svg";
+      var reduce = QZ.reducedMotion;
+      var STEP_MS = 7000;
+
+      /* Takrorlanuvchi tasodif (har safar bir xil manzara) */
+      var seed = 20261015;
+      function rnd() {
+        seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+        var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      }
+      function rr(a, b) { return a + rnd() * (b - a); }
+      function mk(tag, attrs, parent) {
+        var e = document.createElementNS(NS, tag);
+        for (var k in attrs) e.setAttribute(k, attrs[k]);
+        if (parent) parent.appendChild(e);
+        return e;
+      }
+      function $(id) { return document.getElementById(id); }
+
+      /* Tog‘ sirti (yomg‘ir va qor qayerda to‘xtashini bilish uchun) */
+      var RIDGE = [[0, 386], [585, 380], [700, 262], [735, 240], [790, 170], [840, 215], [870, 230], [960, 300]];
+      function groundY(x) {
+        for (var i = 1; i < RIDGE.length; i++) {
+          if (x <= RIDGE[i][0]) {
+            var a = RIDGE[i - 1], b = RIDGE[i];
+            return a[1] + (b[1] - a[1]) * (x - a[0]) / (b[0] - a[0]);
+          }
+        }
+        return 300;
+      }
+
+      /* ---------- Sahna elementlarini yaratish ---------- */
+      (function build() {
+        var i, g, x, y;
+
+        /* Quyosh nurlari */
+        var rays = $("nurlar");
+        for (i = 0; i < 12; i++) {
+          mk("rect", { class: "nur", x: -4.5, y: -84, width: 9, height: 22, rx: 4.5, transform: "rotate(" + (i * 30) + ")" }, rays);
+        }
+
+        /* To‘lqinlar: 20 birlikli yarim to‘lqinlar zanjiri */
+        var d = "M-40 388";
+        for (x = -40; x < 460; x += 20) d += (x % 40 === 0 ? " q10 -6 20 0" : " q10 6 20 0");
+        d += " L460 410 L-40 410 Z";
+        $("tolqin").setAttribute("d", d);
+        var crests = $("tolqin-chiziqlar");
+        [[40, 420], [118, 446], [196, 412], [262, 470], [80, 492], [330, 432], [180, 512]].forEach(function (p) {
+          mk("path", { class: "tolqin-chiziq", d: "M" + p[0] + " " + p[1] + " q9 -5 18 0 t18 0" }, crests);
+        });
+
+        /* Tuproqdagi toshchalar va tog‘ jinsi bo‘laklari */
+        var stones = $("tuproq-toshlar");
+        for (i = 0; i < 26; i++) {
+          x = rr(320, 950); y = rr(408, 442);
+          mk("ellipse", { class: "tuproq-tosh", cx: x.toFixed(1), cy: y.toFixed(1), rx: rr(3, 8).toFixed(1), ry: rr(2, 4).toFixed(1) }, stones);
+        }
+        var rock = $("tosh-bolak");
+        for (i = 0; i < 9; i++) {
+          x = rr(330, 940);
+          mk("rect", { class: "tosh-2", x: x.toFixed(1), y: rr(500, 528).toFixed(1), width: rr(24, 60).toFixed(1), height: rr(6, 10).toFixed(1), rx: 4 }, rock);
+        }
+        var pores = $("gw-nuqtalar");
+        for (i = 0; i < 60; i++) {
+          mk("circle", { class: "gw-nuqta", cx: rr(310, 955).toFixed(1), cy: rr(452, 490).toFixed(1), r: rr(1.4, 2.8).toFixed(1) }, pores);
+        }
+
+        /* Daraxtlar */
+        var trees = $("daraxtlar");
+        var transp = $("transp");
+        var leafy = [[470, 384, 1], [506, 380, 0.85], [540, 380, 1.1], [574, 381, 0.8]];
+        leafy.forEach(function (t, k) {
+          g = mk("g", { transform: "translate(" + t[0] + " " + t[1] + ") scale(" + t[2] + ")" }, trees);
+          mk("rect", { class: "tana", x: -2.5, y: -20, width: 5, height: 20, rx: 2 }, g);
+          mk("circle", { class: "barg-1", cx: 0, cy: -30, r: 14 }, g);
+          mk("circle", { class: "barg-2", cx: -4, cy: -34, r: 7 }, g);
+          /* transpiratsiya izlari */
+          for (var j = 0; j < 2; j++) {
+            var wg = mk("g", { transform: "translate(" + (t[0] + (j ? 7 : -6)) + " " + (t[1] - 48 * t[2] - (reduce ? rr(4, 40) : 0)).toFixed(1) + ")" }, transp);
+            var w = mk("path", { class: "transp-iz anim", d: "M0 0 c-4 -5 4 -10 0 -15 s4 -10 0 -15" }, wg);
+            w.style.setProperty("--d", "-56px");
+            w.style.setProperty("--dur", rr(3.2, 4.4).toFixed(2) + "s");
+            w.style.setProperty("--del", (-rr(0, 4) - k * 0.7).toFixed(2) + "s");
+          }
+        });
+        var conifers = [[606, 368, 0.9], [630, 343, 1], [662, 310, 0.85], [905, 395, 0.95], [930, 392, 0.8]];
+        conifers.forEach(function (t) {
+          g = mk("g", { transform: "translate(" + t[0] + " " + t[1] + ") scale(" + t[2] + ")" }, trees);
+          mk("rect", { class: "tana", x: -2.5, y: -10, width: 5, height: 10 }, g);
+          mk("polygon", { class: "barg-1", points: "0,-46 13,-8 -13,-8" }, g);
+          mk("polygon", { class: "barg-2", points: "0,-46 6,-28 0,-24" }, g);
+        });
+
+        /* Dengizdan ko‘tariladigan bug‘ */
+        var vap = $("bug");
+        for (i = 0; i < 16; i++) {
+          x = 30 + i * 23 + rr(-6, 6);
+          y = 376 - (reduce ? rr(0, 150) : rr(0, 20));
+          g = mk("g", { transform: "translate(" + x.toFixed(1) + " " + y.toFixed(1) + ")" }, vap);
+          var v = mk("path", { class: "bug-iz anim", d: "M0 0 c-6 -7 6 -14 0 -21 s6 -14 0 -21" }, g);
+          v.style.setProperty("--d", "-" + Math.round(rr(150, 190)) + "px");
+          v.style.setProperty("--dur", rr(4.2, 6).toFixed(2) + "s");
+          v.style.setProperty("--del", (-rr(0, 6)).toFixed(2) + "s");
+          if (reduce) v.style.opacity = "0.75";
+        }
+
+        /* Yomg‘ir (tog‘ning chap yonbag‘riga) */
+        var rain = $("yomgir");
+        for (i = 0; i < 34; i++) {
+          x = 648 + i * 3.6 + rr(-2, 2);
+          var top = rr(138, 152);
+          var fall = groundY(x) - top - 14;
+          var start = reduce ? rr(0, fall) : 0;
+          g = mk("g", { transform: "translate(" + x.toFixed(1) + " " + (top + start).toFixed(1) + ")" }, rain);
+          var r = mk("line", { class: "yomgir-tomchi anim", x1: 0, y1: 0, x2: -2.5, y2: 13 }, g);
+          r.style.setProperty("--d", Math.round(fall) + "px");
+          r.style.setProperty("--sx", "-6px");
+          r.style.setProperty("--dur", rr(0.75, 1.1).toFixed(2) + "s");
+          r.style.setProperty("--del", (-rr(0, 1.1)).toFixed(2) + "s");
+        }
+
+        /* Qor (cho‘qqiga) */
+        var snow = $("qor");
+        for (i = 0; i < 18; i++) {
+          x = 772 + i * 4 + rr(-2, 2);
+          var sTop = rr(134, 146);
+          var sFall = groundY(x) - sTop - 2;
+          g = mk("g", { transform: "translate(" + x.toFixed(1) + " " + (sTop + (reduce ? rr(0, sFall) : 0)).toFixed(1) + ")" }, snow);
+          var f = mk("circle", { class: "qor-uchqun anim", r: rr(2.4, 3.6).toFixed(1) }, g);
+          f.style.setProperty("--d", Math.round(sFall) + "px");
+          f.style.setProperty("--sx", Math.round(rr(-8, 8)) + "px");
+          f.style.setProperty("--dur", rr(2.6, 3.8).toFixed(2) + "s");
+          f.style.setProperty("--del", (-rr(0, 3.8)).toFixed(2) + "s");
+        }
+
+        /* Tuproqqa singayotgan tomchilar */
+        var soak = $("singish");
+        for (i = 0; i < 14; i++) {
+          x = 430 + i * 20 + rr(-6, 6);
+          var y0 = 392 + (reduce ? rr(0, 44) : rr(0, 6));
+          g = mk("g", { transform: "translate(" + x.toFixed(1) + " " + y0.toFixed(1) + ")" }, soak);
+          var s = mk("path", { class: "singish-tomchi anim", d: "M0 -5 C2.5 -2 4 0 4 2 A4 4 0 0 1 -4 2 C-4 0 -2.5 -2 0 -5 Z" }, g);
+          s.style.setProperty("--d", "50px");
+          s.style.setProperty("--dur", rr(2.2, 3.2).toFixed(2) + "s");
+          s.style.setProperty("--del", (-rr(0, 3.2)).toFixed(2) + "s");
+        }
+      })();
+
+      /* ---------- Bosqichlar ---------- */
+      var STEPS = [
+        {
+          title: "Bug‘lanish",
+          text: "Quyosh dengiz yuzasini isitadi. Isigan suv ko‘zga ko‘rinmaydigan bug‘ga aylanadi va iliq havo bilan birga yuqoriga ko‘tariladi. Daraxt va o‘simliklar ham barglari orqali suv bug‘latadi: buni transpiratsiya deyiladi.",
+          num: "90%",
+          fact: "Atmosferadagi namlikning taxminan 90% okean, dengiz, ko‘l va daryolardan bug‘lanadi, 10% ga yaqini esa o‘simliklardan (transpiratsiya).",
+          src: "Manba: USGS",
+          cloud: { x: 300, y: 150, s: 0.55, o: 0.85, dark: false }
+        },
+        {
+          title: "Kondensatsiya",
+          text: "Bug‘ qanchalik baland ko‘tarilsa, havo shunchalik sovuq bo‘ladi. Sovigan bug‘ havodagi mayda chang zarralariga yopishib, suyuq tomchilarga aylanadi. Milliardlab shunday tomchi bulutni hosil qiladi, shamol esa uni tog‘lar tomon haydaydi.",
+          num: "6,5 °C",
+          fact: "Havo har 1 000 m ko‘tarilganda o‘rtacha 6,5 °C soviydi. Shuning uchun bug‘ yuqorida suyuq tomchilarga aylanadi.",
+          src: "Manba: standart atmosfera modeli",
+          cloud: { x: 520, y: 118, s: 0.95, o: 1, dark: true }
+        },
+        {
+          title: "Yog‘ingarchilik",
+          text: "Bulut ichidagi tomchilar to‘qnashib, bir-biriga qo‘shiladi va og‘irlashadi. Havo ularni ushlab tura olmay qolganda, ular yomg‘ir bo‘lib yerga tushadi. Tog‘ cho‘qqisida havo juda sovuq, shuning uchun u yerga qor yog‘adi.",
+          num: QZ.fmt(1000000),
+          fact: "Bitta yomg‘ir tomchisi (≈2 mm) taxminan bir million bulut tomchisidan (≈0,02 mm) hosil bo‘ladi.",
+          src: "Hisob: (2 mm ÷ 0,02 mm)³ = " + QZ.fmt(1000000),
+          cloud: { x: 740, y: 100, s: 1.15, o: 1, dark: true }
+        },
+        {
+          title: "To‘planish",
+          text: "Yomg‘ir suvi va eriyotgan qor soy va daryolarga yig‘iladi, daryo esa uni yana dengizga olib boradi. Bir qismi tuproqqa singib, yer osti suvlarini to‘ldiradi va sekin-asta dengiz tomon sizib boradi. Shu yerda aylanish yana boshlanadi.",
+          num: "97%",
+          fact: "Yerdagi suvning taxminan 97% okeanlardagi sho‘r suv. Ko‘pchilik daryolarning suvi oxir-oqibat shu okeanga qo‘shiladi.",
+          src: "Manba: USGS",
+          cloud: { x: 860, y: 78, s: 0.62, o: 0.55, dark: false }
+        }
+      ];
+
+      var state = { step: 0, t: 0, playing: !reduce, tracking: false, visible: true };
+
+      var stepBtns = Array.prototype.slice.call(document.querySelectorAll(".qadam"));
+      var actors = Array.prototype.slice.call(document.querySelectorAll("#sahna [data-s]"));
+      var cloud = $("bulut");
+      var cap = $("qor-qopqoq");
+      var drop = $("tomchi");
+      var playBtn = $("ijro");
+      var trackBtn = $("kuzatish");
+      var trackNote = $("kuzatish-izoh");
+      var sahna = $("sahna");
+
+      function setCloud(c, instant) {
+        if (instant) cloud.style.transition = "none";
+        cloud.style.transform = "translate(" + c.x + "px, " + c.y + "px) scale(" + c.s + ")";
+        cloud.style.opacity = c.o;
+        cloud.classList.toggle("is-qora", c.dark);
+        if (instant) {
+          void cloud.getBoundingClientRect();
+          cloud.style.transition = "";
+        }
+      }
+
+      function render(prev) {
+        var s = STEPS[state.step];
+        var n = String(state.step + 1);
+        stepBtns.forEach(function (b, i) {
+          b.setAttribute("aria-pressed", i === state.step ? "true" : "false");
+          b.style.setProperty("--t", 0);
+        });
+        actors.forEach(function (a) {
+          a.classList.toggle("is-on", a.getAttribute("data-s").split(" ").indexOf(n) !== -1);
+        });
+        cap.classList.toggle("is-katta", state.step >= 2);
+
+        /* 4-bosqichdan 1-ga qaytganda bulut orqaga suzmasin: yashirib, yangi joyda paydo bo‘ladi */
+        if (prev === 3 && state.step === 0) {
+          setCloud({ x: s.cloud.x, y: s.cloud.y, s: s.cloud.s * 0.6, o: 0, dark: false }, true);
+          requestAnimationFrame(function () { setCloud(s.cloud); });
+        } else {
+          setCloud(s.cloud);
+        }
+
+        $("tavsif-raqam").textContent = n + "-bosqich · jami 4 ta";
+        $("tavsif-sarlavha").textContent = s.title;
+        $("tavsif-matn").textContent = s.text;
+        $("fakt-son").textContent = s.num;
+        $("fakt-matn").textContent = s.fact;
+        $("fakt-manba").textContent = s.src;
+      }
+
+      function go(i, auto) {
+        var prev = state.step;
+        state.step = (i + STEPS.length) % STEPS.length;
+        state.t = 0;
+        if (!auto) setPlaying(false);
+        render(prev);
+        placeDrop();
+        kick();
+      }
+
+      function setPlaying(on) {
+        state.playing = on;
+        $("ijro-matn").textContent = on ? "To‘xtatish" : "Avtomatik ijro";
+        playBtn.classList.toggle("is-playing", on);
+        if (!on) stepBtns.forEach(function (b) { b.style.setProperty("--t", 0); });
+        kick();
+      }
+
+      function setTracking(on) {
+        state.tracking = on;
+        trackBtn.setAttribute("aria-pressed", on ? "true" : "false");
+        trackNote.hidden = !on;
+        drop.classList.toggle("is-on", on);
+        if (on && !reduce) {
+          go(0, true);
+          setPlaying(true);
+        }
+        placeDrop();
+        kick();
+      }
+
+      /* ---------- Tomchi yo‘li ---------- */
+      var path1 = mk("path", { d: "M250 404 C 236 344, 284 300, 266 252 S 296 196, 300 170", fill: "none" });
+      var path4 = mk("path", { d: "M750 222 C735 270 712 300 690 326 C668 352 640 370 600 378 C548 386 500 386 410 389 C372 391 320 404 250 404", fill: "none" });
+      var paths = mk("g", { visibility: "hidden", "aria-hidden": "true" }, $("sahna-svg"));
+      paths.appendChild(path1);
+      paths.appendChild(path4);
+      var L1 = path1.getTotalLength();
+      var L4 = path4.getTotalLength();
+
+      function cloudNow() {
+        var m = reduce ? "none" : getComputedStyle(cloud).transform;
+        var v = m && m !== "none" ? m.match(/-?[\d.e]+/g).map(Number) : null;
+        if (!v || v.length < 6) {
+          var c = STEPS[state.step].cloud;
+          return { x: c.x, y: c.y, s: c.s };
+        }
+        return { x: v[4], y: v[5], s: v[0] };
+      }
+      function ease(u) { return u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; }
+      function clamp01(u) { return Math.max(0, Math.min(1, u)); }
+
+      var REST_T = [0.55, 0.6, 1, 0.5];
+      function placeDrop() {
+        if (!state.tracking) return;
+        var t = reduce ? REST_T[state.step] : state.t;
+        var p, c, vapour = false, sc = 1;
+        if (state.step === 0) {
+          p = path1.getPointAtLength(ease(clamp01(t)) * L1);
+          vapour = t < 0.92;
+        } else if (state.step === 1) {
+          c = cloudNow();
+          p = { x: c.x - 8 + (reduce ? 0 : Math.sin(t * 9) * 4), y: c.y + 14 * c.s };
+          sc = 0.65;
+        } else if (state.step === 2) {
+          c = cloudNow();
+          var u = clamp01((t - 0.5) / 0.32);
+          var sx = c.x + 10, sy = c.y + 30 * c.s;
+          p = { x: sx + (750 - sx) * u, y: sy + (222 - 6 - sy) * u * u };
+          sc = 0.65 + 0.35 * clamp01(u * 3);
+        } else {
+          p = path4.getPointAtLength(ease(clamp01(t)) * L4);
+        }
+        drop.setAttribute("transform", "translate(" + p.x.toFixed(1) + " " + p.y.toFixed(1) + ") scale(" + sc.toFixed(2) + ")");
+        drop.classList.toggle("is-bug", vapour);
+      }
+
+      /* ---------- Vaqt sikli ---------- */
+      var raf = 0, last = 0;
+      function kick() {
+        if (!raf && (state.playing || state.tracking)) {
+          last = 0;
+          raf = requestAnimationFrame(tick);
+        }
+      }
+      function keepGoing() { return state.playing || (state.tracking && !reduce); }
+      function tick(now) {
+        raf = 0;
+        var dt = last ? Math.min(now - last, 100) : 0;
+        last = now;
+        var running = state.visible && (state.playing || (state.tracking && !reduce && state.t < 1));
+        if (running) {
+          state.t += dt / STEP_MS;
+          if (state.t >= 1) {
+            if (state.playing) { go(state.step + 1, true); }
+            else state.t = 1;
+          }
+        }
+        if (state.playing && !reduce) {
+          var b = stepBtns[state.step];
+          if (b) b.style.setProperty("--t", Math.min(state.t, 1).toFixed(4));
+        }
+        placeDrop();
+        if (!raf && keepGoing()) raf = requestAnimationFrame(tick);
+      }
+
+      /* ---------- Hodisalar ---------- */
+      stepBtns.forEach(function (b) {
+        b.addEventListener("click", function () { go(+b.getAttribute("data-qadam"), false); });
+      });
+      $("oldingi").addEventListener("click", function () { go(state.step - 1, false); });
+      $("keyingi").addEventListener("click", function () { go(state.step + 1, false); });
+      playBtn.addEventListener("click", function () {
+        if (!state.playing && state.t >= 1) state.t = 0;
+        setPlaying(!state.playing);
+      });
+      trackBtn.addEventListener("click", function () { setTracking(!state.tracking); });
+
+      /* Sahna ko‘rinmay qolsa, animatsiya va taymer to‘xtab turadi */
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (entries) {
+          state.visible = entries[0].isIntersecting;
+          sahna.classList.toggle("is-tinch", !state.visible);
+        }, { threshold: 0.15 }).observe(sahna);
+      }
+
+      render(-1);
+      setPlaying(state.playing);
+    })();
+  </script>
+</body>
+</html>
