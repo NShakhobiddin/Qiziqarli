@@ -153,7 +153,7 @@
     }).join("");
   });
 
-  document.querySelectorAll("[data-year]").forEach(function (el) {
+  document.querySelectorAll("[data-joriy-yil]").forEach(function (el) {
     el.textContent = new Date().getFullYear();
   });
 
