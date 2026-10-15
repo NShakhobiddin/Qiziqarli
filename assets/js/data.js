@@ -15,7 +15,7 @@ window.QZ_DATA = {
   ],
 
   /* art: bosh sahifadagi kichik animatsiya turi
-     (orbit | ocean | timeline | water | pendulum | pulse | quiz) */
+     (orbit | ocean | timeline | map | water | pendulum | pulse | quiz) */
   topics: [
     {
       slug: "quyosh-tizimi",
@@ -46,6 +46,16 @@ window.QZ_DATA = {
       kind: "Vaqt chizig‘i",
       minutes: 7,
       art: "timeline"
+    },
+    {
+      slug: "ozbekiston-xaritasi",
+      url: "mavzular/ozbekiston-xaritasi.html",
+      cats: ["tarix"],
+      title: "O‘zbekiston tarixiy xaritasi",
+      desc: "Ahamoniylardan Temuriylar va mustaqillikkacha: 19 davrda bugungi O‘zbekiston yerlari kimga qarashli bo‘lganini xaritada kuzating.",
+      kind: "Interaktiv xarita",
+      minutes: 10,
+      art: "map"
     },
     {
       slug: "suv-aylanishi",

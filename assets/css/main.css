@@ -213,7 +213,7 @@ a:hover { text-decoration-thickness: 2px; }
   position: sticky;
   top: env(safe-area-inset-top, 0px);
   z-index: 50;
-  background: color-mix(in srgb, var(--sir) 84%, transparent);
+  background: color-mix(in srgb, var(--sir) 92%, transparent);
   backdrop-filter: saturate(1.4) blur(14px);
   -webkit-backdrop-filter: saturate(1.4) blur(14px);
   border-bottom: 1px solid var(--chiziq);
