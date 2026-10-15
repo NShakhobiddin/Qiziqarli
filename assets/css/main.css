@@ -168,6 +168,8 @@ a:hover { text-decoration-thickness: 2px; }
   padding-right: var(--gutter-r);
 }
 
+[hidden] { display: none !important; }
+
 .sr-only {
   position: absolute !important;
   width: 1px; height: 1px;
@@ -282,6 +284,13 @@ a:hover { text-decoration-thickness: 2px; }
   .nav a.nav__extra { display: none; }
   .topbar__in { gap: 8px; }
   .nav a { padding: 8px 10px; }
+}
+@media (max-width: 380px) {
+  .topbar__in { gap: 6px; }
+  .nav { gap: 0; }
+  .nav a { padding: 8px 7px; font-size: 0.9rem; }
+  .brand { font-size: 1rem; gap: 8px; }
+  .brand__mark { width: 26px; height: 26px; }
 }
 
 /* =========================== Tugmalar =========================== */

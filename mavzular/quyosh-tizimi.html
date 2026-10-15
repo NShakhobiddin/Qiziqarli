@@ -1,0 +1,1041 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Quyosh tizimi · Qiziqarli</title>
+  <meta name="description" content="Sakkiz sayyora Quyosh atrofida haqiqiy nisbiy tezliklarda aylanadi: vaqtni tezlashtiring, sayyorani bosib, u haqida o‘qing va boshqa sayyoradagi vazningizni hisoblang.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500;600&family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script>try{var t=localStorage.getItem("qz-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <style>
+    /* Tungi osmon sahnasi: ikkala mavzuda ham bir xil ko‘rinadi.
+       Sahna ustidagi matnlar shu ranglardan foydalanadi. */
+    :root {
+      --qs-osmon: #060b22;
+      --qs-osmon-markaz: #121c4c;
+      --qs-yulduz: #e4e9ff;
+      --qs-orbita: rgba(172, 188, 255, 0.17);
+      --qs-tanlangan: #f5b648;
+      --qs-matn: #eef2fd;
+      --qs-matn-2: #a9b4dc;
+      --qs-quyosh-markaz: #fff7e0;
+      --qs-quyosh: #f5b648;
+      --qs-quyosh-chet: #e0761c;
+      --qs-soya: #04061a;
+      --qs-asteroid: #9a93a8;
+      --p-merkuriy: #b5aea6;
+      --p-venera: #e8cd92;
+      --p-yer: #4d91ec;
+      --p-oy: #c8c6c0;
+      --p-mars: #d9683f;
+      --p-yupiter: #d9aa7c;
+      --p-saturn: #e6cf96;
+      --p-uran: #92dbe2;
+      --p-neptun: #5576ec;
+    }
+
+    /* ---------- Sahna + ma’lumot paneli ---------- */
+    .qs-grid { display: grid; gap: 20px; }
+    .qs-grid > * { min-width: 0; }
+    @media (min-width: 900px) {
+      .qs-grid { grid-template-columns: minmax(0, 1fr) 360px; align-items: start; gap: 24px; }
+      .qs-info { position: sticky; top: 84px; }
+    }
+
+    .qs-datebar { justify-content: space-between; }
+    .qs-date { display: grid; gap: 2px; min-width: 0; }
+    .qs-date__val {
+      font-family: var(--f-mono);
+      font-weight: 600;
+      font-size: clamp(0.98rem, 0.9rem + 0.4vw, 1.15rem);
+      font-variant-numeric: tabular-nums;
+      color: var(--siyoh);
+    }
+    .qs-farq { font-size: var(--fs-small); color: var(--siyoh-2); min-width: 0; }
+
+    .sky {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1.07;
+      max-height: max(340px, min(640px, calc(100vh - 270px)));
+      background: var(--qs-osmon);
+      overflow: hidden;
+    }
+    @media (min-width: 560px) and (max-width: 899px) { .sky { aspect-ratio: 4 / 3; } }
+    .sky canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+    .sky__note {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 10px;
+      margin: 0;
+      font: 500 0.64rem/1.3 var(--f-mono);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--qs-matn-2);
+      pointer-events: none;
+    }
+
+    .qs-controls .seg { flex: 0 1 auto; }
+    @media (min-width: 1180px) { .qs-controls .seg { margin-left: auto; } }
+    .qs-controls .btn svg { width: 16px; height: 16px; }
+    #qs-play .i-play { display: none; }
+    #qs-play.is-paused .i-play { display: block; }
+    #qs-play.is-paused .i-pause { display: none; }
+    #qs-play { min-width: 8.6rem; }
+
+    .qs-planets { align-items: flex-start; flex-direction: column; gap: 10px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 36px;
+      padding: 6px 12px 6px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--chiziq-kuchli);
+      background: var(--sirt);
+      color: var(--siyoh);
+      font: 600 0.86rem/1 var(--f-body);
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.25s var(--ease-spring);
+    }
+    .chip:hover { background: var(--sirt-2); }
+    .chip:active { transform: scale(0.97); }
+    .chip[aria-pressed="true"] {
+      background: color-mix(in srgb, var(--lojuvard) 14%, var(--sirt));
+      border-color: var(--lojuvard);
+    }
+    .chip__dot {
+      width: 12px;
+      height: 12px;
+      flex: none;
+      border-radius: 50%;
+      background: var(--p);
+      box-shadow: inset -2px -2px 0 color-mix(in srgb, var(--qs-soya) 35%, transparent), 0 0 0 1px var(--chiziq-kuchli);
+    }
+
+    /* Ma’lumot paneli */
+    .qs-info { display: grid; gap: 16px; padding: 22px; }
+    .qs-info__head { display: flex; align-items: center; gap: 16px; min-width: 0; }
+    .qs-info__head > div { min-width: 0; }
+    .qs-info h2 { font-size: clamp(1.5rem, 1.2rem + 1vw, 1.9rem); margin-top: 4px; }
+    .disc {
+      position: relative;
+      flex: none;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 34% 32%,
+        color-mix(in srgb, var(--p) 55%, var(--qs-quyosh-markaz)) 0%,
+        var(--p) 48%,
+        color-mix(in srgb, var(--p) 45%, var(--qs-soya)) 100%);
+      box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--p) 70%, transparent);
+    }
+    .disc--halqa::after {
+      content: "";
+      position: absolute;
+      left: -16px;
+      right: -16px;
+      top: 38%;
+      bottom: 38%;
+      border-radius: 50%;
+      border: 3px solid color-mix(in srgb, var(--p-saturn) 80%, var(--qs-soya));
+      transform: rotate(-18deg);
+    }
+    .qs-info__desc { color: var(--siyoh-2); }
+    .qs-info .stats { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+    .qs-info .stats > div { padding: 12px 14px; }
+    .qs-info .stats dd { font-size: 0.86rem; line-height: 1.35; }
+    .stats .note {
+      display: block;
+      margin-top: 3px;
+      font-family: var(--f-body);
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--siyoh-2);
+      line-height: 1.3;
+    }
+    .qs-fact {
+      padding: 14px 16px;
+      border-radius: var(--r-s);
+      background: color-mix(in srgb, var(--zafaron-yorqin) 13%, var(--sirt));
+      border-left: 3px solid var(--zafaron-yorqin);
+    }
+    .qs-fact .label { display: block; margin-bottom: 4px; color: var(--zafaron); }
+
+    /* ---------- Vazn kalkulyatori ---------- */
+    .vazn { padding-top: clamp(48px, 6vw, 88px); }
+    .vazn__head { display: grid; gap: 10px; margin-bottom: clamp(20px, 3vw, 32px); }
+    .vazn__head p { color: var(--siyoh-2); max-width: 60ch; }
+    .vazn__grid { display: grid; gap: 20px; }
+    .vazn__grid > * { min-width: 0; }
+    @media (min-width: 800px) { .vazn__grid { grid-template-columns: 300px minmax(0, 1fr); gap: 24px; align-items: start; } }
+    .vazn__field label { font-weight: 600; }
+    .vazn__input { display: flex; align-items: center; gap: 10px; }
+    .vazn__input input { width: 9.5ch; font-family: var(--f-mono); font-weight: 600; font-size: 1.15rem; }
+    .vazn__input span { font-family: var(--f-mono); color: var(--siyoh-2); }
+    .vazn__hint { font-size: var(--fs-small); color: var(--siyoh-2); }
+    .vazn__err { font-size: var(--fs-small); font-weight: 600; color: var(--anor); min-height: 1.4em; }
+    .vazn__input input[aria-invalid="true"] { border-color: var(--anor); }
+    .vazn__xulosa { margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--chiziq); color: var(--siyoh-2); font-size: var(--fs-small); }
+    .vazn__xulosa b { color: var(--siyoh); font-family: var(--f-mono); font-weight: 600; font-size: 0.86rem; }
+    .vazn__xulosa:empty { display: none; }
+
+    .bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; --yer: 40%; }
+    .bars li {
+      display: grid;
+      grid-template-columns: 6.6rem minmax(0, 1fr) 5.6rem;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .bars__name { display: flex; align-items: center; gap: 8px; font-weight: 600; min-width: 0; }
+    .bars__track {
+      position: relative;
+      height: 14px;
+      border-radius: 999px;
+      background: var(--sirt-2);
+      min-width: 0;
+    }
+    .bars__track::after {
+      content: "";
+      position: absolute;
+      top: -4px;
+      bottom: -4px;
+      left: var(--yer);
+      border-left: 1.5px dashed var(--chiziq-kuchli);
+    }
+    .bars__fill {
+      display: block;
+      height: 100%;
+      width: 0;
+      border-radius: 999px;
+      background: var(--lojuvard);
+      transition: width 0.5s var(--ease-out), opacity 0.2s;
+    }
+    .bars li.is-yer .bars__fill { background: var(--zafaron-yorqin); }
+    .bars li.is-yer .bars__name { color: var(--zafaron); }
+    .bars__val { font-family: var(--f-mono); font-weight: 600; font-size: 0.92rem; text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .bars.is-off .bars__fill { opacity: 0; }
+    .bars__foot { margin-top: 16px; font-size: var(--fs-small); color: var(--siyoh-2); }
+    @media (max-width: 420px) {
+      .bars li { grid-template-columns: 5.4rem minmax(0, 1fr) 4.9rem; gap: 8px; }
+      .bars__val { font-size: 0.84rem; }
+    }
+  </style>
+</head>
+<body data-root="../" data-topic="quyosh-tizimi">
+  <a class="skip-link" href="#asosiy">Asosiy qismga o‘tish</a>
+
+  <header class="topbar">
+    <div class="wrap topbar__in">
+      <a class="brand" href="../index.html">
+        <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M31 16 26.61 20.39 26.61 26.61 20.39 26.61 16 31 11.61 26.61 5.39 26.61 5.39 20.39 1 16 5.39 11.61 5.39 5.39 11.61 5.39 16 1 20.39 5.39 26.61 5.39 26.61 11.61Z"/><circle class="c" cx="16" cy="16" r="5.2"/></svg>
+        Qiziqarli
+      </a>
+      <nav class="nav" aria-label="Asosiy menyu">
+        <a href="../index.html#mavzular">Mavzular</a>
+        <a class="nav__extra" href="../index.html#fakt">Bugungi fakt</a>
+        <a href="viktorina.html">Viktorina</a>
+      </nav>
+      <button class="theme-btn" type="button" data-theme-toggle aria-label="Tungi rejimga o‘tish">
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a6.8 6.8 0 0 0 10.7 10.7z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="asosiy">
+    <section class="wrap topic-hero">
+      <a class="back-link" href="../index.html#mavzular">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        Barcha mavzular
+      </a>
+      <div class="topic-meta">
+        <span class="tag" data-cat="koinot">Koinot</span>
+        <span class="label">Simulyatsiya · 6 daqiqa</span>
+      </div>
+      <h1>Quyosh tizimi</h1>
+      <p class="lead">Sakkiz sayyora Quyosh atrofida haqiqiy nisbiy tezliklarida aylanmoqda, holatlari esa bugungi sanaga mos. Vaqtni tezlashtiring va istalgan sayyorani bosib, u haqida bilib oling.</p>
+    </section>
+
+    <section class="wrap" aria-label="Quyosh tizimi simulyatsiyasi">
+      <div class="qs-grid">
+        <div class="stage">
+          <div class="stage__bar stage__bar--top qs-datebar">
+            <div class="qs-date">
+              <span class="label">Simulyatsiya sanasi</span>
+              <time id="qs-sana" class="qs-date__val">—</time>
+            </div>
+            <span id="qs-farq" class="qs-farq">Bugun</span>
+          </div>
+
+          <div class="sky" id="qs-sky">
+            <canvas id="qs-canvas" role="img" aria-label="Quyosh tizimi modeli: markazda Quyosh, atrofida sakkiz sayyora o‘z orbitalarida aylanadi. Sayyorani tanlash uchun quyidagi tugmalardan foydalaning."></canvas>
+            <p class="sky__note">Masofa va o‘lchamlar masshtabda emas</p>
+          </div>
+
+          <div class="stage__bar qs-controls">
+            <button id="qs-play" class="btn btn--small" type="button">
+              <svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>
+              <svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.8v14.4c0 .8.9 1.3 1.6.9l11.2-7.2c.6-.4.6-1.4 0-1.8L8.6 3.9C7.9 3.5 7 4 7 4.8z"/></svg>
+              <span>To‘xtatish</span>
+            </button>
+            <button id="qs-bugun" class="btn btn--small btn--ghost qs-bugun" type="button">Bugunga qaytish</button>
+            <div class="seg" role="group" aria-label="Simulyatsiya tezligi">
+              <button type="button" id="qs-tezlik-kun" data-days="1" aria-pressed="false" title="Bir soniyada 1 kun o‘tadi">1 kun/s</button>
+              <button type="button" id="qs-tezlik-oy" data-days="30.436875" aria-pressed="true" title="Bir soniyada 1 oy o‘tadi">1 oy/s</button>
+              <button type="button" id="qs-tezlik-yil" data-days="365.2425" aria-pressed="false" title="Bir soniyada 1 yil o‘tadi">1 yil/s</button>
+              <button type="button" id="qs-tezlik-10yil" data-days="3652.425" aria-pressed="false" title="Bir soniyada 10 yil o‘tadi">10 yil/s</button>
+            </div>
+          </div>
+
+          <div class="stage__bar qs-planets">
+            <span class="label" id="qs-chips-label">Sayyorani tanlang</span>
+            <div class="chips" id="qs-chips" role="group" aria-labelledby="qs-chips-label"></div>
+          </div>
+        </div>
+
+        <aside class="panel qs-info" id="qs-info" aria-label="Tanlangan sayyora haqida"></aside>
+      </div>
+      <p class="sr-only" id="qs-live" aria-live="polite"></p>
+    </section>
+
+    <section class="wrap vazn" aria-labelledby="vazn-sarlavha">
+      <div class="vazn__head">
+        <span class="label">Kalkulyator</span>
+        <h2 id="vazn-sarlavha">Boshqa sayyoradagi vazningiz</h2>
+        <p>Massangiz hamma joyda bir xil: tanangizdagi modda miqdori o‘zgarmaydi. Tarozi ko‘rsatadigan og‘irlik esa o‘zgaradi, chunki har bir osmon jismining tortishish kuchi har xil.</p>
+      </div>
+      <div class="vazn__grid">
+        <div class="panel vazn__field">
+          <div class="field">
+            <label for="vazn-kg">Yerdagi vazningiz</label>
+            <div class="vazn__input">
+              <input id="vazn-kg" name="vazn-kg" type="text" inputmode="decimal" autocomplete="off" value="60" aria-describedby="vazn-izoh vazn-xato">
+              <span aria-hidden="true">kg</span>
+            </div>
+            <p class="vazn__hint" id="vazn-izoh">60 kg shunchaki misol. O‘z vazningizni yozing: natija darhol yangilanadi.</p>
+            <p class="vazn__err" id="vazn-xato" aria-live="polite"></p>
+          </div>
+          <p class="vazn__xulosa" id="vazn-xulosa"></p>
+        </div>
+        <div class="panel">
+          <ul class="bars" id="vazn-bars" aria-label="Tarozi ko‘rsatadigan og‘irlik"></ul>
+          <p class="bars__foot">Uzuq chiziq Yerdagi vazningizni bildiradi. Gaz gigantlarida qattiq sirt yo‘q, ular uchun qiymat bulutlar sathiga hisoblangan.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap didyou">
+      <h2>Bilasizmi?</h2>
+      <ul class="fact-list">
+        <li><p><strong>Deyarli hamma massa Quyoshda.</strong> Quyosh tizimidagi jami massaning taxminan 99,8 foizi Quyoshga to‘g‘ri keladi. Qolgan hamma narsa, jumladan sakkiz sayyora, atigi 0,2 foizni tashkil qiladi.</p></li>
+        <li><p><strong>Biz juda tez uchyapmiz.</strong> Yer Quyosh atrofida soniyasiga taxminan 30 km, ya’ni soatiga 107 000 km tezlikda harakatlanadi.</p></li>
+        <li><p><strong>Nur yo‘li 8 daqiqa.</strong> Quyosh nuri Yerga taxminan 8 daqiqa 20 soniyada yetib keladi. Neptungacha esa 4 soatdan ortiq yo‘l bosadi.</p></li>
+        <li><p><strong>Neptunning birinchi yili.</strong> Neptun 1846-yilda topilgan. Shundan beri u Quyosh atrofida faqat bir marta to‘liq aylanib chiqdi: bu 2011-yilda yakunlandi.</p></li>
+        <li><p><strong>Nega sakkizta?</strong> 2006-yilda Xalqaro astronomiya ittifoqi Plutonni mitti sayyora deb qayta tasnifladi. Shundan beri Quyosh tizimida rasman sakkizta sayyora bor.</p></li>
+        <li><p><strong>Tong yulduzi aslida sayyora.</strong> Oydan keyin tungi osmondagi eng yorqin tabiiy jism Venera. Uni ko‘pincha «tong yulduzi» yoki «Cho‘lpon» deyishadi.</p></li>
+      </ul>
+    </section>
+
+    <section class="wrap next-topic" aria-label="Keyingi mavzu">
+      <div data-next-topic></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__in">
+      <div class="footer__about">
+        <a class="brand" href="../index.html">
+          <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M31 16 26.61 20.39 26.61 26.61 20.39 26.61 16 31 11.61 26.61 5.39 26.61 5.39 20.39 1 16 5.39 11.61 5.39 5.39 11.61 5.39 16 1 20.39 5.39 26.61 5.39 26.61 11.61Z"/><circle class="c" cx="16" cy="16" r="5.2"/></svg>
+          Qiziqarli
+        </a>
+        <p>Koinot, tabiat, tarix va inson haqidagi bilimlar — o‘ynab o‘rganish uchun.</p>
+        <p>© <span data-year>2026</span> Qiziqarli</p>
+      </div>
+      <ul class="footer__links" data-footer-links></ul>
+    </div>
+  </footer>
+
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/common.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      var fmt = QZ.fmt;
+      var DAY_MS = 86400000;
+      var J2000 = Date.UTC(2000, 0, 1, 12, 0, 0);
+      var OYLAR = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentabr", "oktabr", "noyabr", "dekabr"];
+      var TAU = Math.PI * 2;
+      var DEG = Math.PI / 180;
+
+      function km(n) { return fmt(n) + " km"; }
+      function hm(h, m) { return fmt(h) + " soat" + (m ? " " + fmt(m) + " daqiqa" : ""); }
+      function temp(t) { return (t > 0 ? "+" : "") + fmt(t) + " °C"; }
+
+      /* ---------- Sayyoralar (NASA ma’lumotlari) ----------
+         a: o‘rtacha masofa (a.b.), P: yulduz davri (kun),
+         L0: J2000 dagi o‘rtacha uzunlama (daraja), size: chizmadagi nisbiy o‘lcham */
+      var PLANETS = [
+        {
+          id: "merkuriy", name: "Merkuriy", a: 0.387, P: 87.97, L0: 252.25, size: 3.7,
+          desc: "Eng kichik va Quyoshga eng yaqin sayyora.",
+          stats: [
+            ["Diametri", km(4879)],
+            ["Quyoshdan masofa", fmt(57.9, 1) + " mln km"],
+            ["Bir yili", fmt(88) + " kun"],
+            ["Bir sutkasi", fmt(176) + " Yer kuni", "quyosh sutkasi: tongdan keyingi tonggacha"],
+            ["Yo‘ldoshlari", fmt(0)],
+            ["O‘rtacha harorat", temp(-173) + " … " + temp(427), "tunda va kunduzi"]
+          ],
+          fact: "Merkuriy Quyoshga eng yaqin bo‘lsa ham, eng issiq sayyora emas. Bu unvon Veneraga tegishli: uning qalin atmosferasi issiqlikni ushlab turadi."
+        },
+        {
+          id: "venera", name: "Venera", a: 0.723, P: 224.70, L0: 181.98, size: 5.9,
+          desc: "Qalin bulutlar ostidagi eng issiq sayyora.",
+          stats: [
+            ["Diametri", km(12104)],
+            ["Quyoshdan masofa", fmt(108.2, 1) + " mln km"],
+            ["Bir yili", fmt(225) + " kun"],
+            ["Bir sutkasi", fmt(243) + " Yer kuni", "o‘z o‘qi atrofida, teskari yo‘nalishda"],
+            ["Yo‘ldoshlari", fmt(0)],
+            ["O‘rtacha harorat", temp(464)]
+          ],
+          fact: "Venera teskari yo‘nalishda aylanadi, shuning uchun u yerda Quyosh g‘arbdan chiqadi. O‘z o‘qi atrofida bir aylanishi Quyosh atrofidagi bir aylanishidan uzoqroq davom etadi."
+        },
+        {
+          id: "yer", name: "Yer", a: 1.0, P: 365.256, L0: 100.46, size: 6.1,
+          desc: "Bizning uyimiz. Hayot borligi ma’lum bo‘lgan yagona sayyora.",
+          stats: [
+            ["Diametri", km(12756)],
+            ["Quyoshdan masofa", fmt(149.6, 1) + " mln km"],
+            ["Bir yili", fmt(365.25, 2) + " kun"],
+            ["Bir sutkasi", hm(24)],
+            ["Yo‘ldoshlari", fmt(1), "Oy"],
+            ["O‘rtacha harorat", temp(15)]
+          ],
+          fact: "Yer sirtida suyuq suv barqaror turadigan yagona ma’lum sayyora."
+        },
+        {
+          id: "mars", name: "Mars", a: 1.524, P: 686.98, L0: 355.43, size: 4.7,
+          desc: "Temir oksidli chang qoplagan sovuq «qizil sayyora».",
+          stats: [
+            ["Diametri", km(6792)],
+            ["Quyoshdan masofa", fmt(227.9, 1) + " mln km"],
+            ["Bir yili", fmt(687) + " kun"],
+            ["Bir sutkasi", hm(24, 37)],
+            ["Yo‘ldoshlari", fmt(2), "Fobos va Deymos"],
+            ["O‘rtacha harorat", temp(-65)]
+          ],
+          fact: "Marsdagi Olimp tog‘i taxminan " + fmt(22) + " km baland: bu Everestdan " + fmt(2.5, 1) + " baravar baland. U Quyosh tizimidagi eng katta vulqon."
+        },
+        {
+          id: "yupiter", name: "Yupiter", a: 5.203, P: 4332.59, L0: 34.40, size: 12.5,
+          desc: "Quyosh tizimidagi eng katta sayyora, gaz giganti.",
+          stats: [
+            ["Diametri", km(142984)],
+            ["Quyoshdan masofa", fmt(778.5, 1) + " mln km"],
+            ["Bir yili", fmt(11.9, 1) + " yil"],
+            ["Bir sutkasi", hm(9, 56)],
+            ["Yo‘ldoshlari", fmt(95) + " dan ortiq"],
+            ["O‘rtacha harorat", temp(-110), "bulutlarning yuqori qatlamida"]
+          ],
+          fact: "Buyuk Qizil Dog‘ Yerdan kattaroq bo‘ron. Astronomlar uni kamida " + fmt(190) + " yildan beri kuzatib kelishadi."
+        },
+        {
+          id: "saturn", name: "Saturn", a: 9.537, P: 10759.22, L0: 49.94, size: 10, rings: true,
+          desc: "Halqalari eng yaqqol ko‘rinadigan gaz giganti.",
+          stats: [
+            ["Diametri", km(120536)],
+            ["Quyoshdan masofa", fmt(1432) + " mln km"],
+            ["Bir yili", fmt(29.4, 1) + " yil"],
+            ["Bir sutkasi", hm(10, 33)],
+            ["Yo‘ldoshlari", fmt(270) + " dan ortiq"],
+            ["O‘rtacha harorat", temp(-140), "bulutlar sathida"]
+          ],
+          fact: "Saturnning o‘rtacha zichligi " + fmt(0.69, 2) + " g/sm³, ya’ni suvnikidan kam. Bu jihatdan u suvdan yengil."
+        },
+        {
+          id: "uran", name: "Uran", a: 19.19, P: 30688.5, L0: 313.23, size: 7.8,
+          desc: "Yonboshlab aylanadigan muz giganti.",
+          stats: [
+            ["Diametri", km(51118)],
+            ["Quyoshdan masofa", fmt(2867) + " mln km"],
+            ["Bir yili", fmt(84) + " yil"],
+            ["Bir sutkasi", hm(17, 14)],
+            ["Yo‘ldoshlari", fmt(29)],
+            ["O‘rtacha harorat", temp(-195), "bulutlar sathida"]
+          ],
+          fact: "Uranning aylanish o‘qi " + fmt(98) + "° og‘gan, shuning uchun u Quyosh atrofida go‘yo yonboshlab aylanadi."
+        },
+        {
+          id: "neptun", name: "Neptun", a: 30.07, P: 60182, L0: 304.88, size: 7.6,
+          desc: "Quyoshdan eng uzoq va eng shamolli sayyora.",
+          stats: [
+            ["Diametri", km(49528)],
+            ["Quyoshdan masofa", fmt(4515) + " mln km"],
+            ["Bir yili", fmt(164.8, 1) + " yil"],
+            ["Bir sutkasi", hm(16, 6)],
+            ["Yo‘ldoshlari", fmt(16)],
+            ["O‘rtacha harorat", temp(-200), "bulutlar sathida"]
+          ],
+          fact: "Neptunda shamol tezligi soatiga " + fmt(2000) + " km dan oshadi. Bu sayyora 1846-yilda avval hisob-kitob orqali bashorat qilinib, keyin teleskopda topilgan."
+        }
+      ];
+      var LN_MIN = Math.log(PLANETS[0].a);
+      var LN_MAX = Math.log(PLANETS[PLANETS.length - 1].a);
+
+      /* ---------- Holat ---------- */
+      var reduced = QZ.reducedMotion;
+      var playing = !reduced;
+      var speed = 30.436875;          /* kun / soniya */
+      var simDays = nowDays();
+      var selected = 2;               /* Yer */
+      var hovered = -1;
+      var lastPointer = "mouse";
+      var trailK = playing ? 1 : 0;   /* izlarning silliq paydo bo‘lishi */
+
+      function nowDays() { return (Date.now() - J2000) / DAY_MS; }
+
+      /* ---------- DOM ---------- */
+      var sky = document.getElementById("qs-sky");
+      var canvas = document.getElementById("qs-canvas");
+      var ctx = canvas.getContext("2d");
+      var dateEl = document.getElementById("qs-sana");
+      var farqEl = document.getElementById("qs-farq");
+      var playBtn = document.getElementById("qs-play");
+      var todayBtn = document.getElementById("qs-bugun");
+      var speedBtns = Array.prototype.slice.call(document.querySelectorAll("[data-days]"));
+      var chipsBox = document.getElementById("qs-chips");
+      var infoEl = document.getElementById("qs-info");
+      var liveEl = document.getElementById("qs-live");
+
+      /* ---------- Ranglar ---------- */
+      var C = {};
+      var COLOR_KEYS = ["--qs-osmon", "--qs-osmon-markaz", "--qs-yulduz", "--qs-orbita", "--qs-tanlangan", "--qs-matn", "--qs-matn-2",
+        "--qs-quyosh-markaz", "--qs-quyosh", "--qs-quyosh-chet", "--qs-soya", "--qs-asteroid"];
+      var monoFont = "monospace";
+
+      function hexToRgb(h) {
+        h = String(h).trim();
+        if (h.charAt(0) === "#") {
+          if (h.length === 4) h = "#" + h[1] + h[1] + h[2] + h[2] + h[3] + h[3];
+          var n = parseInt(h.slice(1), 16);
+          return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+        }
+        var m = h.match(/[\d.]+/g);
+        return m ? [+m[0], +m[1], +m[2]] : [128, 128, 128];
+      }
+      function rgba(rgb, a) { return "rgba(" + Math.round(rgb[0]) + "," + Math.round(rgb[1]) + "," + Math.round(rgb[2]) + "," + a + ")"; }
+      function mix(a, b, t) { return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]; }
+
+      function readColors() {
+        COLOR_KEYS.forEach(function (k) { C[k] = QZ.cssVar(k); });
+        C.sunRgb = hexToRgb(C["--qs-quyosh"]);
+        C.sunCore = hexToRgb(C["--qs-quyosh-markaz"]);
+        C.sunEdge = hexToRgb(C["--qs-quyosh-chet"]);
+        C.shadow = hexToRgb(C["--qs-soya"]);
+        C.selRgb = hexToRgb(C["--qs-tanlangan"]);
+        C.starRgb = hexToRgb(C["--qs-yulduz"]);
+        C.astRgb = hexToRgb(C["--qs-asteroid"]);
+        PLANETS.forEach(function (p) {
+          p.rgb = hexToRgb(QZ.cssVar("--p-" + p.id));
+          p.light = mix(p.rgb, C.sunCore, 0.35);
+          p.dark = mix(p.rgb, C.shadow, 0.6);
+        });
+        monoFont = QZ.cssVar("--f-mono") || "monospace";
+        bgDirty = true;
+      }
+
+      /* ---------- Tasodifiy, lekin har safar bir xil yulduzlar ---------- */
+      function rng(seed) {
+        return function () {
+          seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+          var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+          t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+          return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        };
+      }
+      var rand = rng(1969);
+      var STARS = [];
+      for (var s = 0; s < 190; s++) {
+        STARS.push({ x: rand(), y: rand(), r: 0.35 + Math.pow(rand(), 3) * 1.2, a: 0.25 + rand() * 0.6, tw: rand() < 0.35, ph: rand() * TAU, f: 0.4 + rand() * 1.4 });
+      }
+      var ASTEROIDS = [];
+      for (var k = 0; k < 230; k++) {
+        var aa = 2.1 + rand() * 1.2;
+        ASTEROIDS.push({ a: aa, P: 365.256 * Math.pow(aa, 1.5), ph: rand() * TAU, j: (rand() - 0.5) * 4, r: 0.5 + rand() * 0.7, al: 0.25 + rand() * 0.45 });
+      }
+
+      /* ---------- O‘lchamlar ---------- */
+      var W = 0, H = 0, dpr = 1, cx = 0, cy = 0, sunR = 12, inner = 30, outer = 100;
+      var bg = document.createElement("canvas");
+      var bgDirty = true;
+
+      function orbitRadius(a) {
+        var f = (Math.log(a) - LN_MIN) / (LN_MAX - LN_MIN);
+        return inner + f * (outer - inner);
+      }
+
+      function layout() {
+        var rect = sky.getBoundingClientRect();
+        W = Math.max(1, rect.width);
+        H = Math.max(1, rect.height);
+        dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+        canvas.width = Math.round(W * dpr);
+        canvas.height = Math.round(H * dpr);
+        var noteSpace = 26;
+        var m = Math.min(W, H - noteSpace);
+        var u = m / 600;
+        var pu = Math.max(u, 0.62);
+        cx = W / 2;
+        cy = (H - noteSpace) / 2 + 4;
+        sunR = Math.max(11, 19 * u);
+        outer = m / 2 - Math.max(8, 12 * u) - 7.6 * pu;
+        inner = sunR + Math.max(13, 26 * u);
+        PLANETS.forEach(function (p) {
+          p.orbit = orbitRadius(p.a);
+          p.R = Math.max(2.2, p.size * pu);
+        });
+        bgDirty = true;
+      }
+
+      function paintBackground() {
+        bg.width = canvas.width;
+        bg.height = canvas.height;
+        var b = bg.getContext("2d");
+        b.setTransform(dpr, 0, 0, dpr, 0, 0);
+        var g = b.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * 0.75);
+        g.addColorStop(0, C["--qs-osmon-markaz"]);
+        g.addColorStop(1, C["--qs-osmon"]);
+        b.fillStyle = g;
+        b.fillRect(0, 0, W, H);
+        STARS.forEach(function (st) {
+          if (st.tw && !reduced) return;
+          b.fillStyle = rgba(C.starRgb, st.a);
+          b.beginPath();
+          b.arc(st.x * W, st.y * H, st.r, 0, TAU);
+          b.fill();
+        });
+        bgDirty = false;
+      }
+
+      /* ---------- Holatni hisoblash ---------- */
+      function angleOf(p, days) { return (p.L0 + 360 * days / p.P) * DEG; }
+      function posOf(p, days) {
+        var t = angleOf(p, days);
+        /* soat miliga teskari (shimoldan qaraganda): ekranda y pastga o‘sadi */
+        return { x: cx + p.orbit * Math.cos(t), y: cy - p.orbit * Math.sin(t), t: t };
+      }
+
+      /* ---------- Chizish ---------- */
+      function drawSun(time) {
+        var pulse = reduced ? 1 : 1 + 0.035 * Math.sin(time * 1.7);
+        var gr = sunR * 4.2 * pulse;
+        var g = ctx.createRadialGradient(cx, cy, sunR * 0.4, cx, cy, gr);
+        g.addColorStop(0, rgba(C.sunRgb, 0.55));
+        g.addColorStop(0.28, rgba(C.sunRgb, 0.2));
+        g.addColorStop(0.6, rgba(C.sunRgb, 0.06));
+        g.addColorStop(1, rgba(C.sunRgb, 0));
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(cx, cy, gr, 0, TAU); ctx.fill();
+
+        var d = ctx.createRadialGradient(cx - sunR * 0.25, cy - sunR * 0.25, 0, cx, cy, sunR);
+        d.addColorStop(0, rgba(C.sunCore, 1));
+        d.addColorStop(0.55, rgba(C.sunRgb, 1));
+        d.addColorStop(1, rgba(C.sunEdge, 1));
+        ctx.fillStyle = d;
+        ctx.beginPath(); ctx.arc(cx, cy, sunR, 0, TAU); ctx.fill();
+      }
+
+      function drawPlanet(p, x, y, alpha) {
+        var R = p.R;
+        var dx = cx - x, dy = cy - y, dl = Math.hypot(dx, dy) || 1;
+        var lx = x + dx / dl * R * 0.5, ly = y + dy / dl * R * 0.5;
+        ctx.globalAlpha = alpha;
+
+        if (p.rings) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(-0.42);
+          ctx.strokeStyle = rgba(mix(p.rgb, C.shadow, 0.25), 0.85);
+          ctx.lineWidth = Math.max(1.2, R * 0.32);
+          ctx.beginPath(); ctx.ellipse(0, 0, R * 2.05, R * 0.72, 0, Math.PI, TAU); ctx.stroke();
+          ctx.restore();
+        }
+
+        var g = ctx.createRadialGradient(lx, ly, R * 0.1, x, y, R * 1.08);
+        g.addColorStop(0, rgba(p.light, 1));
+        g.addColorStop(0.5, rgba(p.rgb, 1));
+        g.addColorStop(1, rgba(p.dark, 1));
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(x, y, R, 0, TAU); ctx.fill();
+
+        if (p.id === "yupiter" && R > 4) {
+          ctx.save();
+          ctx.beginPath(); ctx.arc(x, y, R, 0, TAU); ctx.clip();
+          ctx.fillStyle = rgba(mix(p.rgb, C.shadow, 0.45), 0.35);
+          ctx.fillRect(x - R, y - R * 0.42, R * 2, R * 0.2);
+          ctx.fillRect(x - R, y + R * 0.18, R * 2, R * 0.24);
+          ctx.fillStyle = rgba(mix(p.rgb, C.sunEdge, 0.6), 0.55);
+          ctx.beginPath(); ctx.ellipse(x + R * 0.3, y + R * 0.3, R * 0.2, R * 0.12, 0, 0, TAU); ctx.fill();
+          ctx.restore();
+        }
+
+        if (p.rings) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(-0.42);
+          ctx.strokeStyle = rgba(mix(p.rgb, C.sunCore, 0.15), 0.9);
+          ctx.lineWidth = Math.max(1.2, R * 0.32);
+          ctx.beginPath(); ctx.ellipse(0, 0, R * 2.05, R * 0.72, 0, 0, Math.PI); ctx.stroke();
+          ctx.restore();
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      function drawTrail(p, theta, sweep, alpha) {
+        if (sweep < 0.01) return;
+        var n = Math.max(8, Math.min(160, Math.ceil(sweep / (2 * DEG))));
+        ctx.lineCap = "butt";
+        ctx.lineWidth = Math.max(1.4, Math.min(p.R * 0.75, 5.5));
+        var px = cx + p.orbit * Math.cos(theta - sweep), py = cy - p.orbit * Math.sin(theta - sweep);
+        for (var i = 1; i <= n; i++) {
+          var t = theta - sweep + sweep * i / n;
+          var x = cx + p.orbit * Math.cos(t), y = cy - p.orbit * Math.sin(t);
+          ctx.strokeStyle = rgba(p.rgb, alpha * Math.pow(i / n, 1.6));
+          ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(x, y); ctx.stroke();
+          px = x; py = y;
+        }
+      }
+
+      function label(text, x, y, R, strong) {
+        ctx.font = (strong ? "600 " : "500 ") + "12px " + monoFont;
+        ctx.textBaseline = "middle";
+        var w = ctx.measureText(text).width;
+        var gap = R + 10;
+        var tx = x + gap;
+        if (tx + w > W - 8) tx = x - gap - w;
+        var ty = Math.max(12, Math.min(H - 34, y - R - 6));
+        ctx.lineJoin = "round";
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = C["--qs-osmon"];
+        ctx.strokeText(text, tx, ty);
+        ctx.fillStyle = strong ? C["--qs-matn"] : C["--qs-matn-2"];
+        ctx.fillText(text, tx, ty);
+      }
+
+      function render(time) {
+        if (bgDirty) paintBackground();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.drawImage(bg, 0, 0);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        /* miltillovchi yulduzlar */
+        if (!reduced) {
+          for (var i = 0; i < STARS.length; i++) {
+            var st = STARS[i];
+            if (!st.tw) continue;
+            var a = st.a * (0.55 + 0.45 * Math.sin(time * st.f + st.ph));
+            ctx.fillStyle = rgba(C.starRgb, Math.max(0.05, a));
+            ctx.beginPath(); ctx.arc(st.x * W, st.y * H, st.r, 0, TAU); ctx.fill();
+          }
+        }
+
+        /* orbitalar */
+        ctx.lineWidth = 1;
+        PLANETS.forEach(function (p, idx) {
+          ctx.strokeStyle = C["--qs-orbita"];
+          ctx.beginPath(); ctx.arc(cx, cy, p.orbit, 0, TAU); ctx.stroke();
+        });
+        var sp = PLANETS[selected];
+        ctx.strokeStyle = rgba(C.selRgb, 0.55);
+        ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.arc(cx, cy, sp.orbit, 0, TAU); ctx.stroke();
+
+        /* asteroidlar kamari */
+        var beltIn = orbitRadius(2.1), beltOut = orbitRadius(3.3);
+        for (var j = 0; j < ASTEROIDS.length; j++) {
+          var as = ASTEROIDS[j];
+          var ar = beltIn + (as.a - 2.1) / 1.2 * (beltOut - beltIn) + as.j * (W / 900);
+          var at = as.ph + TAU * simDays / as.P;
+          ctx.fillStyle = rgba(C.astRgb, as.al);
+          ctx.fillRect(cx + ar * Math.cos(at) - as.r / 2, cy - ar * Math.sin(at) - as.r / 2, as.r, as.r);
+        }
+
+        drawSun(time);
+
+        /* sayyoralar */
+        var positions = [];
+        PLANETS.forEach(function (p, idx) {
+          var pos = posOf(p, simDays);
+          positions.push(pos);
+          var degPerSec = 360 * speed / p.P;
+          var revs = degPerSec / 360;
+          var sweep = Math.min(TAU * 0.995, degPerSec * 0.32 * DEG) * trailK;
+          drawTrail(p, pos.t, sweep, revs > 1.5 ? 0.45 : 0.6);
+          var alpha = playing && revs > 2.5 ? Math.max(0.4, 1 - (revs - 2.5) / 6) : 1;
+          drawPlanet(p, pos.x, pos.y, alpha);
+          p.x = pos.x; p.y = pos.y;
+        });
+
+        /* tanlangan va ustiga kelingan sayyora */
+        var ring = reduced ? 0 : Math.sin(time * 3) * 1.2;
+        ctx.strokeStyle = C["--qs-tanlangan"];
+        ctx.lineWidth = 1.6;
+        ctx.beginPath(); ctx.arc(sp.x, sp.y, sp.R * (sp.rings ? 2.3 : 1) + 6 + ring, 0, TAU); ctx.stroke();
+        if (hovered >= 0 && hovered !== selected) {
+          var hp = PLANETS[hovered];
+          ctx.strokeStyle = C["--qs-matn-2"];
+          ctx.lineWidth = 1.2;
+          ctx.beginPath(); ctx.arc(hp.x, hp.y, hp.R * (hp.rings ? 2.3 : 1) + 5, 0, TAU); ctx.stroke();
+          label(hp.name, hp.x, hp.y, hp.R * (hp.rings ? 2.1 : 1), false);
+        }
+        label(sp.name, sp.x, sp.y, sp.R * (sp.rings ? 2.1 : 1), true);
+      }
+
+      /* ---------- Sana ---------- */
+      var lastDateText = "";
+      function updateDate() {
+        var d = new Date(J2000 + simDays * DAY_MS);
+        var txt = d.getDate() + "-" + OYLAR[d.getMonth()] + ", " + d.getFullYear() + "-yil";
+        if (txt === lastDateText) return;
+        lastDateText = txt;
+        dateEl.textContent = txt;
+        var iso = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+        if (d.getFullYear() >= 0 && d.getFullYear() <= 9999) dateEl.setAttribute("datetime", iso);
+
+        var now = new Date();
+        var diffDays = simDays - nowDays();
+        var months = (d.getFullYear() - now.getFullYear()) * 12 + (d.getMonth() - now.getMonth());
+        if (d.getDate() < now.getDate()) months -= 1;
+        var t;
+        if (Math.abs(diffDays) < 1 && d.getDate() === now.getDate()) {
+          t = "Bugun";
+        } else if (Math.abs(months) < 1) {
+          var dd = Math.max(1, Math.round(Math.abs(diffDays)));
+          t = "Bugundan " + fmt(dd) + " kun " + (diffDays > 0 ? "keyin" : "oldin");
+        } else {
+          var am = Math.abs(months), y = Math.floor(am / 12), mo = am % 12;
+          t = "Bugundan " + (y ? fmt(y) + " yil" : "") + (y && mo ? " " : "") + (mo ? fmt(mo) + " oy" : "") + (months > 0 ? " keyin" : " oldin");
+        }
+        farqEl.textContent = t;
+      }
+
+      /* ---------- Animatsiya sikli ---------- */
+      var rafId = 0, lastTs = 0, visible = true;
+      function wantLoop() { return visible && !document.hidden && (playing || !reduced || Math.abs(trailK - (playing ? 1 : 0)) > 0.01); }
+      function tick(ts) {
+        rafId = 0;
+        var dt = lastTs ? Math.min(0.1, (ts - lastTs) / 1000) : 0;
+        lastTs = ts;
+        if (playing) simDays += dt * speed;
+        var target = playing ? 1 : 0;
+        trailK = reduced ? target : trailK + (target - trailK) * Math.min(1, dt * 6);
+        render(ts / 1000);
+        updateDate();
+        if (wantLoop()) rafId = requestAnimationFrame(tick);
+        else lastTs = 0;
+      }
+      function requestFrame() { if (!rafId) rafId = requestAnimationFrame(tick); }
+
+      /* ---------- Boshqaruv ---------- */
+      function setPlaying(on) {
+        playing = on;
+        lastTs = 0;
+        playBtn.querySelector("span").textContent = on ? "To‘xtatish" : "Boshlash";
+        playBtn.classList.toggle("is-paused", !on);
+        requestFrame();
+      }
+      playBtn.addEventListener("click", function () { setPlaying(!playing); });
+
+      speedBtns.forEach(function (b) {
+        b.addEventListener("click", function () {
+          speed = parseFloat(b.getAttribute("data-days"));
+          speedBtns.forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+          requestFrame();
+        });
+      });
+
+      todayBtn.addEventListener("click", function () {
+        simDays = nowDays();
+        requestFrame();
+        QZ.toast("Sayyoralar bugungi o‘rnida");
+      });
+
+      /* Sayyora tugmalari */
+      PLANETS.forEach(function (p, i) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "chip";
+        b.id = "qs-p-" + p.id;
+        b.setAttribute("aria-pressed", i === selected ? "true" : "false");
+        b.innerHTML = '<span class="chip__dot" style="--p: var(--p-' + p.id + ')" aria-hidden="true"></span>' + p.name;
+        b.addEventListener("click", function () { select(i, true); });
+        chipsBox.appendChild(b);
+        p.btn = b;
+      });
+
+      function renderInfo(i) {
+        var p = PLANETS[i];
+        var rows = p.stats.map(function (s) {
+          return '<div><dt>' + s[0] + '</dt><dd>' + s[1] + (s[2] ? '<span class="note">' + s[2] + '</span>' : '') + '</dd></div>';
+        }).join("");
+        infoEl.innerHTML =
+          '<div class="qs-info__head">' +
+            '<span class="disc' + (p.rings ? ' disc--halqa' : '') + '" style="--p: var(--p-' + p.id + ')" aria-hidden="true"></span>' +
+            '<div><span class="label">Quyoshdan ' + (i + 1) + '-sayyora</span><h2>' + p.name + '</h2></div>' +
+          '</div>' +
+          '<p class="qs-info__desc">' + p.desc + '</p>' +
+          '<dl class="stats">' + rows + '</dl>' +
+          '<p class="qs-fact"><span class="label">Qiziq fakt</span>' + p.fact + '</p>';
+      }
+
+      function select(i, announce) {
+        if (i < 0 || i >= PLANETS.length) return;
+        selected = i;
+        PLANETS.forEach(function (p, j) { p.btn.setAttribute("aria-pressed", j === i ? "true" : "false"); });
+        renderInfo(i);
+        if (announce) liveEl.textContent = PLANETS[i].name + ". " + PLANETS[i].desc;
+        requestFrame();
+      }
+
+      /* Canvas ustida sichqoncha va barmoq */
+      function hitTest(ev) {
+        var r = canvas.getBoundingClientRect();
+        var x = ev.clientX - r.left, y = ev.clientY - r.top;
+        var best = -1, bestD = Infinity;
+        var extra = lastPointer === "touch" ? 22 : 13;
+        PLANETS.forEach(function (p, i) {
+          if (p.x == null) return;
+          var d = Math.hypot(x - p.x, y - p.y);
+          var hit = Math.max(p.R * (p.rings ? 2 : 1) + extra, lastPointer === "touch" ? 26 : 16);
+          if (d < hit && d < bestD) { best = i; bestD = d; }
+        });
+        return best;
+      }
+      canvas.addEventListener("pointerdown", function (ev) { lastPointer = ev.pointerType || "mouse"; });
+      canvas.addEventListener("pointermove", function (ev) {
+        if (ev.pointerType === "touch") return;
+        lastPointer = ev.pointerType || "mouse";
+        var h = hitTest(ev);
+        if (h !== hovered) {
+          hovered = h;
+          canvas.style.cursor = h >= 0 ? "pointer" : "";
+          requestFrame();
+        }
+      });
+      canvas.addEventListener("pointerleave", function () {
+        if (hovered !== -1) { hovered = -1; canvas.style.cursor = ""; requestFrame(); }
+      });
+      canvas.addEventListener("click", function (ev) {
+        var h = hitTest(ev);
+        if (h >= 0) select(h, true);
+      });
+
+      /* ---------- O‘lcham, ko‘rinish, mavzu ---------- */
+      readColors();
+      layout();
+      if (window.ResizeObserver) {
+        new ResizeObserver(function () { layout(); requestFrame(); }).observe(sky);
+      } else {
+        window.addEventListener("resize", function () { layout(); requestFrame(); });
+      }
+      if (window.IntersectionObserver) {
+        new IntersectionObserver(function (entries) {
+          visible = entries[0].isIntersecting;
+          if (visible) requestFrame();
+        }).observe(sky);
+      }
+      document.addEventListener("visibilitychange", function () {
+        lastTs = 0;
+        if (!document.hidden) requestFrame();
+      });
+      document.addEventListener("qz:theme", function () { readColors(); requestFrame(); });
+      if (window.matchMedia) {
+        var mq = window.matchMedia("(prefers-color-scheme: dark)");
+        var onScheme = function () { readColors(); requestFrame(); };
+        if (mq.addEventListener) mq.addEventListener("change", onScheme); else if (mq.addListener) mq.addListener(onScheme);
+      }
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { readColors(); requestFrame(); });
+
+      setPlaying(playing);
+      select(selected, false);
+      updateDate();
+      requestFrame();
+
+      /* =================== Vazn kalkulyatori =================== */
+      var G_EARTH = 9.81;
+      var BODIES = [
+        { id: "merkuriy", name: "Merkuriy", g: 3.7 },
+        { id: "venera", name: "Venera", g: 8.87 },
+        { id: "yer", name: "Yer", g: 9.81 },
+        { id: "oy", name: "Oy", g: 1.62 },
+        { id: "mars", name: "Mars", g: 3.71 },
+        { id: "yupiter", name: "Yupiter", g: 24.79 },
+        { id: "saturn", name: "Saturn", g: 10.44 },
+        { id: "uran", name: "Uran", g: 8.87 },
+        { id: "neptun", name: "Neptun", g: 11.15 }
+      ];
+      var gMax = Math.max.apply(null, BODIES.map(function (b) { return b.g; }));
+      var input = document.getElementById("vazn-kg");
+      var errEl = document.getElementById("vazn-xato");
+      var sumEl = document.getElementById("vazn-xulosa");
+      var barsEl = document.getElementById("vazn-bars");
+      barsEl.style.setProperty("--yer", (G_EARTH / gMax * 100) + "%");
+
+      barsEl.innerHTML = BODIES.map(function (b) {
+        return '<li class="' + (b.id === "yer" ? "is-yer" : "") + '">' +
+          '<span class="bars__name"><span class="chip__dot" style="--p: var(--p-' + b.id + ')" aria-hidden="true"></span>' + b.name + '</span>' +
+          '<span class="bars__track" aria-hidden="true"><span class="bars__fill" data-g="' + b.g + '"></span></span>' +
+          '<span class="bars__val" data-val="' + b.id + '">—</span>' +
+        '</li>';
+      }).join("");
+      var fills = barsEl.querySelectorAll(".bars__fill");
+      var vals = barsEl.querySelectorAll(".bars__val");
+
+      function parseKg(raw) {
+        var s = String(raw).trim().replace(/\s+/g, "").replace(",", ".");
+        if (s === "") return { err: "Vazningizni kiriting: 1 dan 500 kg gacha bo‘lgan son." };
+        if (/^[-−]/.test(s)) return { err: "Vazn manfiy bo‘lmaydi. 1 dan 500 kg gacha son kiriting." };
+        if (!/^\d+(\.\d+)?$/.test(s)) return { err: "Faqat son kiriting, masalan 60 yoki 72,5." };
+        var v = parseFloat(s);
+        if (v <= 0) return { err: "Vazn noldan katta bo‘lishi kerak." };
+        if (v > 500) return { err: "Bu juda katta qiymat. 500 kg gacha son kiriting." };
+        return { v: v };
+      }
+
+      function updateWeights() {
+        var r = parseKg(input.value);
+        if (r.err) {
+          errEl.textContent = r.err;
+          input.setAttribute("aria-invalid", "true");
+          barsEl.classList.add("is-off");
+          for (var i = 0; i < vals.length; i++) vals[i].textContent = "—";
+          sumEl.textContent = "";
+          return;
+        }
+        errEl.textContent = "";
+        input.removeAttribute("aria-invalid");
+        barsEl.classList.remove("is-off");
+        BODIES.forEach(function (b, i) {
+          var w = r.v * b.g / G_EARTH;
+          fills[i].style.width = (b.g / gMax * 100) + "%";
+          vals[i].textContent = fmt(w, 1) + " kg";
+        });
+        sumEl.innerHTML = "Yupiterda tarozi <b>" + fmt(r.v * 24.79 / G_EARTH, 1) + " kg</b> ko‘rsatadi, Oyda esa atigi <b>" +
+          fmt(r.v * 1.62 / G_EARTH, 1) + " kg</b>. Oyda sakrasangiz, Yerdagidan taxminan 6 baravar baland ko‘tarilasiz.";
+      }
+      input.addEventListener("input", updateWeights);
+      updateWeights();
+    })();
+  </script>
+</body>
+</html>

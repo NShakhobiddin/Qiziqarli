@@ -1,0 +1,1080 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Mayatnik laboratoriyasi · Qiziqarli</title>
+  <meta name="description" content="Mayatnikni sudrab qo‘yib yuboring, ip uzunligini va tortishish kuchini o‘zgartiring: tebranish davri nimaga bog‘liqligini o‘zingiz o‘lchab ko‘ring.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500;600&family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script>try{var t=localStorage.getItem("qz-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <style>
+    /* ---------- Laboratoriya joylashuvi ---------- */
+    .lab {
+      display: grid;
+      gap: 16px;
+      grid-template-areas: "stage" "stats" "controls" "task";
+    }
+    .lab > * { min-width: 0; }
+    .lab__stage { grid-area: stage; scroll-margin-top: 80px; }
+    .lab__controls { grid-area: controls; }
+    .lab__stats { grid-area: stats; }
+    .lab__task { grid-area: task; }
+    @media (min-width: 900px) {
+      .lab {
+        grid-template-columns: minmax(0, 1fr) 340px;
+        grid-template-rows: auto auto 1fr;
+        grid-template-areas: "stage controls" "stage stats" "stage task";
+        gap: 16px 24px;
+        align-items: start;
+      }
+    }
+
+    .lab__top { justify-content: space-between; padding-block: 12px; }
+    .lab__hint { font-size: var(--fs-small); color: var(--siyoh-2); min-width: 0; }
+    .lab__now {
+      font-family: var(--f-mono);
+      font-size: 0.74rem;
+      color: var(--siyoh);
+      background: var(--sirt-2);
+      padding: 5px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .pend {
+      position: relative;
+      height: clamp(360px, 50vw, 470px);
+      background: linear-gradient(180deg, var(--sirt) 0%, color-mix(in srgb, var(--sirt-2) 55%, var(--sirt)) 100%);
+      touch-action: none;
+      cursor: grab;
+    }
+    .pend.is-drag { cursor: grabbing; }
+    .pend canvas, .chart canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+    .chart {
+      position: relative;
+      height: clamp(112px, 16vw, 140px);
+      border-top: 1px solid var(--chiziq);
+      background: var(--sirt);
+    }
+
+    .lab__bar .btn svg { width: 16px; height: 16px; }
+    #qoyib-yuborish { min-width: 11.5rem; }
+    #qoyib-yuborish .i-play { display: none; }
+    #qoyib-yuborish.is-held .i-play { display: block; }
+    #qoyib-yuborish.is-held .i-stop { display: none; }
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 38px;
+      padding: 6px 14px 6px 8px;
+      border-radius: 999px;
+      border: 1.5px solid var(--chiziq-kuchli);
+      background: transparent;
+      color: var(--siyoh);
+      font: 600 0.9rem/1.2 var(--f-body);
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .toggle:hover { background: var(--sirt-2); }
+    .toggle__track {
+      position: relative;
+      flex: none;
+      width: 34px;
+      height: 20px;
+      border-radius: 999px;
+      background: var(--sirt-2);
+      box-shadow: inset 0 0 0 1.5px var(--chiziq-kuchli);
+      transition: background 0.2s;
+    }
+    .toggle__track::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--siyoh-2);
+      transition: transform 0.25s var(--ease-spring), background 0.2s;
+    }
+    .toggle[aria-pressed="true"] { border-color: var(--firuza); }
+    .toggle[aria-pressed="true"] .toggle__track { background: var(--firuza); box-shadow: none; }
+    .toggle[aria-pressed="true"] .toggle__track::after { transform: translateX(14px); background: var(--ustida); }
+    @media (min-width: 1100px) { .toggle { margin-left: auto; } }
+
+    /* Boshqaruv paneli */
+    .lab__controls { display: grid; gap: 18px; }
+    .lab__controls label { font-weight: 600; font-size: 0.95rem; }
+    .gseg {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-radius: var(--r-m);
+      width: 100%;
+    }
+    .gseg button {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+      padding: 9px 4px;
+      border-radius: 12px;
+      min-width: 0;
+    }
+    .gseg .num { font-size: 0.68rem; font-weight: 500; color: var(--siyoh-2); }
+    .gcap { font-size: var(--fs-small); color: var(--siyoh-2); }
+    .gcap b { color: var(--siyoh); font-weight: 600; }
+
+    .lab__stats dd .note,
+    .stats .note {
+      display: block;
+      margin-top: 3px;
+      font-family: var(--f-body);
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--siyoh-2);
+      line-height: 1.3;
+    }
+    .stats .note.is-long { color: var(--anor); }
+
+    /* Topshiriq */
+    .task { display: grid; gap: 12px; transition: border-color 0.3s, background 0.3s; }
+    .task h3 { font-size: 1.05rem; line-height: 1.3; }
+    .task p { color: var(--siyoh-2); font-size: 0.95rem; }
+    .task__meter { position: relative; height: 10px; border-radius: 999px; background: var(--sirt-2); margin-top: 4px; }
+    .task__goal {
+      position: absolute;
+      top: -4px;
+      bottom: -4px;
+      left: calc(50% - 4px);
+      width: 8px;
+      border-radius: 4px;
+      background: color-mix(in srgb, var(--yashm) 45%, transparent);
+    }
+    .task__mark {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 16px;
+      height: 16px;
+      margin: -8px 0 0 -8px;
+      border-radius: 50%;
+      background: var(--zafaron-yorqin);
+      border: 2px solid var(--sirt);
+      box-shadow: 0 0 0 1px var(--chiziq-kuchli);
+      transition: left 0.35s var(--ease-out);
+    }
+    .task__scale { display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 0.66rem; color: var(--siyoh-2); }
+    .task__status { font-size: 0.92rem; color: var(--siyoh); font-weight: 500; }
+    .task__status .num { font-weight: 600; }
+    .task__ok { display: none; align-items: center; gap: 10px; font-weight: 700; color: var(--yashm); }
+    .task__ok svg { width: 22px; height: 22px; flex: none; }
+    .task.is-done { border-color: var(--yashm); background: color-mix(in srgb, var(--yashm) 9%, var(--sirt)); }
+    .task.is-done .task__ok { display: flex; }
+    .task.is-done .task__mark { background: var(--yashm); }
+    .task__answer { padding: 12px 14px; border-radius: var(--r-s); background: var(--sirt-2); color: var(--siyoh) !important; }
+    .task .btn { justify-self: start; }
+
+    /* ---------- Formula ---------- */
+    .formula { padding-top: clamp(48px, 6vw, 88px); }
+    .formula__grid { display: grid; gap: 20px; }
+    .formula__grid > * { min-width: 0; }
+    @media (min-width: 900px) { .formula__grid { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 24px; align-items: start; } }
+    .formula__card { display: grid; gap: 18px; padding: clamp(20px, 3vw, 32px); }
+    .formula__card h2 { margin-top: 6px; }
+
+    .eq {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: nowrap;
+      gap: 0.22em;
+      padding: 22px 12px;
+      border-radius: var(--r-m);
+      background: var(--sirt-2);
+      font: 500 clamp(2.2rem, 1.6rem + 2.4vw, 3.4rem)/1 var(--f-body);
+      color: var(--siyoh);
+      overflow: hidden;
+    }
+    .eq i { font-style: italic; font-weight: 600; padding-right: 0.04em; }
+    .eq__op { margin: 0 0.12em; color: var(--siyoh-2); }
+    .eq__root { display: inline-flex; align-items: stretch; margin-left: 0.08em; }
+    .eq__rad { width: 0.62em; height: auto; flex: none; overflow: visible; }
+    .eq__rad path { fill: none; stroke: currentColor; stroke-width: 2.6px; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+    .eq__under { border-top: 2.6px solid currentColor; padding: 0.14em 0.12em 0.06em 0.1em; margin-left: -1px; }
+    .eq__frac { display: inline-grid; justify-items: center; font-size: 0.8em; }
+    .eq__frac > :first-child { padding: 0 0.25em 0.08em; border-bottom: 2.4px solid var(--siyoh); }
+    .eq__frac > :last-child { padding-top: 0.1em; }
+    .c-t { color: var(--zafaron); }
+    .c-l { color: var(--firuza); }
+    .c-g { color: var(--lojuvard); }
+
+    .legend { display: grid; gap: 8px; margin: 0; }
+    .legend div { display: grid; grid-template-columns: 1.6rem minmax(0, 1fr); gap: 10px; align-items: baseline; }
+    .legend dt { font: italic 700 1.1rem/1 var(--f-body); text-align: center; }
+    .legend dd { margin: 0; color: var(--siyoh-2); }
+    .eq__live {
+      font-family: var(--f-mono);
+      font-size: 0.84rem;
+      color: var(--siyoh);
+      padding-top: 14px;
+      border-top: 1px solid var(--chiziq);
+      overflow-wrap: anywhere;
+    }
+    .eq__live span { color: var(--siyoh-2); }
+
+    .points { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: p; }
+    .points li {
+      position: relative;
+      padding: 18px 20px 18px 60px;
+      background: var(--sirt);
+      border: 1px solid var(--chiziq);
+      border-radius: var(--r-m);
+      counter-increment: p;
+      min-width: 0;
+    }
+    .points li::before {
+      content: counter(p);
+      position: absolute;
+      left: 18px;
+      top: 17px;
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--yashm) 15%, transparent);
+      color: var(--yashm);
+      font: 600 0.8rem/1 var(--f-mono);
+    }
+    .points h3 { font-family: var(--f-body); font-size: 1.02rem; font-weight: 700; letter-spacing: 0; margin-bottom: 4px; }
+    .points p { color: var(--siyoh-2); }
+    .points .try { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  </style>
+</head>
+<body data-root="../" data-topic="mayatnik">
+  <a class="skip-link" href="#asosiy">Asosiy qismga o‘tish</a>
+
+  <header class="topbar">
+    <div class="wrap topbar__in">
+      <a class="brand" href="../index.html">
+        <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M31 16 26.61 20.39 26.61 26.61 20.39 26.61 16 31 11.61 26.61 5.39 26.61 5.39 20.39 1 16 5.39 11.61 5.39 5.39 11.61 5.39 16 1 20.39 5.39 26.61 5.39 26.61 11.61Z"/><circle class="c" cx="16" cy="16" r="5.2"/></svg>
+        Qiziqarli
+      </a>
+      <nav class="nav" aria-label="Asosiy menyu">
+        <a href="../index.html#mavzular">Mavzular</a>
+        <a class="nav__extra" href="../index.html#fakt">Bugungi fakt</a>
+        <a href="viktorina.html">Viktorina</a>
+      </nav>
+      <button class="theme-btn" type="button" data-theme-toggle aria-label="Tungi rejimga o‘tish">
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a6.8 6.8 0 0 0 10.7 10.7z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="asosiy">
+    <section class="wrap topic-hero">
+      <a class="back-link" href="../index.html#mavzular">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        Barcha mavzular
+      </a>
+      <div class="topic-meta">
+        <span class="tag" data-cat="ilm">Ilm-fan</span>
+        <span class="label">Tajriba · 5 daqiqa</span>
+      </div>
+      <h1>Mayatnik laboratoriyasi</h1>
+      <p class="lead">Rivoyat qilinishicha, 1583-yilda yosh Galiley Piza soborida tebranayotgan chiroqni o‘z tomir urishi bilan o‘lchab, bir tebranish vaqti chiroq qanchalik keng tebranishiga bog‘liq emasligini payqagan. Buni o‘zingiz tekshirib ko‘ring.</p>
+    </section>
+
+    <section class="wrap" aria-label="Mayatnik tajribasi">
+      <div class="lab">
+        <div class="stage lab__stage" id="lab-stage">
+          <div class="stage__bar stage__bar--top lab__top">
+            <p class="lab__hint">Sharchani sudrang va qo‘yib yuboring.</p>
+            <span class="lab__now" id="lab-now">g = 9,81 · L = 1,50 m</span>
+          </div>
+          <div class="pend" id="pend">
+            <canvas id="pend-canvas" role="img" aria-label="Mayatnik: shiftga osilgan ip va sharcha. Sharchani sichqoncha yoki barmoq bilan sudrab, boshlang‘ich burchakni tanlash mumkin. Klaviatura uchun «Boshlang‘ich burchak» slayderidan foydalaning."></canvas>
+          </div>
+          <div class="chart" id="chart">
+            <canvas id="chart-canvas" role="img" aria-label="Oxirgi 10 soniyadagi burchakning vaqtga bog‘liqlik grafigi"></canvas>
+          </div>
+          <div class="stage__bar lab__bar">
+            <button class="btn btn--small" type="button" id="qoyib-yuborish">
+              <svg class="i-stop" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+              <svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.8v14.4c0 .8.9 1.3 1.6.9l11.2-7.2c.6-.4.6-1.4 0-1.8L8.6 3.9C7.9 3.5 7 4 7 4.8z"/></svg>
+              <span>To‘xtatish</span>
+            </button>
+            <button class="btn btn--small btn--ghost" type="button" id="qaytadan">Qaytadan</button>
+            <button class="toggle" type="button" id="havo" aria-pressed="false">
+              <span class="toggle__track" aria-hidden="true"></span>
+              Havo qarshiligi
+            </button>
+          </div>
+        </div>
+
+        <div class="panel lab__controls">
+          <div class="field">
+            <div class="field__top">
+              <label for="uzunlik">Ip uzunligi</label>
+              <output class="field__value" id="uzunlik-qiymat" for="uzunlik">1,50 m</output>
+            </div>
+            <input type="range" id="uzunlik" min="0.1" max="3" step="0.05" value="1.5">
+          </div>
+          <div class="field">
+            <div class="field__top">
+              <label for="burchak">Boshlang‘ich burchak</label>
+              <output class="field__value" id="burchak-qiymat" for="burchak">30°</output>
+            </div>
+            <input type="range" id="burchak" min="-170" max="170" step="1" value="30">
+          </div>
+          <div class="field">
+            <span class="label" id="tortishish-label">Tortishish</span>
+            <div class="seg gseg" role="group" aria-labelledby="tortishish-label">
+              <button type="button" id="g-yer" data-g="9.81" data-joy="Yerda" aria-pressed="true">Yer <span class="num">9,81</span></button>
+              <button type="button" id="g-oy" data-g="1.62" data-joy="Oyda" aria-pressed="false">Oy <span class="num">1,62</span></button>
+              <button type="button" id="g-mars" data-g="3.71" data-joy="Marsda" aria-pressed="false">Mars <span class="num">3,71</span></button>
+              <button type="button" id="g-yupiter" data-g="24.79" data-joy="Yupiterda" aria-pressed="false">Yupiter <span class="num">24,79</span></button>
+            </div>
+            <p class="gcap" id="tortishish-izoh">Siz hozir: <b>Yerda</b> · g = 9,81 m/s²</p>
+          </div>
+        </div>
+
+        <dl class="stats lab__stats">
+          <div><dt>Nazariy davr</dt><dd id="r-nazariy">—</dd></div>
+          <div><dt>O‘lchangan davr</dt><dd id="r-olchangan">—</dd></div>
+          <div><dt>Burchak</dt><dd id="r-burchak">—</dd></div>
+          <div><dt>Tezlik</dt><dd id="r-tezlik">—</dd></div>
+        </dl>
+
+        <div class="panel task lab__task" id="topshiriq">
+          <span class="label">Topshiriq</span>
+          <h3>Yerda davri aniq 2 soniya bo‘lgan mayatnik yasang</h3>
+          <p>Bir to‘liq tebranish, ya’ni borib-kelish 2,00 soniya davom etsin. Ip uzunligini o‘zgartirib ko‘ring.</p>
+          <div>
+            <div class="task__meter" aria-hidden="true"><span class="task__goal"></span><span class="task__mark" id="task-mark"></span></div>
+            <div class="task__scale" aria-hidden="true"><span>0 s</span><span>2 s</span><span>4 s</span></div>
+          </div>
+          <p class="task__status" id="task-status" aria-live="polite"></p>
+          <p class="task__ok">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.5 3 3 6-6.5"/></svg>
+            Bajarildi!
+          </p>
+          <button class="btn btn--small btn--ghost" type="button" id="javob-tugma" aria-expanded="false" aria-controls="javob">Javobni ko‘rsatish</button>
+          <p class="task__answer" id="javob" hidden>Formuladan L = g / π². Yer uchun: 9,81 / 9,87 ≈ 0,99 m. Slayderda 1,00 m ni tanlasangiz, T ≈ 2,01 s bo‘ladi. Bunday mayatnik «sekund mayatnigi» deyiladi: u bir tomondan ikkinchi tomonga roppa-rosa bir soniyada boradi.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap formula" aria-labelledby="formula-h">
+      <div class="formula__grid">
+        <div class="panel formula__card">
+          <div>
+            <span class="label">Formula</span>
+            <h2 id="formula-h">Davr nimaga bog‘liq?</h2>
+          </div>
+          <div class="eq" role="math" aria-label="T teng 2 pi ko‘paytirilgan L ning g ga nisbatidan olingan kvadrat ildizga">
+            <i class="c-t">T</i>
+            <span class="eq__op">=</span>
+            <span>2π</span>
+            <span class="eq__root">
+              <svg class="eq__rad" viewBox="0 0 24 100" preserveAspectRatio="none" aria-hidden="true"><path d="M1 60 L7 54 L14 95 L24 1"/></svg>
+              <span class="eq__under">
+                <span class="eq__frac"><i class="c-l">L</i><i class="c-g">g</i></span>
+              </span>
+            </span>
+          </div>
+          <dl class="legend">
+            <div><dt class="c-t">T</dt><dd>davr: bir marta borib-kelish vaqti, soniyada</dd></div>
+            <div><dt class="c-l">L</dt><dd>ip uzunligi, metrda</dd></div>
+            <div><dt class="c-g">g</dt><dd>erkin tushish tezlanishi, m/s²</dd></div>
+          </dl>
+          <p class="eq__live" id="eq-live"></p>
+        </div>
+
+        <ol class="points">
+          <li>
+            <h3>Massa ahamiyatsiz</h3>
+            <p>Formulada sharchaning massasi yo‘q. Og‘ir temir shar ham, yengil yog‘och shar ham bir xil uzunlikdagi ipda bir xil davr bilan tebranadi.</p>
+          </li>
+          <li>
+            <h3>Ip 4 marta uzun bo‘lsa, davr 2 marta uzun</h3>
+            <p>Davr uzunlikning kvadrat ildiziga bog‘liq: √4 = 2. 0,50 m va 2,00 m li iplarni solishtiring.</p>
+            <div class="try">
+              <button class="btn btn--small btn--ghost" type="button" id="sina-050">L = 0,50 m</button>
+              <button class="btn btn--small btn--ghost" type="button" id="sina-200">L = 2,00 m</button>
+            </div>
+          </li>
+          <li>
+            <h3>Oyda 2,46 marta sekinroq</h3>
+            <p>Oyda g Yerdagidan taxminan 6 marta kichik. Shuning uchun xuddi shu mayatnik u yerda √(9,81 / 1,62) ≈ 2,46 marta sekinroq tebranadi.</p>
+            <div class="try">
+              <button class="btn btn--small btn--ghost" type="button" id="sina-oy">Oyga olib borish</button>
+            </div>
+          </li>
+          <li>
+            <h3>Formula kichik burchaklar uchun</h3>
+            <p>Bu formula taxminan 15° gacha bo‘lgan burchaklarda aniq ishlaydi. Burchak kattalashgan sari o‘lchangan davr uzayadi: 90° da u nazariydan taxminan 18 foiz uzun. 10° va 90° dan qo‘yib yuborib, «O‘lchangan davr»ni solishtiring.</p>
+            <div class="try">
+              <button class="btn btn--small btn--ghost" type="button" id="sina-10">10° dan qo‘yib yuborish</button>
+              <button class="btn btn--small btn--ghost" type="button" id="sina-90">90° dan qo‘yib yuborish</button>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="wrap didyou">
+      <h2>Bilasizmi?</h2>
+      <ul class="fact-list">
+        <li><p><strong>Galiley va chiroq.</strong> Keng tarqalgan rivoyatga ko‘ra, 1583-yilda 19 yoshli Galiley Piza soborida tebranayotgan chiroqni kuzatib, katta va kichik tebranishlar bir xil vaqt olishini payqagan. Soat o‘rniga u o‘z tomir urishidan foydalangan.</p></li>
+        <li><p><strong>Birinchi mayatnikli soat.</strong> Gollandiyalik olim Kristian Gyuygens 1656-yilda birinchi mayatnikli soatni yasagan. 1930-yillarda kvars soatlar paydo bo‘lgunicha mayatnikli soatlar dunyodagi eng aniq soatlar bo‘lib qolgan.</p></li>
+        <li><p><strong>Yer aylanayotganini ko‘rsatgan mayatnik.</strong> 1851-yilda Leon Fuko Parijdagi Panteon gumbaziga 67 metrli simda 28 kg li sharni osgan. Tebranish tekisligi soatlar davomida asta-sekin burilib, Yer o‘z o‘qi atrofida aylanayotganini ko‘rsatgan.</p></li>
+        <li><p><strong>Sekund mayatnigi.</strong> Bir tomondan ikkinchi tomonga roppa-rosa 1 soniyada boradigan mayatnikning uzunligi taxminan 0,994 m. 1790-yillarda Fransiyada metrni shu uzunlik orqali belgilash taklif qilingan, ammo oxirida Yer meridiani asos qilib olingan.</p></li>
+        <li><p><strong>Big Ben tangalar bilan sozlanadi.</strong> Londondagi mashhur soat minorasining mayatnigi ustiga eski tangalar qo‘yib aniqlanadi. Bitta tanga mayatnikning og‘irlik markazini biroz ko‘taradi va soatni sutkasiga taxminan 0,4 soniyaga tezlashtiradi.</p></li>
+        <li><p><strong>g hamma joyda bir xil emas.</strong> Yer qutblarida erkin tushish tezlanishi taxminan 9,83 m/s², ekvatorda esa 9,78 m/s². Shuning uchun aynan bir xil mayatnik ekvatorda biroz sekinroq tebranadi.</p></li>
+      </ul>
+    </section>
+
+    <section class="wrap next-topic" aria-label="Keyingi mavzu">
+      <div data-next-topic></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__in">
+      <div class="footer__about">
+        <a class="brand" href="../index.html">
+          <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M31 16 26.61 20.39 26.61 26.61 20.39 26.61 16 31 11.61 26.61 5.39 26.61 5.39 20.39 1 16 5.39 11.61 5.39 5.39 11.61 5.39 16 1 20.39 5.39 26.61 5.39 26.61 11.61Z"/><circle class="c" cx="16" cy="16" r="5.2"/></svg>
+          Qiziqarli
+        </a>
+        <p>Koinot, tabiat, tarix va inson haqidagi bilimlar — o‘ynab o‘rganish uchun.</p>
+        <p>© <span data-year>2026</span> Qiziqarli</p>
+      </div>
+      <ul class="footer__links" data-footer-links></ul>
+    </div>
+  </footer>
+
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/common.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      var fmt = QZ.fmt;
+      var DEG = Math.PI / 180;
+      var MAX_ANGLE = 170 * DEG;
+      var SUB = 1 / 240;          /* fizika qadami, soniya */
+      var DRAG_B = 0.15;          /* havo qarshiligi koeffitsienti, 1/s */
+      var CHART_SPAN = 10;        /* grafik oynasi, soniya */
+      var G_EARTH = 9.81;
+      var reduced = QZ.reducedMotion;
+
+      /* ---------- Holat ---------- */
+      var L = 1.5, g = G_EARTH, air = false;
+      var th = 30 * DEG, om = 0;
+      var running = false, dragging = false;
+      var simT = 0, acc = 0;
+      var lastCross = null, measured = null, crossings = 0;
+      var trail = [];             /* {t, x, y} metrlarda */
+      var hist = { t: [], a: [] }; /* grafik: vaqt va burchak (daraja) */
+      var sampleCount = 0;
+      var taskDone = false;
+
+      /* ---------- DOM ---------- */
+      var $ = function (id) { return document.getElementById(id); };
+      var stage = $("lab-stage");
+      var pendBox = $("pend"), pc = $("pend-canvas"), px = pc.getContext("2d");
+      var chartBox = $("chart"), cc = $("chart-canvas"), cx2 = cc.getContext("2d");
+      var lenIn = $("uzunlik"), lenOut = $("uzunlik-qiymat");
+      var angIn = $("burchak"), angOut = $("burchak-qiymat");
+      var gBtns = Array.prototype.slice.call(document.querySelectorAll("[data-g]"));
+      var gCap = $("tortishish-izoh");
+      var airBtn = $("havo");
+      var goBtn = $("qoyib-yuborish");
+      var resetBtn = $("qaytadan");
+      var nowEl = $("lab-now");
+      var rTheory = $("r-nazariy"), rMeas = $("r-olchangan"), rAng = $("r-burchak"), rVel = $("r-tezlik");
+      var taskEl = $("topshiriq"), taskMark = $("task-mark"), taskStatus = $("task-status");
+      var eqLive = $("eq-live");
+
+      /* ---------- Ranglar ---------- */
+      var C = {};
+      function readColors() {
+        ["--siyoh", "--siyoh-2", "--sirt", "--sirt-2", "--chiziq", "--chiziq-kuchli", "--zafaron", "--zafaron-yorqin",
+          "--firuza", "--lojuvard", "--band-matn", "--f-mono"].forEach(function (k) { C[k] = QZ.cssVar(k); });
+        C.mono = C["--f-mono"] || "monospace";
+      }
+
+      /* ---------- Fizika ---------- */
+      function acc0(a, w) { return -(g / L) * Math.sin(a) - (air ? DRAG_B * w : 0); }
+      function stepRK4(h) {
+        var k1a = om, k1w = acc0(th, om);
+        var k2a = om + 0.5 * h * k1w, k2w = acc0(th + 0.5 * h * k1a, om + 0.5 * h * k1w);
+        var k3a = om + 0.5 * h * k2w, k3w = acc0(th + 0.5 * h * k2a, om + 0.5 * h * k2w);
+        var k4a = om + h * k3w, k4w = acc0(th + h * k3a, om + h * k3w);
+        var prev = th;
+        th += h / 6 * (k1a + 2 * k2a + 2 * k3a + k4a);
+        om += h / 6 * (k1w + 2 * k2w + 2 * k3w + k4w);
+        var tPrev = simT;
+        simT += h;
+        /* bir yo‘nalishdagi ketma-ket nol kesishishlar orasidagi vaqt = davr */
+        if (prev < 0 && th >= 0) {
+          var tc = tPrev + h * (-prev) / (th - prev);
+          if (lastCross !== null) { measured = tc - lastCross; crossings++; }
+          lastCross = tc;
+        }
+        if (++sampleCount % 2 === 0) pushSample();
+      }
+      function pushSample() {
+        hist.t.push(simT);
+        hist.a.push(wrap(th) / DEG);
+        var cut = simT - CHART_SPAN - 0.5;
+        var n = 0;
+        while (n < hist.t.length && hist.t[n] < cut) n++;
+        if (n) { hist.t.splice(0, n); hist.a.splice(0, n); }
+      }
+      function wrap(a) { a = (a + Math.PI) % (2 * Math.PI); if (a < 0) a += 2 * Math.PI; return a - Math.PI; }
+      function amplitude() {
+        if (!running || dragging) return Math.abs(wrap(th));
+        var c = Math.cos(th) - L * om * om / (2 * g);
+        return Math.acos(Math.max(-1, Math.min(1, c)));
+      }
+      function theoryT() { return 2 * Math.PI * Math.sqrt(L / g); }
+      function resetMeasure() { lastCross = null; measured = null; crossings = 0; }
+      function clearHistory() { hist.t.length = 0; hist.a.length = 0; trail.length = 0; }
+
+      /* ---------- Ko‘rinish (masshtab) ---------- */
+      var W = 1, H = 1, dpr = 1, CW = 1, CH = 1;
+      var view = { s: 100, py: 40 }, target = { s: 100, py: 40 };
+      var TOP = 30, BOTTOM = 18, SIDE = 18;
+
+      function computeTarget() {
+        var A = amplitude();
+        var avH = H - TOP - BOTTOM - 14;
+        var avW = W / 2 - SIDE - 26;
+        var sFixed = avH / 3;                       /* 3 m li ip doim sig‘adi */
+        var up = Math.max(0, -L * Math.cos(Math.min(A, Math.PI)));
+        var side = L * Math.sin(Math.min(A, Math.PI / 2));
+        var s = Math.min(sFixed, avH / (up + L));
+        if (side > 0) s = Math.min(s, avW / side);
+        target.s = s;
+        target.py = TOP + up * s;
+      }
+
+      function resize() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+        var r = pendBox.getBoundingClientRect();
+        W = Math.max(1, r.width); H = Math.max(1, r.height);
+        pc.width = Math.round(W * dpr); pc.height = Math.round(H * dpr);
+        var r2 = chartBox.getBoundingClientRect();
+        CW = Math.max(1, r2.width); CH = Math.max(1, r2.height);
+        cc.width = Math.round(CW * dpr); cc.height = Math.round(CH * dpr);
+        computeTarget();
+        view.s = target.s; view.py = target.py;
+      }
+
+      /* ---------- Chizish: mayatnik ---------- */
+      function drawPendulum() {
+        var c = px;
+        c.setTransform(dpr, 0, 0, dpr, 0, 0);
+        c.clearRect(0, 0, W, H);
+        var s = view.s, ox = W / 2, oy = view.py;
+        var len = L * s;
+
+        /* chizg‘ich: tayanch nuqtadan pastga, metrlarda */
+        c.save();
+        c.globalAlpha = 0.75;
+        c.strokeStyle = C["--siyoh-2"];
+        c.fillStyle = C["--siyoh-2"];
+        c.lineWidth = 1;
+        c.font = "500 10px " + C.mono;
+        c.textBaseline = "middle";
+        var rx = 18;
+        c.beginPath(); c.moveTo(rx, oy); c.lineTo(rx, oy + 3 * s); c.stroke();
+        for (var i = 0; i <= 30; i++) {
+          var y = oy + i * 0.1 * s;
+          var tl = i % 10 === 0 ? 9 : (i % 5 === 0 ? 6 : 3);
+          if (s * 0.1 < 4 && i % 5 !== 0) continue;
+          c.beginPath(); c.moveTo(rx, y); c.lineTo(rx + tl, y); c.stroke();
+          if (i % 10 === 0 && i > 0) c.fillText(fmt(i / 10) + " m", rx + 13, y);
+        }
+        /* joriy uzunlik belgisi */
+        c.globalAlpha = 1;
+        c.fillStyle = C["--firuza"];
+        c.beginPath(); c.moveTo(rx - 2, oy + len); c.lineTo(rx - 9, oy + len - 5); c.lineTo(rx - 9, oy + len + 5); c.closePath(); c.fill();
+        c.restore();
+
+        /* tinch holat chizig‘i */
+        c.save();
+        c.setLineDash([3, 5]);
+        c.strokeStyle = C["--chiziq-kuchli"];
+        c.lineWidth = 1;
+        c.beginPath(); c.moveTo(ox, oy); c.lineTo(ox, Math.min(H - 6, oy + len + 22)); c.stroke();
+
+        /* tebranish kengligi yoyi */
+        var A = amplitude();
+        if (A > 0.5 * DEG) {
+          c.strokeStyle = C["--chiziq-kuchli"];
+          c.lineWidth = 1.5;
+          c.setLineDash([2, 6]);
+          c.beginPath(); c.arc(ox, oy, len, Math.PI / 2 - A, Math.PI / 2 + A); c.stroke();
+        }
+        c.restore();
+
+        /* shift (tayanch) */
+        c.save();
+        c.strokeStyle = C["--siyoh-2"];
+        c.lineWidth = 2;
+        c.beginPath(); c.moveTo(ox - 34, oy - 6); c.lineTo(ox + 34, oy - 6); c.stroke();
+        c.lineWidth = 1.2;
+        for (var hx = -30; hx <= 30; hx += 8) {
+          c.beginPath(); c.moveTo(ox + hx, oy - 6); c.lineTo(ox + hx + 7, oy - 14); c.stroke();
+        }
+        c.restore();
+
+        var bx = ox + len * Math.sin(th), by = oy + len * Math.cos(th);
+        var br = Math.max(7, Math.min(15, len * 0.11 + 6));
+
+        /* iz */
+        if (trail.length > 1) {
+          c.save();
+          c.lineCap = "round";
+          c.strokeStyle = C["--zafaron-yorqin"];
+          c.lineWidth = Math.max(2, br * 0.45);
+          var tNow = trail[trail.length - 1].t;
+          for (var k = 1; k < trail.length; k++) {
+            var age = (tNow - trail[k].t) / 0.5;
+            c.globalAlpha = Math.max(0, 0.45 * (1 - age));
+            c.beginPath();
+            c.moveTo(ox + trail[k - 1].x * s, oy + trail[k - 1].y * s);
+            c.lineTo(ox + trail[k].x * s, oy + trail[k].y * s);
+            c.stroke();
+          }
+          c.restore();
+        }
+
+        /* burchak yoyi va qiymati */
+        var a = wrap(th);
+        if (Math.abs(a) > 2 * DEG) {
+          var ar = Math.min(54, Math.max(18, len * 0.42));
+          c.save();
+          c.strokeStyle = C["--firuza"];
+          c.lineWidth = 2;
+          var a1 = Math.PI / 2, a2 = Math.PI / 2 - a;
+          c.beginPath(); c.arc(ox, oy, ar, Math.min(a1, a2), Math.max(a1, a2)); c.stroke();
+          c.fillStyle = C["--firuza"];
+          c.font = "600 11px " + C.mono;
+          c.textAlign = "center";
+          c.textBaseline = "middle";
+          var txt = fmt(Math.abs(a) / DEG) + "°";
+          var tw = c.measureText(txt).width;
+          var tx, ty;
+          if (Math.abs(a) < 40 * DEG) {
+            /* kichik burchakda yorliq vertikal chiziqning narigi tomonida */
+            tx = ox - Math.sign(a) * (tw / 2 + 7);
+            ty = oy + ar * 0.78;
+          } else {
+            var mid = Math.PI / 2 - a / 2;
+            tx = ox + (ar + 16) * Math.cos(mid);
+            ty = oy + (ar + 16) * Math.sin(mid);
+          }
+          c.lineWidth = 4;
+          c.strokeStyle = C["--sirt"];
+          c.lineJoin = "round";
+          c.strokeText(txt, tx, ty);
+          c.fillText(txt, tx, ty);
+          c.restore();
+        }
+
+        /* ip */
+        c.strokeStyle = C["--siyoh-2"];
+        c.lineWidth = 1.6;
+        c.beginPath(); c.moveTo(ox, oy); c.lineTo(bx, by); c.stroke();
+
+        /* sharcha */
+        if (dragging) {
+          c.save();
+          c.globalAlpha = 0.25;
+          c.fillStyle = C["--zafaron-yorqin"];
+          c.beginPath(); c.arc(bx, by, br + 9, 0, Math.PI * 2); c.fill();
+          c.restore();
+        }
+        c.fillStyle = C["--zafaron-yorqin"];
+        c.beginPath(); c.arc(bx, by, br, 0, Math.PI * 2); c.fill();
+        c.save();
+        c.globalAlpha = 0.55;
+        c.fillStyle = C["--band-matn"];
+        c.beginPath(); c.arc(bx - br * 0.33, by - br * 0.33, br * 0.38, 0, Math.PI * 2); c.fill();
+        c.restore();
+        c.strokeStyle = C["--zafaron"];
+        c.lineWidth = 1.5;
+        c.beginPath(); c.arc(bx, by, br, 0, Math.PI * 2); c.stroke();
+
+        /* tayanch nuqta */
+        c.fillStyle = C["--siyoh"];
+        c.beginPath(); c.arc(ox, oy, 4, 0, Math.PI * 2); c.fill();
+      }
+
+      /* ---------- Chizish: grafik ---------- */
+      var NICE = [10, 20, 30, 45, 60, 90, 120, 180];
+      function drawChart() {
+        var c = cx2;
+        c.setTransform(dpr, 0, 0, dpr, 0, 0);
+        c.clearRect(0, 0, CW, CH);
+        var L0 = 46, R0 = 14, T0 = 22, B0 = 18;
+        var pw = Math.max(10, CW - L0 - R0), ph = Math.max(10, CH - T0 - B0);
+        var mx = 0;
+        for (var i = 0; i < hist.a.length; i++) mx = Math.max(mx, Math.abs(hist.a[i]));
+        var range = NICE[NICE.length - 1];
+        for (var n = 0; n < NICE.length; n++) if (NICE[n] >= mx - 0.3) { range = NICE[n]; break; }
+        var y0 = T0 + ph / 2;
+        function ya(v) { return y0 - v / range * (ph / 2); }
+        var tEnd = simT, tStart = tEnd - CHART_SPAN;
+        function xt(t) { return L0 + (t - tStart) / CHART_SPAN * pw; }
+
+        c.font = "500 10px " + C.mono;
+        c.textBaseline = "middle";
+
+        /* gorizontal chiziqlar */
+        c.lineWidth = 1;
+        [-1, -0.5, 0.5, 1].forEach(function (f) {
+          c.strokeStyle = C["--chiziq"];
+          c.beginPath(); c.moveTo(L0, ya(range * f)); c.lineTo(L0 + pw, ya(range * f)); c.stroke();
+        });
+        /* soniya chiziqlari */
+        c.strokeStyle = C["--chiziq"];
+        for (var s = Math.ceil(tStart); s <= tEnd; s++) {
+          if (s < 0) continue;
+          var x = xt(s);
+          c.beginPath(); c.moveTo(x, T0); c.lineTo(x, T0 + ph); c.stroke();
+        }
+        /* nol chizig‘i */
+        c.strokeStyle = C["--chiziq-kuchli"];
+        c.lineWidth = 1.2;
+        c.beginPath(); c.moveTo(L0, y0); c.lineTo(L0 + pw, y0); c.stroke();
+
+        /* yorliqlar */
+        c.fillStyle = C["--siyoh-2"];
+        c.textAlign = "right";
+        c.fillText("+" + fmt(range) + "°", L0 - 6, ya(range));
+        c.fillText("0°", L0 - 6, y0);
+        c.fillText(fmt(-range) + "°", L0 - 6, ya(-range));
+        c.textAlign = "left";
+        c.textBaseline = "alphabetic";
+        c.font = "600 9.5px " + C.mono;
+        c.fillText("BURCHAK", L0, 14);
+        c.textAlign = "right";
+        c.fillText("VAQT →", L0 + pw, CH - 5);
+        c.textAlign = "left";
+        c.font = "500 9.5px " + C.mono;
+        c.fillText("oxirgi " + fmt(CHART_SPAN) + " soniya", L0, CH - 5);
+
+        if (hist.t.length < 2) {
+          c.textAlign = "center";
+          c.textBaseline = "middle";
+          c.font = "500 12px " + QZ.cssVar("--f-body");
+          c.fillStyle = C["--siyoh-2"];
+          c.fillText("Mayatnik tebranganda grafik shu yerda chiziladi", L0 + pw / 2, y0 - 14);
+          return;
+        }
+
+        /* egri chiziq */
+        c.save();
+        c.beginPath(); c.rect(L0, T0 - 4, pw, ph + 8); c.clip();
+        c.strokeStyle = C["--zafaron"];
+        c.lineWidth = 2;
+        c.lineJoin = "round";
+        c.beginPath();
+        var started = false, prevA = null;
+        for (var j = 0; j < hist.t.length; j++) {
+          if (hist.t[j] < tStart - 0.1) continue;
+          var X = xt(hist.t[j]), Y = ya(hist.a[j]);
+          if (!started || (prevA !== null && Math.abs(hist.a[j] - prevA) > 180)) { c.moveTo(X, Y); started = true; }
+          else c.lineTo(X, Y);
+          prevA = hist.a[j];
+        }
+        c.stroke();
+        c.restore();
+        var last = hist.a[hist.a.length - 1];
+        c.fillStyle = C["--zafaron-yorqin"];
+        c.strokeStyle = C["--zafaron"];
+        c.lineWidth = 1.5;
+        c.beginPath(); c.arc(xt(hist.t[hist.t.length - 1]), ya(last), 4, 0, Math.PI * 2); c.fill(); c.stroke();
+      }
+
+      /* ---------- Ko‘rsatkichlar ---------- */
+      var lastReadout = 0;
+      function updateReadouts(force) {
+        var now = performance.now();
+        if (!force && now - lastReadout < 90) return;
+        lastReadout = now;
+        var a = wrap(th) / DEG;
+        rAng.textContent = fmt(Math.abs(a) < 0.05 ? 0 : a, 1) + "°";
+        rVel.textContent = fmt(running ? L * Math.abs(om) : 0, 2) + " m/s";
+        if (measured === null) {
+          rMeas.innerHTML = "—<span class=\"note\">" + (running ? "o‘lchanmoqda…" : "qo‘yib yuboring") + "</span>";
+        } else {
+          var diff = (measured / theoryT() - 1) * 100;
+          var note = Math.abs(diff) < 0.5 ? "nazariyaga mos" : "nazariydan " + fmt(Math.abs(diff), 1) + " % " + (diff > 0 ? "uzun" : "qisqa");
+          rMeas.innerHTML = fmt(measured, 2) + " s<span class=\"note" + (Math.abs(diff) >= 2 ? " is-long" : "") + "\">" + note + "</span>";
+        }
+      }
+
+      function joy() {
+        for (var i = 0; i < gBtns.length; i++) if (gBtns[i].getAttribute("aria-pressed") === "true") return gBtns[i].getAttribute("data-joy");
+        return "Yerda";
+      }
+
+      function updateSettings() {
+        var T = theoryT();
+        lenOut.textContent = fmt(L, 2) + " m";
+        rTheory.innerHTML = fmt(T, 2) + " s<span class=\"note\">T = 2π√(L/g)</span>";
+        nowEl.textContent = "g = " + fmt(g, 2) + " · L = " + fmt(L, 2) + " m";
+        gCap.innerHTML = "Siz hozir: <b>" + joy() + "</b> · g = " + fmt(g, 2) + " m/s²";
+        eqLive.innerHTML = "<span>Hozir:</span> T = 2π √(" + fmt(L, 2) + " / " + fmt(g, 2) + ") ≈ " + fmt(T, 2) + " s";
+        updateTask(T);
+        updateReadouts(true);
+      }
+
+      function updateTask(T) {
+        var onEarth = Math.abs(g - G_EARTH) < 1e-9;
+        var ok = onEarth && Math.abs(T - 2) <= 0.02;
+        taskMark.style.left = Math.max(0, Math.min(100, T / 4 * 100)) + "%";
+        if (!onEarth) {
+          taskStatus.innerHTML = "Hozir: T = <span class=\"num\">" + fmt(T, 2) + " s</span>. Topshiriq Yer uchun: tortishishni «Yer»ga qaytaring.";
+        } else if (ok) {
+          taskStatus.innerHTML = "T = <span class=\"num\">" + fmt(T, 2) + " s</span>, L = <span class=\"num\">" + fmt(L, 2) + " m</span>. Bir metrga yaqin ip 2 soniyada bir marta borib keladi.";
+        } else {
+          taskStatus.innerHTML = "Hozir: T = <span class=\"num\">" + fmt(T, 2) + " s</span>. Maqsad: <span class=\"num\">2,00 s</span>. " + (T > 2 ? "Ipni qisqartiring." : "Ipni uzaytiring.");
+        }
+        taskEl.classList.toggle("is-done", ok);
+        if (ok && !taskDone) QZ.toast("Topshiriq bajarildi: T = " + fmt(T, 2) + " s");
+        taskDone = ok;
+      }
+
+      function setRunning(on) {
+        running = on;
+        goBtn.classList.toggle("is-held", !on);
+        goBtn.querySelector("span").textContent = on ? "To‘xtatish" : "Qo‘yib yuborish";
+        lastTs = 0;
+        requestFrame();
+      }
+
+      function hold(angle) {
+        th = Math.max(-MAX_ANGLE, Math.min(MAX_ANGLE, angle));
+        om = 0;
+        acc = 0;
+        resetMeasure();
+        trail.length = 0;
+        syncAngleInput();
+      }
+      function syncAngleInput() {
+        var d = Math.round(wrap(th) / DEG);
+        angIn.value = String(d);
+        angOut.textContent = fmt(d) + "°";
+      }
+      function release() {
+        om = 0;
+        acc = 0;
+        resetMeasure();
+        clearHistory();
+        setRunning(true);
+        updateReadouts(true);
+      }
+
+      /* ---------- Sikl ---------- */
+      var rafId = 0, lastTs = 0, visible = true;
+      function zooming() { return Math.abs(view.s - target.s) > 0.05 || Math.abs(view.py - target.py) > 0.05; }
+      function wantLoop() { return visible && !document.hidden && (running || dragging || zooming()); }
+      function tick(ts) {
+        rafId = 0;
+        var dt = lastTs ? Math.min(0.1, (ts - lastTs) / 1000) : 0;
+        lastTs = ts;
+        if (running && !dragging) {
+          acc += dt;
+          var n = 0;
+          while (acc >= SUB && n < 60) { stepRK4(SUB); acc -= SUB; n++; }
+          if (n >= 60) acc = 0;
+          trail.push({ t: simT, x: L * Math.sin(th), y: L * Math.cos(th) });
+          while (trail.length && simT - trail[0].t > 0.5) trail.shift();
+        }
+        computeTarget();
+        if (reduced || !dt) { view.s = target.s; view.py = target.py; }
+        else {
+          var f = 1 - Math.exp(-dt * 7);
+          view.s += (target.s - view.s) * f;
+          view.py += (target.py - view.py) * f;
+        }
+        drawPendulum();
+        drawChart();
+        updateReadouts(false);
+        if (wantLoop()) rafId = requestAnimationFrame(tick);
+        else { lastTs = 0; updateReadouts(true); }
+      }
+      function requestFrame() { if (!rafId) rafId = requestAnimationFrame(tick); }
+
+      /* ---------- Sudrash ---------- */
+      function angleFromPointer(ev) {
+        var r = pc.getBoundingClientRect();
+        var dx = ev.clientX - r.left - W / 2, dy = ev.clientY - r.top - view.py;
+        if (Math.hypot(dx, dy) < 4) return null;
+        return Math.atan2(dx, dy);
+      }
+      pc.addEventListener("pointerdown", function (ev) {
+        if (ev.button !== undefined && ev.button !== 0) return;
+        ev.preventDefault();
+        try { pc.setPointerCapture(ev.pointerId); } catch (e) { /* bo‘lmasa ham ishlaydi */ }
+        dragging = true;
+        pendBox.classList.add("is-drag");
+        setRunning(false);
+        clearHistory();
+        var a = angleFromPointer(ev);
+        if (a !== null) hold(a);
+        requestFrame();
+      });
+      pc.addEventListener("pointermove", function (ev) {
+        if (!dragging) return;
+        var a = angleFromPointer(ev);
+        if (a !== null) hold(a);
+        requestFrame();
+      });
+      function endDrag() {
+        if (!dragging) return;
+        dragging = false;
+        pendBox.classList.remove("is-drag");
+        release();
+      }
+      pc.addEventListener("pointerup", endDrag);
+      pc.addEventListener("pointercancel", endDrag);
+      pc.addEventListener("lostpointercapture", endDrag);
+
+      /* ---------- Boshqaruv elementlari ---------- */
+      lenIn.addEventListener("input", function () {
+        var nl = Math.max(0.1, Math.min(3, parseFloat(lenIn.value) || 1.5));
+        if (running) om *= Math.sqrt(L / nl);   /* tebranish kengligi saqlansin */
+        L = nl;
+        resetMeasure();
+        trail.length = 0;
+        updateSettings();
+        requestFrame();
+      });
+
+      angIn.addEventListener("input", function () {
+        if (running) setRunning(false);
+        clearHistory();
+        hold((parseFloat(angIn.value) || 0) * DEG);
+        updateReadouts(true);
+        requestFrame();
+      });
+
+      function setGravity(btn) {
+        var ng = parseFloat(btn.getAttribute("data-g"));
+        if (running) om *= Math.sqrt(ng / g);    /* tebranish kengligi saqlansin */
+        g = ng;
+        gBtns.forEach(function (b) { b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
+        resetMeasure();
+        updateSettings();
+        requestFrame();
+      }
+      gBtns.forEach(function (b) { b.addEventListener("click", function () { setGravity(b); }); });
+
+      airBtn.addEventListener("click", function () {
+        air = !air;
+        airBtn.setAttribute("aria-pressed", air ? "true" : "false");
+        resetMeasure();
+        updateReadouts(true);
+      });
+
+      goBtn.addEventListener("click", function () {
+        if (running) {
+          /* sharchani ushlab qolish: joriy burchakda to‘xtaydi */
+          setRunning(false);
+          hold(wrap(th));
+          updateReadouts(true);
+        } else {
+          release();
+        }
+      });
+
+      resetBtn.addEventListener("click", function () {
+        setRunning(false);
+        clearHistory();
+        hold(30 * DEG);
+        updateReadouts(true);
+        requestFrame();
+      });
+
+      $("javob-tugma").addEventListener("click", function () {
+        var ans = $("javob");
+        var open = ans.hidden;
+        ans.hidden = !open;
+        this.setAttribute("aria-expanded", open ? "true" : "false");
+        this.textContent = open ? "Javobni yashirish" : "Javobni ko‘rsatish";
+      });
+
+      /* Formula bo‘limidagi "sinab ko‘ring" tugmalari */
+      function showStage() {
+        var r = stage.getBoundingClientRect();
+        if (r.top < 0 || r.bottom > window.innerHeight) {
+          stage.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+        }
+      }
+      function setLength(v) {
+        lenIn.value = String(v);
+        lenIn.dispatchEvent(new Event("input"));
+      }
+      $("sina-050").addEventListener("click", function () { setLength(0.5); showStage(); });
+      $("sina-200").addEventListener("click", function () { setLength(2); showStage(); });
+      $("sina-oy").addEventListener("click", function () { setGravity($("g-oy")); showStage(); });
+      function tryAngle(deg) {
+        if (air) { air = false; airBtn.setAttribute("aria-pressed", "false"); }
+        hold(deg * DEG);
+        release();
+        showStage();
+      }
+      $("sina-10").addEventListener("click", function () { tryAngle(10); });
+      $("sina-90").addEventListener("click", function () { tryAngle(90); });
+
+      /* ---------- O‘lcham, ko‘rinish, mavzu ---------- */
+      readColors();
+      resize();
+      if (window.ResizeObserver) {
+        var ro = new ResizeObserver(function () { resize(); requestFrame(); });
+        ro.observe(pendBox);
+        ro.observe(chartBox);
+      } else {
+        window.addEventListener("resize", function () { resize(); requestFrame(); });
+      }
+      if (window.IntersectionObserver) {
+        new IntersectionObserver(function (entries) {
+          visible = entries[0].isIntersecting;
+          lastTs = 0;
+          if (visible) requestFrame();
+        }).observe(stage);
+      }
+      document.addEventListener("visibilitychange", function () {
+        lastTs = 0;
+        if (!document.hidden) requestFrame();
+      });
+      document.addEventListener("qz:theme", function () { readColors(); requestFrame(); });
+      if (window.matchMedia) {
+        var mq = window.matchMedia("(prefers-color-scheme: dark)");
+        var onScheme = function () { readColors(); requestFrame(); };
+        if (mq.addEventListener) mq.addEventListener("change", onScheme); else if (mq.addListener) mq.addListener(onScheme);
+      }
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { readColors(); requestFrame(); });
+
+      updateSettings();
+      syncAngleInput();
+      setRunning(!reduced);
+      requestFrame();
+    })();
+  </script>
+</body>
+</html>
