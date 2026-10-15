@@ -314,50 +314,96 @@
   var chipsBox = document.querySelector("[data-chips]");
   var grid = document.querySelector("[data-topics]");
 
-  /* Kartalardagi kichik SMIL animatsiyalar (viewBox 0 0 200 120) */
+  /* Kichik yulduzlar (deterministik) */
+  function dots(n, seed, cls) {
+    var out = "", x = seed;
+    function rnd() { x = (x * 9301 + 49297) % 233280; return x / 233280; }
+    for (var i = 0; i < n; i++) out += '<circle class="' + cls + '" cx="' + f(rnd() * 200) + '" cy="' + f(rnd() * 120) + '" r="' + f(0.5 + rnd() * 0.9) + '"/>';
+    return out;
+  }
+
+  /* Kartalardagi illyustratsiyalar (viewBox 0 0 200 120, to‘yingan fon ustida) */
   var ART = {
     orbit:
-      '<ellipse class="v-line-soft" cx="100" cy="60" rx="78" ry="34"/>' +
-      '<ellipse class="v-line-soft" cx="100" cy="60" rx="46" ry="20"/>' +
-      '<circle class="v-sun" cx="100" cy="60" r="13"/>' +
-      '<circle class="v-c" r="5.5"><animateMotion dur="9s" repeatCount="indefinite" path="M178 60 A78 34 0 1 1 22 60 A78 34 0 1 1 178 60"/></circle>' +
-      '<circle class="v-c-soft" r="4"><animateMotion dur="4s" repeatCount="indefinite" path="M54 60 A46 20 0 1 0 146 60 A46 20 0 1 0 54 60"/></circle>',
+      dots(26, 7, "v-oq-70") +
+      '<circle class="v-oltin" cx="100" cy="60" r="24" opacity=".16"/>' +
+      '<circle class="v-oltin" cx="100" cy="60" r="13"/>' +
+      '<ellipse class="v-chiziq-35" cx="100" cy="60" rx="42" ry="17"/>' +
+      '<ellipse class="v-chiziq-35" cx="100" cy="60" rx="66" ry="27"/>' +
+      '<ellipse class="v-chiziq-35" cx="100" cy="60" rx="92" ry="38"/>' +
+      '<circle class="v-mars" r="3.5"><animateMotion dur="3.2s" repeatCount="indefinite" path="M142 60 A42 17 0 1 1 58 60 A42 17 0 1 1 142 60"/></circle>' +
+      '<circle class="v-yer" r="5"><animateMotion dur="6s" repeatCount="indefinite" path="M166 60 A66 27 0 1 1 34 60 A66 27 0 1 1 166 60"/></circle>' +
+      '<g><animateMotion dur="14s" repeatCount="indefinite" path="M192 60 A92 38 0 1 1 8 60 A92 38 0 1 1 192 60"/>' +
+        '<circle class="v-saturn" r="6"/><ellipse class="v-saturn-ring" rx="11" ry="3.2" transform="rotate(-18)"/></g>',
     ocean:
-      '<path class="v-line" d="M-40 26 q15 -8 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0"><animateTransform attributeName="transform" type="translate" from="0 0" to="60 0" dur="4s" repeatCount="indefinite"/></path>' +
-      '<path class="v-line-soft" d="M-40 36 q15 -6 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0"><animateTransform attributeName="transform" type="translate" from="60 0" to="0 0" dur="5s" repeatCount="indefinite"/></path>' +
-      '<g class="v-text"><text x="168" y="52">200 m</text><text x="168" y="78">1 km</text><text x="168" y="104">11 km</text></g>' +
-      '<path class="v-line-soft" d="M160 49h-130M160 75h-130M160 101h-130" stroke-dasharray="2 4"/>' +
-      '<circle class="v-c" cx="96" r="5"><animate attributeName="cy" values="30;104;30" dur="7s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/></circle>',
+      '<rect width="200" height="120" fill="url(#art-chuqurlik)"/>' +
+      '<path class="v-oq-15" d="M40 0 L70 0 L50 120 L10 120Z M110 0 L130 0 L150 120 L118 120Z"/>' +
+      '<path class="v-chiziq" d="M-40 16 q10 -6 20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0"><animateTransform attributeName="transform" type="translate" from="0 0" to="40 0" dur="3s" repeatCount="indefinite"/></path>' +
+      '<g class="v-text" text-anchor="end"><text x="194" y="47">200 m</text><text x="194" y="78">1 km</text><text x="194" y="110">11 km</text></g>' +
+      '<path class="v-chiziq-35" d="M150 44h-140M160 75h-150M156 107h-146" stroke-dasharray="2 4"/>' +
+      '<path class="v-oq-70" d="M0 0q9 -6 18 0q-9 6 -18 0z M18 0l7 -5v10z"><animateMotion dur="11s" repeatCount="indefinite" path="M-30 58 C40 50 120 66 230 56"/></path>' +
+      '<path class="v-oq-35" d="M0 0q6 -4 12 0q-6 4 -12 0z M12 0l5 -3.5v7z"><animateMotion dur="15s" begin="-6s" repeatCount="indefinite" path="M-30 90 C60 96 140 84 230 92"/></path>' +
+      [60, 84, 132].map(function (x, i) {
+        return '<circle class="v-chiziq-35" cx="' + x + '" r="' + (2 + i % 2) + '"><animate attributeName="cy" values="118;20" dur="' + (4 + i) + 's" begin="-' + i * 1.3 + 's" repeatCount="indefinite"/></circle>';
+      }).join(""),
     timeline:
-      '<path class="v-line" d="M16 70 H184"/>' +
-      '<path class="v-line-soft" d="M30 62v16M62 62v16M94 62v16M126 62v16M158 62v16"/>' +
-      '<g class="v-text" text-anchor="middle"><text x="30" y="94">−2560</text><text x="62" y="94">820</text><text x="94" y="94">1428</text><text x="126" y="94">1961</text><text x="158" y="94">2021</text></g>' +
-      '<path class="v-sun" d="M0 -9 L9 0 L0 9 L-9 0Z"><animateMotion dur="6s" repeatCount="indefinite" path="M30 70 H158 H30" keyPoints="0;1;0" keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/></path>',
+      '<path class="v-oq-70" d="M20 74 L38 42 L56 74Z"/>' +
+      '<path class="v-oq-35" d="M38 42 L56 74 L46 74Z"/>' +
+      '<rect class="v-oq-70" x="86" y="54" width="34" height="20"/><path class="v-oq-70" d="M90 54 A13 14 0 0 1 116 54Z"/><rect class="v-oq-70" x="82" y="40" width="4" height="34"/><rect class="v-oq-70" x="120" y="40" width="4" height="34"/>' +
+      '<path class="v-oq-70" d="M156 74 V50 Q162 32 168 50 V74Z M156 66 l-6 8h6z M168 66 l6 8h-6z"/>' +
+      '<path class="v-chiziq" d="M10 84 H190"/>' +
+      '<path class="v-chiziq-35" d="M38 79v10M103 79v10M162 79v10"/>' +
+      '<g class="v-text" text-anchor="middle"><text x="38" y="102">−2560</text><text x="103" y="102">1420</text><text x="162" y="102">1961</text></g>' +
+      '<path class="v-lojuvard" d="M0 -8 L8 0 L0 8 L-8 0Z"><animateMotion dur="6s" repeatCount="indefinite" path="M38 84 H162 H38" keyPoints="0;1;0" keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/></path>',
+    map:
+      '<ellipse class="v-oq-35" cx="44" cy="30" rx="16" ry="12"/>' +
+      '<path class="v-oq-15" d="M24 40 L54 30 L70 42 L92 46 L108 58 L128 52 L146 40 L170 44 L188 54 L172 62 L152 60 L140 70 L124 82 L112 100 L94 104 L86 90 L72 78 L54 68 L36 64 L22 54Z"/>' +
+      '<path class="v-lojuvard" opacity=".55" d="M86 60 L108 58 L124 70 L112 92 L94 96 L84 82Z"><animate attributeName="opacity" values=".55;.15;.55" dur="5s" repeatCount="indefinite"/></path>' +
+      '<path class="v-anor" opacity=".15" d="M128 52 L146 40 L170 44 L176 56 L152 60 L136 64Z"><animate attributeName="opacity" values=".15;.6;.15" dur="5s" repeatCount="indefinite"/></path>' +
+      '<path class="v-chiziq-35" d="M58 34 C70 50 82 60 104 64 M150 50 C130 52 118 46 98 40"/>' +
+      '<path class="v-chiziq v-march" fill="none" d="M24 40 L54 30 L70 42 L92 46 L108 58 L128 52 L146 40 L170 44 L188 54 L172 62 L152 60 L140 70 L124 82 L112 100 L94 104 L86 90 L72 78 L54 68 L36 64 L22 54Z"/>' +
+      '<path class="v-lojuvard v-beat" d="M104 62l2.4 5 5.4.6-4 3.7 1 5.3-4.8-2.6-4.8 2.6 1-5.3-4-3.7 5.4-.6z"/>' +
+      '<circle class="v-oq" cx="150" cy="50" r="3"/>',
     water:
-      '<g class="v-c-soft"><circle cx="82" cy="40" r="17"/><circle cx="104" cy="32" r="21"/><circle cx="126" cy="42" r="15"/><rect x="70" y="40" width="68" height="17" rx="8.5"/></g>' +
-      [78, 96, 114, 132].map(function (x, i) {
-        return '<path class="v-c" d="M' + x + ' 64 q4 6 0 9 q-4 -3 0 -9Z" opacity="0"><animateTransform attributeName="transform" type="translate" values="0 0;0 38" dur="1.6s" begin="' + (i * 0.4) + 's" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;1;0" dur="1.6s" begin="' + (i * 0.4) + 's" repeatCount="indefinite"/></path>';
+      '<g class="v-spin"><path class="v-chiziq-oltin" opacity=".7" d="M34 8v8M34 44v8M12 30h8M48 30h8M18 14l6 6M44 40l6 6M18 46l6-6M44 20l6-6"/></g>' +
+      '<circle class="v-oltin" cx="34" cy="30" r="11"/>' +
+      '<path class="v-oq-35" d="M118 104 L156 40 L194 104Z"/>' +
+      '<path class="v-oq" d="M148 54 L156 40 L164 54 L159 51 L156 56 L152 51Z"/>' +
+      '<g class="v-oq"><circle cx="96" cy="30" r="12"/><circle cx="112" cy="24" r="15"/><circle cx="128" cy="31" r="11"/><rect x="86" y="30" width="52" height="12" rx="6"/></g>' +
+      [100, 112, 124, 136].map(function (x, i) {
+        return '<path class="v-oq-70" d="M' + x + ' 46 q3 5 0 7 q-3 -2 0 -7Z" opacity="0"><animateTransform attributeName="transform" type="translate" values="0 0;8 40" dur="1.4s" begin="' + (i * 0.35) + 's" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;1;0" dur="1.4s" begin="' + (i * 0.35) + 's" repeatCount="indefinite"/></path>';
       }).join("") +
-      '<path class="v-line" d="M30 108 q20 -6 40 0 t40 0 t40 0 t40 0"/>',
+      '<rect class="v-oq-15" x="0" y="96" width="120" height="24"/>' +
+      '<path class="v-chiziq" d="M0 98 q10 -4 20 0 t20 0 t20 0 t20 0 t20 0 t20 0"/>' +
+      [30, 54, 78].map(function (x, i) {
+        return '<path class="v-chiziq-35" d="M' + x + ' 92 q-3 -5 0 -10 q3 -5 0 -10"><animateTransform attributeName="transform" type="translate" values="0 6;0 -14" dur="2.4s" begin="-' + i * 0.8 + 's" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="2.4s" begin="-' + i * 0.8 + 's" repeatCount="indefinite"/></path>';
+      }).join(""),
     pendulum:
-      '<path class="v-line-soft" d="M60 20 H140"/>' +
-      '<path class="v-line-soft" d="M56 92 A62 62 0 0 0 144 92" stroke-dasharray="3 4"/>' +
-      '<g><path class="v-line" d="M100 20 V96"/><circle class="v-sun" cx="100" cy="98" r="10"/>' +
-      '<animateTransform attributeName="transform" type="rotate" values="-38 100 20;38 100 20;-38 100 20" dur="2.4s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/></g>' +
-      '<circle class="v-ink" cx="100" cy="20" r="3"/>',
+      '<path class="v-chiziq-35" d="M20 0v120M60 0v120M100 0v120M140 0v120M180 0v120M0 30h200M0 70h200M0 110h200" opacity=".5"/>' +
+      '<path class="v-oq" d="M70 14 H130 V18 H70Z"/>' +
+      '<path class="v-chiziq-35" d="M58 90 A56 56 0 0 0 142 90" stroke-dasharray="3 4"/>' +
+      '<g><path class="v-chiziq" d="M100 18 V96"/><circle class="v-oltin" cx="100" cy="98" r="11"/><circle class="v-oq-70" cx="96" cy="94" r="3"/>' +
+      '<animateTransform attributeName="transform" type="rotate" values="-36 100 18;36 100 18;-36 100 18" dur="2.2s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/></g>' +
+      '<circle class="v-oq" cx="100" cy="18" r="3"/>' +
+      '<text class="v-text" x="10" y="112">T = 2π√(L/g)</text>',
     pulse:
-      '<path class="v-line-soft" d="M10 64 H58 L66 50 L74 64 L84 64 L92 22 L102 98 L110 64 L124 64 L132 54 L140 64 H190"/>' +
-      '<path class="v-line" d="M10 64 H58 L66 50 L74 64 L84 64 L92 22 L102 98 L110 64 L124 64 L132 54 L140 64 H190" stroke-dasharray="320" stroke-dashoffset="320"><animate attributeName="stroke-dashoffset" values="320;0;0;-320" keyTimes="0;.45;.6;1" dur="2.6s" repeatCount="indefinite"/></path>',
+      '<path class="v-oq-15" d="M0 60 H200"/>' +
+      '<path class="v-oq v-beat" d="M48 86S20 70 20 50a14 14 0 0 1 28-5 14 14 0 0 1 28 5c0 20-28 36-28 36z"/>' +
+      '<path class="v-chiziq-35" d="M86 60 H112 L118 48 L124 60 L130 60 L138 26 L146 92 L152 60 L162 60 L168 52 L174 60 H200"/>' +
+      '<path class="v-chiziq" d="M86 60 H112 L118 48 L124 60 L130 60 L138 26 L146 92 L152 60 L162 60 L168 52 L174 60 H200" stroke-dasharray="220" stroke-dashoffset="220"><animate attributeName="stroke-dashoffset" values="220;0;0;-220" keyTimes="0;.45;.6;1" dur="2.2s" repeatCount="indefinite"/></path>' +
+      '<text class="v-text" x="88" y="106">≈ 72 / daqiqa</text>',
     quiz:
-      '<rect class="v-c" x="44" y="28" width="52" height="64" rx="10"/>' +
-      '<rect class="v-anor" x="104" y="28" width="52" height="64" rx="10"/>' +
-      '<text class="v-big" x="70" y="68" text-anchor="middle">H</text>' +
-      '<text class="v-big" x="130" y="68" text-anchor="middle">A</text>' +
-      '<g><circle class="v-sun" cx="100" cy="100" r="7"/><animateTransform attributeName="transform" type="translate" values="-30 0;-30 0;30 0;30 0;-30 0" keyTimes="0;.35;.5;.85;1" dur="4s" repeatCount="indefinite"/></g>'
+      dots(18, 3, "v-oq-35") +
+      '<g class="v-flip"><rect class="v-oq" x="42" y="26" width="54" height="68" rx="10"/><text class="v-big" x="69" y="68" text-anchor="middle" style="fill:var(--art-aralash)">H</text></g>' +
+      '<g class="v-flip b"><rect class="v-oltin" x="104" y="26" width="54" height="68" rx="10"/><text class="v-big" x="131" y="68" text-anchor="middle" style="fill:var(--art-aralash)">A</text></g>' +
+      '<text class="v-text" x="100" y="112" text-anchor="middle">haqiqatmi yoki afsona?</text>'
   };
 
+  var PATTERN = '<svg class="pat" aria-hidden="true" focusable="false"><rect width="100%" height="100%" fill="url(#girih)"/></svg>';
+
   function artSvg(t) {
-    return '<svg viewBox="0 0 200 120" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">' + (ART[t.art] || "") + "</svg>";
+    if (t.image) return PATTERN + '<img src="' + t.image + '" alt="" loading="lazy" decoding="async">';
+    return PATTERN + '<svg viewBox="0 0 200 120" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">' + (ART[t.art] || "") + "</svg>";
   }
 
   var GO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
@@ -371,7 +417,9 @@
         "<h3>" + t.title + "</h3>" +
         "<p>" + t.desc + "</p>" +
         '<span class="tcard__go">Ochish ' + GO + "</span>" +
-      "</div></a>";
+      "</div>" +
+      '<span class="tcard__glare" aria-hidden="true"></span>' +
+      "</a>";
   }
 
   function renderTopics(cat) {
@@ -381,11 +429,38 @@
       grid.innerHTML = '<p class="topics-empty">Bu bo‘limda hozircha mavzu yo‘q. Boshqa bo‘limni tanlang.</p>';
       return;
     }
+    var allMode = cat === "all";
     grid.innerHTML = list.map(function (t, i) {
-      var wide = cat === "all" && (i === 0 || (i === list.length - 1 && list.length % 3 === 1));
+      var wide = allMode && (i === 0 || (i === list.length - 1 && list.length % 3 === 1));
       return cardHtml(t, wide);
     }).join("");
+    /* 2 ustunli ekranda birinchi karta faqat qolganlar juft bo‘lsa keng bo‘ladi */
+    grid.setAttribute("data-span2", allMode && (list.length - 1) % 2 === 0 ? "1" : "0");
     if (reduced) grid.querySelectorAll("svg").forEach(function (s) { if (s.pauseAnimations) s.pauseAnimations(); });
+  }
+
+  /* Kartalarni sichqonchaga qarab 3D egish */
+  function initTilt() {
+    if (!grid || reduced) return;
+    grid.addEventListener("pointermove", function (e) {
+      if (e.pointerType !== "mouse") return;
+      var card = e.target.closest(".tcard");
+      if (!card) return;
+      var r = card.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+      card.classList.add("is-tilting");
+      card.style.setProperty("--rx", f((0.5 - py) * 7) + "deg");
+      card.style.setProperty("--ry", f((px - 0.5) * 9) + "deg");
+      card.style.setProperty("--gx", f(px * 100) + "%");
+      card.style.setProperty("--gy", f(py * 100) + "%");
+    });
+    grid.addEventListener("pointerout", function (e) {
+      var card = e.target.closest(".tcard");
+      if (!card || card.contains(e.relatedTarget)) return;
+      card.classList.remove("is-tilting");
+      card.style.setProperty("--rx", "0deg");
+      card.style.setProperty("--ry", "0deg");
+    });
   }
 
   function renderChips() {
@@ -445,11 +520,259 @@
     setInterval(tick, reduced ? 1000 : 100);
   }
 
+  /* ================================================================
+     5. TUNGI OSMON: Qutb yulduzi atrofida aylanuvchi yulduzlar
+     ================================================================ */
+  function initSky() {
+    var cv = document.querySelector("[data-sky]");
+    if (!cv || !cv.getContext) return;
+    var ctx = cv.getContext("2d");
+    var TAU = Math.PI * 2;
+    var W = 0, H = 0, stars = [], pole = { x: 0, y: 0 }, rot = 0;
+    var running = false, visible = true, last = 0, shoot = null, nextShoot = 2.5;
+    var colors = [QZ.cssVar("--tun-matn") || "#f1f3ff", QZ.cssVar("--oltin-2") || "#ffd98a", QZ.cssVar("--c-koinot") || "#9fb2ff"];
+
+    function build() {
+      var dpr = Math.min(2, window.devicePixelRatio || 1);
+      var r = cv.getBoundingClientRect();
+      W = r.width; H = r.height;
+      if (!W || !H) return;
+      cv.width = Math.round(W * dpr);
+      cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      pole = { x: W * 0.72, y: -H * 0.25 };
+      var R = Math.hypot(Math.max(pole.x, W - pole.x), H - pole.y) + 30;
+      var n = Math.round(Math.min(480, (W * H) / 2300));
+      stars = [];
+      for (var i = 0; i < n; i++) {
+        var k = Math.random();
+        stars.push({
+          r: R * Math.sqrt(Math.random()),
+          a: Math.random() * TAU,
+          s: Math.random() < 0.07 ? 1.6 + Math.random() * 0.9 : 0.5 + Math.random() * 1.0,
+          tw: 0.6 + Math.random() * 2.4,
+          ph: Math.random() * TAU,
+          b: 0.35 + Math.random() * 0.65,
+          c: k < 0.84 ? colors[0] : k < 0.94 ? colors[1] : colors[2]
+        });
+      }
+    }
+
+    function draw(t) {
+      ctx.clearRect(0, 0, W, H);
+      for (var i = 0; i < stars.length; i++) {
+        var s = stars[i];
+        var a = s.a + rot;
+        var x = pole.x + Math.cos(a) * s.r, y = pole.y + Math.sin(a) * s.r;
+        if (x < -6 || x > W + 6 || y < -6 || y > H + 6) continue;
+        var fade = y > H * 0.7 ? Math.max(0, 1 - (y - H * 0.7) / (H * 0.3)) : 1;
+        var al = s.b * (0.55 + 0.45 * Math.sin(t * s.tw + s.ph)) * fade;
+        if (al <= 0.02) continue;
+        ctx.globalAlpha = al;
+        ctx.fillStyle = s.c;
+        if (s.s > 1.5) {
+          ctx.beginPath(); ctx.arc(x, y, s.s, 0, TAU); ctx.fill();
+          ctx.globalAlpha = al * 0.18;
+          ctx.beginPath(); ctx.arc(x, y, s.s * 3.4, 0, TAU); ctx.fill();
+        } else {
+          ctx.fillRect(x - s.s / 2, y - s.s / 2, s.s, s.s);
+        }
+      }
+      if (shoot) {
+        var p = shoot.life / shoot.dur;
+        var hx = shoot.x + shoot.vx * shoot.life, hy = shoot.y + shoot.vy * shoot.life;
+        var len = 140 * Math.min(1, p * 3);
+        var sp = Math.hypot(shoot.vx, shoot.vy);
+        var tx = hx - (shoot.vx / sp) * len, ty = hy - (shoot.vy / sp) * len;
+        var g = ctx.createLinearGradient(hx, hy, tx, ty);
+        g.addColorStop(0, colors[0]);
+        g.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.globalAlpha = Math.sin(Math.PI * Math.min(1, p));
+        ctx.strokeStyle = g;
+        ctx.lineWidth = 1.8;
+        ctx.lineCap = "round";
+        ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(tx, ty); ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function loop(now) {
+      if (!running) return;
+      var dt = Math.min(0.05, (now - (last || now)) / 1000);
+      last = now;
+      rot += dt * 0.012;
+      nextShoot -= dt;
+      if (!shoot && nextShoot <= 0) {
+        var dir = Math.random() < 0.5 ? 1 : -1;
+        var ang = (18 + Math.random() * 20) * Math.PI / 180;
+        var speed = 650 + Math.random() * 350;
+        shoot = { x: W * (dir > 0 ? 0.1 + Math.random() * 0.4 : 0.5 + Math.random() * 0.4), y: H * (0.04 + Math.random() * 0.3), vx: Math.cos(ang) * speed * dir, vy: Math.sin(ang) * speed, life: 0, dur: 0.9 };
+        nextShoot = 5 + Math.random() * 7;
+      }
+      if (shoot) { shoot.life += dt; if (shoot.life > shoot.dur) shoot = null; }
+      draw(now / 1000);
+      requestAnimationFrame(loop);
+    }
+    function start() {
+      if (reduced || running || !visible || document.hidden) return;
+      running = true; last = 0;
+      requestAnimationFrame(loop);
+    }
+    function stop() { running = false; }
+
+    build();
+    draw(0);
+    if ("ResizeObserver" in window) new ResizeObserver(function () { build(); draw(performance.now() / 1000); }).observe(cv);
+    if (reduced) return;
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (en) { visible = en[0].isIntersecting; if (visible) start(); else stop(); }).observe(cv);
+    }
+    document.addEventListener("visibilitychange", function () { if (document.hidden) stop(); else start(); });
+    start();
+  }
+
+  /* ================================================================
+     6. REGISTON SILUETI (Ulug‘bek, Tillakori, Sherdor madrasalari)
+     ================================================================ */
+  function initSkyline() {
+    var box = document.querySelector("[data-skyline]");
+    if (!box) return;
+    var GY = 170, out = "", seed = 11;
+    function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+    function rect(x, y, w, h, c) { return '<rect class="' + c + '" x="' + f(x) + '" y="' + f(y) + '" width="' + f(w) + '" height="' + f(h) + '"/>'; }
+    function arch(x, y, w, h, c) {
+      return '<path class="' + c + '" d="M' + f(x) + " " + f(y + h) + " V" + f(y + h * 0.42) + " Q" + f(x) + " " + f(y + h * 0.08) + " " + f(x + w / 2) + " " + f(y) +
+        " Q" + f(x + w) + " " + f(y + h * 0.08) + " " + f(x + w) + " " + f(y + h * 0.42) + " V" + f(y + h) + 'Z"/>';
+    }
+    function dome(cx, base, r, h) {
+      var s = rect(cx - r * 0.82, base, r * 1.64, 16, "sk-bino-2");
+      s += '<path class="sk-gumbaz" d="M' + f(cx - r) + " " + f(base) + " C" + f(cx - r) + " " + f(base - h * 0.95) + " " + f(cx - r * 0.25) + " " + f(base - h) + " " + f(cx) + " " + f(base - h * 1.12) +
+        " C" + f(cx + r * 0.25) + " " + f(base - h) + " " + f(cx + r) + " " + f(base - h * 0.95) + " " + f(cx + r) + " " + f(base) + 'Z"/>';
+      for (var k = -2; k <= 2; k++) {
+        s += '<path class="sk-qovurga" d="M' + f(cx + k * r * 0.38) + " " + f(base) + " Q" + f(cx + k * r * 0.34) + " " + f(base - h * 0.85) + " " + f(cx) + " " + f(base - h * 1.1) + '"/>';
+      }
+      s += '<path class="sk-gumbaz-2" d="M' + f(cx - r * 0.7) + " " + f(base - h * 0.5) + " Q" + f(cx - r * 0.55) + " " + f(base - h * 0.95) + " " + f(cx - r * 0.1) + " " + f(base - h * 1.02) + " Q" + f(cx - r * 0.4) + " " + f(base - h * 0.8) + " " + f(cx - r * 0.7) + " " + f(base - h * 0.5) + 'Z"/>';
+      s += rect(cx - 1, base - h * 1.12 - 12, 2, 12, "sk-bino-2");
+      return s;
+    }
+    function minaret(cx, h, w) {
+      var top = GY - h;
+      var s = '<path class="sk-bino" d="M' + f(cx - w / 2) + " " + GY + " L" + f(cx - w * 0.4) + " " + f(top) + " H" + f(cx + w * 0.4) + " L" + f(cx + w / 2) + " " + GY + 'Z"/>';
+      s += rect(cx - w * 0.4, top + 14, w * 0.8, 4, "sk-naqsh");
+      s += rect(cx - w * 0.4, top + 30, w * 0.8, 2.5, "sk-naqsh");
+      s += rect(cx - w * 0.62, top - 7, w * 1.24, 7, "sk-bino-2");
+      s += '<path class="sk-gumbaz" d="M' + f(cx - w * 0.42) + " " + f(top - 7) + " Q" + f(cx) + " " + f(top - 7 - w * 0.9) + " " + f(cx + w * 0.42) + " " + f(top - 7) + 'Z"/>';
+      return s;
+    }
+    function windows(x0, x1, y, n, skip0, skip1) {
+      var s = "", step = (x1 - x0) / n;
+      for (var i = 0; i < n; i++) {
+        var x = x0 + i * step + step * 0.28;
+        if (x + step * 0.44 > skip0 && x < skip1) continue;
+        var lit = rnd();
+        s += arch(x, y, step * 0.44, 16, "sk-bino-2");
+        if (lit > 0.45) {
+          s += '<path class="sk-chiroq' + (lit > 0.85 ? " miltilla" : "") + '" style="opacity:' + f(0.35 + lit * 0.55) + (lit > 0.85 ? ";animation-delay:-" + f(lit * 4) + "s" : "") + '" d="M' + f(x + 2) + " " + f(y + 16) + " V" + f(y + 8) + " Q" + f(x + step * 0.22) + " " + f(y + 2) + " " + f(x + step * 0.44 - 2) + " " + f(y + 8) + " V" + f(y + 16) + 'Z"/>';
+        }
+      }
+      return s;
+    }
+    function madrasa(x, w, o) {
+      var fh = o.fh || 64, ph = o.ph || 112, pw = w * (o.pw || 0.36);
+      var px = x + (w - pw) / 2;
+      var s = "";
+      (o.domes || []).forEach(function (d) { s += dome(x + w * d[0], GY - fh, d[1], d[2]); });
+      s += rect(x, GY - fh, w, fh, "sk-bino");
+      s += rect(x, GY - fh, w, 3, "sk-naqsh");
+      s += windows(x + 18, x + w - 18, GY - fh + 12, o.win || 9, px - 6, px + pw + 6);
+      s += windows(x + 18, x + w - 18, GY - fh + 36, o.win || 9, px - 6, px + pw + 6);
+      s += rect(px, GY - ph, pw, ph, "sk-bino-2");
+      s += rect(px + 5, GY - ph + 5, pw - 10, 4, "sk-naqsh");
+      s += rect(px + 5, GY - ph + 5, 4, ph - 5, "sk-naqsh");
+      s += rect(px + pw - 9, GY - ph + 5, 4, ph - 5, "sk-naqsh");
+      s += arch(px + pw * 0.2, GY - ph * 0.78, pw * 0.6, ph * 0.78, "sk-bino");
+      s += '<path class="sk-chiroq" style="opacity:.28" d="M' + f(px + pw * 0.3) + " " + GY + " V" + f(GY - ph * 0.42) + " Q" + f(px + pw * 0.5) + " " + f(GY - ph * 0.66) + " " + f(px + pw * 0.7) + " " + f(GY - ph * 0.42) + " V" + GY + 'Z"/>';
+      s += minaret(x + 7, o.mh || 136, 14);
+      s += minaret(x + w - 7, o.mh || 136, 14);
+      return s;
+    }
+    function houses(x0, x1) {
+      var s = "", x = x0;
+      while (x < x1) {
+        var w = 22 + rnd() * 38, h = 14 + rnd() * 26;
+        s += rect(x, GY - h, Math.min(w, x1 - x), h, rnd() > 0.5 ? "sk-bino" : "sk-bino-2");
+        if (rnd() > 0.55) s += '<ellipse class="sk-bino" cx="' + f(x + w * 0.5) + '" cy="' + f(GY - h - 16) + '" rx="' + f(4 + rnd() * 3) + '" ry="' + f(18 + rnd() * 10) + '"/>';
+        if (rnd() > 0.6) s += rect(x + w * 0.3, GY - h + 6, 4, 5, "sk-chiroq");
+        x += w;
+      }
+      return s;
+    }
+    out += houses(0, 160) + houses(530, 566) + houses(884, 920) + houses(1290, 1440);
+    out += madrasa(160, 370, { mh: 152, domes: [], win: 10 });
+    out += madrasa(566, 318, { fh: 58, ph: 96, mh: 78, domes: [[0.2, 34, 42]], win: 8 });
+    out += madrasa(920, 370, { domes: [[0.2, 24, 30], [0.8, 24, 30]], win: 10 });
+    out += rect(0, GY - 6, 1440, 6, "sk-bino");
+    box.innerHTML = out;
+  }
+
+  /* ================================================================
+     7. YUGURUVCHI FAKTLAR LENTASI
+     ================================================================ */
+  function initTicker() {
+    var track = document.querySelector("[data-ticker]");
+    if (!track) return;
+    var STAR = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0l2 3.2 3.7-.9-.9 3.7L16 8l-3.2 2 .9 3.7-3.7-.9L8 16l-2-3.2-3.7.9.9-3.7L0 8l3.2-2-.9-3.7 3.7.9z"/></svg>';
+    function first(t) { var i = t.indexOf(". "); return i > 0 ? t.slice(0, i + 1) : t; }
+    var items = data.facts.slice().sort(function () { return Math.random() - 0.5; }).map(function (x) {
+      return '<span class="ticker__item">' + STAR + "<b>" + QZ.catName(x.cat) + "</b>" + first(x.text) + "</span>";
+    }).join("");
+    track.innerHTML = items + '<span aria-hidden="true" style="display:contents">' + items + "</span>";
+    requestAnimationFrame(function () {
+      var half = track.scrollWidth / 2;
+      if (half) track.style.setProperty("--ticker-dur", Math.round(half / 55) + "s");
+    });
+  }
+
+  /* ================================================================
+     8. SCROLL BILAN PAYDO BO‘LISH
+     ================================================================ */
+  function initReveal() {
+    if (reduced || !("IntersectionObserver" in window)) return;
+    var els = Array.prototype.slice.call(document.querySelectorAll("[data-reveal], .tcard"));
+    var vh = window.innerHeight;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var el = en.target;
+        io.unobserve(el);
+        el.classList.remove("rv-wait");
+        el.classList.add("rv-in");
+        el.addEventListener("animationend", function done(ev) {
+          if (ev.target !== el) return;
+          el.classList.remove("rv-in");
+          el.removeEventListener("animationend", done);
+        });
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+    els.forEach(function (el, i) {
+      if (el.getBoundingClientRect().top < vh * 0.94) return; /* birinchi ekrandagilar darhol ko‘rinadi */
+      var col = el.classList.contains("tcard") ? Array.prototype.indexOf.call(el.parentNode.children, el) % 3 : (el.parentNode ? Array.prototype.indexOf.call(el.parentNode.children, el) % 4 : 0);
+      el.style.setProperty("--rv-delay", (col * 0.09).toFixed(2) + "s");
+      el.classList.add("rv-wait");
+      io.observe(el);
+    });
+  }
+
   /* ================================================================ */
+  initSky();
+  initSkyline();
   buildAstrolabe();
   initAstroMotion();
+  initTicker();
   initFacts();
   renderChips();
   renderTopics("all");
+  initTilt();
   initCounters();
+  initReveal();
 })();

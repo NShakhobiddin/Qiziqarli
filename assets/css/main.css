@@ -618,6 +618,49 @@ input:focus-visible { border-color: var(--firuza); }
 }
 .toast.is-on { opacity: 1; transform: translate(-50%, 0); }
 
+/* Mavzu sahifalari: bo‘lim rangidagi yorug‘lik va sekin aylanuvchi girih yulduzi */
+main { overflow-x: clip; }
+.topic-hero { position: relative; isolation: isolate; }
+.topic-hero::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  top: -64px;
+  left: 50%;
+  width: 100vw;
+  height: calc(100% + 64px);
+  transform: translateX(-50%);
+  background:
+    radial-gradient(45% 75% at 88% 18%, color-mix(in srgb, var(--hero-c, var(--lojuvard)) 24%, transparent), transparent 70%),
+    radial-gradient(35% 55% at 0% 0%, color-mix(in srgb, var(--zafaron-yorqin) 16%, transparent), transparent 70%);
+}
+.topic-hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  right: clamp(-120px, -6vw, -20px);
+  top: 8px;
+  width: clamp(220px, 30vw, 400px);
+  aspect-ratio: 1;
+  background: color-mix(in srgb, var(--hero-c, var(--lojuvard)) 45%, transparent);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%27-112 -112 224 224%27%3E%3Cg fill=%27none%27 stroke=%27black%27 stroke-width=%272.5%27 stroke-linejoin=%27round%27%3E%3Ccircle r=%27108%27/%3E%3Ccircle r=%2776%27/%3E%3Cpath d=%27M104.0 0.0 L73.5 30.5 L73.5 73.5 L30.5 73.5 L0.0 104.0 L-30.5 73.5 L-73.5 73.5 L-73.5 30.5 L-104.0 0.0 L-73.5 -30.5 L-73.5 -73.5 L-30.5 -73.5 L-0.0 -104.0 L30.5 -73.5 L73.5 -73.5 L73.5 -30.5Z%27/%3E%3Cpath d=%27M57.3 23.7 L33.6 33.6 L23.7 57.3 L0.0 47.5 L-23.7 57.3 L-33.6 33.6 L-57.3 23.7 L-47.5 0.0 L-57.3 -23.7 L-33.6 -33.6 L-23.7 -57.3 L-0.0 -47.5 L23.7 -57.3 L33.6 -33.6 L57.3 -23.7 L47.5 -0.0Z%27/%3E%3Ccircle r=%2722%27/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%27-112 -112 224 224%27%3E%3Cg fill=%27none%27 stroke=%27black%27 stroke-width=%272.5%27 stroke-linejoin=%27round%27%3E%3Ccircle r=%27108%27/%3E%3Ccircle r=%2776%27/%3E%3Cpath d=%27M104.0 0.0 L73.5 30.5 L73.5 73.5 L30.5 73.5 L0.0 104.0 L-30.5 73.5 L-73.5 73.5 L-73.5 30.5 L-104.0 0.0 L-73.5 -30.5 L-73.5 -73.5 L-30.5 -73.5 L-0.0 -104.0 L30.5 -73.5 L73.5 -73.5 L73.5 -30.5Z%27/%3E%3Cpath d=%27M57.3 23.7 L33.6 33.6 L23.7 57.3 L0.0 47.5 L-23.7 57.3 L-33.6 33.6 L-57.3 23.7 L-47.5 0.0 L-57.3 -23.7 L-33.6 -33.6 L-23.7 -57.3 L-0.0 -47.5 L23.7 -57.3 L33.6 -33.6 L57.3 -23.7 L47.5 -0.0Z%27/%3E%3Ccircle r=%2722%27/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.55;
+  animation: girih-aylan 120s linear infinite;
+}
+@keyframes girih-aylan { to { transform: rotate(360deg); } }
+.topic-hero:has(.tag[data-cat="koinot"]) { --hero-c: var(--c-koinot); }
+.topic-hero:has(.tag[data-cat="tabiat"]) { --hero-c: var(--c-tabiat); }
+.topic-hero:has(.tag[data-cat="tarix"]) { --hero-c: var(--c-tarix); }
+.topic-hero:has(.tag[data-cat="ilm"]) { --hero-c: var(--c-ilm); }
+.topic-hero:has(.tag[data-cat="inson"]) { --hero-c: var(--c-inson); }
+.topic-hero:has(.tag[data-cat="aralash"]) { --hero-c: var(--anor); }
+@media (max-width: 640px) {
+  .topic-hero::after { opacity: 0.3; top: -20px; }
+}
+
 /* =========================== Harakatni kamaytirish =========================== */
 
 @media (prefers-reduced-motion: reduce) {
