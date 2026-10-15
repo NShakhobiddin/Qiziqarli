@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="claude:viewport-fit-sides" content="cover">
+  <title>Qiziqarli</title>
+  <meta name="description" content="Koinot, tabiat, tarix va inson haqidagi interaktiv tushuntirishlar o‘zbek tilida: Quyosh tizimi simulyatsiyasi, okean tubiga sayohat, tarix vaqt chizig‘i, viktorina va boshqalar.">
+  <meta property="og:title" content="Qiziqarli">
+  <meta property="og:description" content="Dunyoni o‘ynab o‘rganing: interaktiv va animatsion tushuntirishlar o‘zbek tilida.">
+  <meta name="theme-color" content="#1d3285">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500;600&family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;600;700;800&display=swap">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/home.css">
+  <script>try{var t=localStorage.getItem("qz-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="">
+  <a class="skip-link" href="#asosiy">Asosiy qismga o‘tish</a>
+
+  <header class="topbar">
+    <div class="wrap topbar__in">
+      <a class="brand" href="index.html" aria-label="Qiziqarli, bosh sahifa">
+        <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M31 16 26.61 20.39 26.61 26.61 20.39 26.61 16 31 11.61 26.61 5.39 26.61 5.39 20.39 1 16 5.39 11.61 5.39 5.39 11.61 5.39 16 1 20.39 5.39 26.61 5.39 26.61 11.61Z"/><circle class="c" cx="16" cy="16" r="5.2"/></svg>
+        Qiziqarli
+      </a>
+      <nav class="nav" aria-label="Asosiy menyu">
+        <a href="#mavzular">Mavzular</a>
+        <a class="nav__extra" href="#fakt">Bugungi fakt</a>
+        <a href="mavzular/viktorina.html">Viktorina</a>
+      </nav>
+      <button class="theme-btn" type="button" data-theme-toggle aria-label="Tungi rejimga o‘tish">
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a6.8 6.8 0 0 0 10.7 10.7z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="asosiy">
+    <!-- ================= Bosh qism ================= -->
+    <section class="hero">
+      <div class="wrap hero__in">
+        <div class="hero__text">
+          <span class="label hero__count"><span class="dot" aria-hidden="true"></span><span data-topic-count>7 ta interaktiv mavzu</span></span>
+          <h1>O<span class="tutuq">‘</span>ynab o<span class="tutuq">‘</span>rganing</h1>
+          <p class="lead">Sayyoralarni aylantiring, okean tubiga sho‘ng‘ing, tarixni varaqlang. Qiziqarli koinot, tabiat, tarix va inson haqidagi bilimlarni harakatda ko‘rsatadi.</p>
+          <div class="hero__ctas">
+            <a class="btn" href="#mavzular">
+              Mavzularni ko‘rish
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+            </a>
+            <button class="btn btn--ghost" type="button" data-random-topic>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>
+              Tasodifiy mavzu
+            </button>
+          </div>
+        </div>
+
+        <figure class="astro">
+          <svg class="astro__svg" id="usturlob" viewBox="-212 -212 424 424" role="group" aria-label="Usturlob: bo‘limni tanlash uchun halqadagi nomni bosing"></svg>
+          <figcaption>
+            <strong>Halqadagi bo‘limni bosing.</strong>
+            <span>Usturlob o‘rta asr olimlarining asbobi. Beruniy unga bag‘ishlab alohida risola yozgan.</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ================= Bugungi fakt ================= -->
+    <section class="band fact-band" id="fakt" aria-labelledby="fakt-title">
+      <svg class="naqsh" aria-hidden="true">
+        <defs>
+          <pattern id="girih" width="56" height="56" patternUnits="userSpaceOnUse">
+            <g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round">
+              <path d="M47.6 28 41.86 33.74 41.86 41.86 33.74 41.86 28 47.6 22.26 41.86 14.14 41.86 14.14 33.74 8.4 28 14.14 22.26 14.14 14.14 22.26 14.14 28 8.4 33.74 14.14 41.86 14.14 41.86 22.26Z"/>
+              <path d="M19.6 0 13.86 5.74 13.86 13.86 5.74 13.86 0 19.6-5.74 13.86-13.86 13.86-13.86 5.74-19.6 0-13.86-5.74-13.86-13.86-5.74-13.86 0-19.6 5.74-13.86 13.86-13.86 13.86-5.74Z"/>
+              <path d="M75.6 0 69.86 5.74 69.86 13.86 61.74 13.86 56 19.6 50.26 13.86 42.14 13.86 42.14 5.74 36.4 0 42.14-5.74 42.14-13.86 50.26-13.86 56-19.6 61.74-13.86 69.86-13.86 69.86-5.74Z"/>
+              <path d="M19.6 56 13.86 61.74 13.86 69.86 5.74 69.86 0 75.6-5.74 69.86-13.86 69.86-13.86 61.74-19.6 56-13.86 50.26-13.86 42.14-5.74 42.14 0 36.4 5.74 42.14 13.86 42.14 13.86 50.26Z"/>
+              <path d="M75.6 56 69.86 61.74 69.86 69.86 61.74 69.86 56 75.6 50.26 69.86 42.14 69.86 42.14 61.74 36.4 56 42.14 50.26 42.14 42.14 50.26 42.14 56 36.4 61.74 42.14 69.86 42.14 69.86 50.26Z"/>
+              <circle cx="28" cy="28" r="4"/>
+            </g>
+          </pattern>
+          <linearGradient id="naqsh-fade" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#fff" stop-opacity="0.15"/>
+            <stop offset="0.6" stop-color="#fff" stop-opacity="1"/>
+          </linearGradient>
+          <mask id="naqsh-mask"><rect width="100%" height="100%" fill="url(#naqsh-fade)"/></mask>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#girih)" mask="url(#naqsh-mask)"/>
+      </svg>
+      <div class="wrap fact-band__in">
+        <div class="fact-band__top">
+          <h2 id="fakt-title" data-fact-title>Bugungi fakt</h2>
+          <span class="label" data-fact-date></span>
+        </div>
+        <div class="fact-card">
+          <p class="fact-text" data-fact-text aria-live="polite">Quyosh nuri Yerga taxminan 8 daqiqa 20 soniyada yetib keladi. Osmonga qaraganingizda Quyoshni 8 daqiqa oldingi holatida ko‘rasiz.</p>
+          <div class="fact-foot">
+            <div class="fact-src">
+              <span class="tag" data-fact-cat>Koinot</span>
+              <span class="label" data-fact-source>Manba: NASA</span>
+            </div>
+            <div class="fact-actions">
+              <button class="btn" type="button" data-fact-next>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v4h-4"/></svg>
+                Boshqa fakt
+              </button>
+              <button class="btn btn--ghost" type="button" data-fact-copy>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="8.5" width="12" height="12" rx="2.5"/><path d="M15.5 8.5V6a2.5 2.5 0 0 0-2.5-2.5H6A2.5 2.5 0 0 0 3.5 6v7A2.5 2.5 0 0 0 6 15.5h2.5"/></svg>
+                Nusxa olish
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Mavzular ================= -->
+    <section class="section" id="mavzular" aria-labelledby="mavzular-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <h2 id="mavzular-title">Mavzular</h2>
+          </div>
+          <div class="chips" role="group" aria-label="Bo‘lim bo‘yicha saralash" data-chips></div>
+        </div>
+        <div class="topics" data-topics aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- ================= Jonli hisoblagichlar ================= -->
+    <section class="section section--tight" aria-labelledby="hozir-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="hozir-title">Siz shu sahifani ochganingizdan beri</h2>
+          <p>Sahifa ochiq turganiga <span class="elapsed" data-elapsed>0:00</span>. Raqamlar har soniyada o‘sib boradi.</p>
+        </div>
+        <div class="counters">
+          <div class="counter">
+            <div class="counter__num" data-counter="29.78">0<small>km</small></div>
+            <p>Yer Quyosh atrofida shuncha yo‘l bosib o‘tdi</p>
+            <span class="rate">29,78 km/s</span>
+          </div>
+          <div class="counter">
+            <div class="counter__num" data-counter="4.2">0<small>ta</small></div>
+            <p>Dunyoda shuncha chaqaloq tug‘ildi</p>
+            <span class="rate">≈ 4,2 ta/s</span>
+          </div>
+          <div class="counter">
+            <div class="counter__num" data-counter="44">0<small>marta</small></div>
+            <p>Yer yuziga shuncha marta chaqmoq urdi</p>
+            <span class="rate">≈ 44 marta/s</span>
+          </div>
+          <div class="counter">
+            <div class="counter__num" data-counter="1.2">0<small>marta</small></div>
+            <p>Yuragingiz shuncha marta urdi</p>
+            <span class="rate">≈ 72 marta/daqiqa</span>
+          </div>
+        </div>
+        <p class="counters-note">Taxminiy o‘rtacha qiymatlar. Manbalar: NASA (Yer orbitasi, chaqmoqlar), BMT aholi ma’lumotlari (tug‘ilish).</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__in">
+      <div class="footer__about">
+        <a class="brand" href="index.html">
+          <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M31 16 26.61 20.39 26.61 26.61 20.39 26.61 16 31 11.61 26.61 5.39 26.61 5.39 20.39 1 16 5.39 11.61 5.39 5.39 11.61 5.39 16 1 20.39 5.39 26.61 5.39 26.61 11.61Z"/><circle class="c" cx="16" cy="16" r="5.2"/></svg>
+          Qiziqarli
+        </a>
+        <p>Koinot, tabiat, tarix va inson haqidagi bilimlar — o‘ynab o‘rganish uchun.</p>
+        <p>© <span data-year>2026</span> Qiziqarli</p>
+      </div>
+      <ul class="footer__links" data-footer-links></ul>
+    </div>
+  </footer>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/home.js"></script>
+</body>
+</html>

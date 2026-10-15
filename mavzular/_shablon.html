@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Mavzu nomi · Qiziqarli</title>
+  <meta name="description" content="Mavzu haqida bir jumlali tavsif.">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500;600&family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script>try{var t=localStorage.getItem("qz-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <!--
+    SHABLON: yangi mavzu yaratish uchun shu faylni nusxalang.
+    1) Fayl nomini o‘zgartiring (masalan: mavzular/vulqonlar.html)
+    2) <body data-topic="..."> qiymatini data.js dagi slug bilan bir xil qiling
+    3) assets/js/data.js dagi topics ro‘yxatiga yozuv qo‘shing
+    4) Faqat shu sahifaga tegishli CSS va JS shu fayl ichida yoziladi
+  -->
+  <style>
+    /* Shu mavzuga tegishli uslublar */
+    .demo { padding: 24px; min-height: 280px; display: grid; place-items: center; }
+  </style>
+</head>
+<body data-root="../" data-topic="shablon">
+  <a class="skip-link" href="#asosiy">Asosiy qismga o‘tish</a>
+
+  <header class="topbar">
+    <div class="wrap topbar__in">
+      <a class="brand" href="../index.html">
+        <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M31 16 26.61 20.39 26.61 26.61 20.39 26.61 16 31 11.61 26.61 5.39 26.61 5.39 20.39 1 16 5.39 11.61 5.39 5.39 11.61 5.39 16 1 20.39 5.39 26.61 5.39 26.61 11.61Z"/><circle class="c" cx="16" cy="16" r="5.2"/></svg>
+        Qiziqarli
+      </a>
+      <nav class="nav" aria-label="Asosiy menyu">
+        <a href="../index.html#mavzular">Mavzular</a>
+        <a class="nav__extra" href="../index.html#fakt">Bugungi fakt</a>
+        <a href="viktorina.html">Viktorina</a>
+      </nav>
+      <button class="theme-btn" type="button" data-theme-toggle aria-label="Tungi rejimga o‘tish">
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a6.8 6.8 0 0 0 10.7 10.7z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="asosiy">
+    <section class="wrap topic-hero">
+      <a class="back-link" href="../index.html#mavzular">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        Barcha mavzular
+      </a>
+      <div class="topic-meta">
+        <span class="tag" data-cat="ilm">Ilm-fan</span>
+        <span class="label">Tajriba · 5 daqiqa</span>
+      </div>
+      <h1>Mavzu nomi</h1>
+      <p class="lead">Bir-ikki jumlada: foydalanuvchi bu sahifada nima qiladi va nimani bilib oladi.</p>
+    </section>
+
+    <section class="wrap" aria-label="Interaktiv qism">
+      <div class="stage">
+        <div class="demo">Interaktiv qism shu yerda</div>
+        <div class="stage__bar">
+          <button class="btn btn--small" type="button">Boshlash</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap didyou">
+      <h2>Bilasizmi?</h2>
+      <ul class="fact-list">
+        <li><p><strong>Qisqa sarlavha.</strong> Fakt matni.</p></li>
+        <li><p><strong>Qisqa sarlavha.</strong> Fakt matni.</p></li>
+        <li><p><strong>Qisqa sarlavha.</strong> Fakt matni.</p></li>
+      </ul>
+    </section>
+
+    <section class="wrap next-topic" aria-label="Keyingi mavzu">
+      <div data-next-topic></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__in">
+      <div class="footer__about">
+        <a class="brand" href="../index.html">
+          <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M31 16 26.61 20.39 26.61 26.61 20.39 26.61 16 31 11.61 26.61 5.39 26.61 5.39 20.39 1 16 5.39 11.61 5.39 5.39 11.61 5.39 16 1 20.39 5.39 26.61 5.39 26.61 11.61Z"/><circle class="c" cx="16" cy="16" r="5.2"/></svg>
+          Qiziqarli
+        </a>
+        <p>Koinot, tabiat, tarix va inson haqidagi bilimlar — o‘ynab o‘rganish uchun.</p>
+        <p>© <span data-year>2026</span> Qiziqarli</p>
+      </div>
+      <ul class="footer__links" data-footer-links></ul>
+    </div>
+  </footer>
+
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/common.js"></script>
+  <script>
+    /* Shu mavzuga tegishli skript. QZ.fmt(), QZ.toast(), QZ.copy(), QZ.cssVar() tayyor. */
+    (function () {
+      "use strict";
+    })();
+  </script>
+</body>
+</html>
